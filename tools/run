@@ -1,0 +1,6 @@
+#!/usr/bin/env node
+
+// Run test suites under node.
+
+require('../src/tools/setup-ts-in-node.js');
+require('../src/runtime/cmdline.ts');

@@ -1,0 +1,47 @@
+{
+  "name": "cts-experiment",
+  "version": "0.1.0",
+  "description": "",
+  "scripts": {
+    "test": "grunt pre"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kainino0x/cts-experiment.git"
+  },
+  "author": "WebGPU CTS Contributors",
+  "private": true,
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/kainino0x/cts-experiment/issues"
+  },
+  "homepage": "https://github.com/kainino0x/cts-experiment#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.4.3",
+    "@babel/core": "^7.4.3",
+    "@babel/plugin-proposal-class-properties": "^7.4.4",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+    "@babel/preset-typescript": "^7.3.3",
+    "@types/jquery": "^3.3.30",
+    "@types/node": "^12.0.8",
+    "@webgpu/glslang": "^0.0.6",
+    "@webgpu/types": "0.0.8",
+    "babel-plugin-add-header-comment": "^1.0.3",
+    "babel-plugin-macros": "^2.6.1",
+    "clang-format": "^1.2.4",
+    "fast-glob": "^3.0.0",
+    "grunt": "^1.0.4",
+    "grunt-babel": "^8.0.0",
+    "grunt-contrib-clean": "^2.0.0",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-http-server": "^2.1.0",
+    "grunt-mkdir": "^1.0.0",
+    "grunt-run": "^0.8.1",
+    "grunt-ts": "^6.0.0-beta.22",
+    "gts": "^1.0.0",
+    "ts-node": "^8.3.0",
+    "tslint": "^5.15.0",
+    "typescript": "~3.5.3",
+    "typescript-formatter": "^7.2.2"
+  }
+}

@@ -1,0 +1,95 @@
+<html>
+  <head>
+    <title></title>
+    <script src="third_party/jquery/jquery-3.3.1.min.js"></script>
+    <style>
+      #info {
+        font-family: monospace;
+      }
+      #resultsJSON {
+        font-family: monospace;
+        width: 100%;
+        height: 15em;
+      }
+      .test {
+        border-width: 1px 0 0 1px;
+        border-style: solid;
+        border-color: gray;
+      }
+      .testrun {
+        display: inline-block;
+        font-size: 10pt;
+        padding: 0 3pt 0 3pt;
+      }
+      .testname {
+        display: inline-block;
+        margin-left: 2pt;
+      }
+      .testdesc {
+        margin-left: 1.8em;
+      }
+      .testcases {
+        margin-left: 8pt;
+      }
+      .testcase {
+        border-width: 1px 0 0 1px;
+        border-style: solid;
+        border-color: gray;
+        background: white;
+      }
+      .casehead {
+        overflow: auto;
+      }
+      .caserun {
+        display: inline-block;
+        font-size: 10pt;
+        padding: 0 3pt 0 3pt;
+      }
+      .casename {
+        display: inline-block;
+        margin-left: 2pt;
+        width: 65%;
+      }
+      .casetime {
+        width: 20%;
+        float: right;
+      }
+      .caselogs {
+        margin-left: 8pt;
+        width: 100%;
+        border-width: 0 0 0 1px;
+        border-style: solid;
+        border-color: gray;
+        background: white;
+      }
+      .caselog {
+        margin-left: 2pt;
+        border-width: 0 0 1px 0;
+        border-style: solid;
+        border-color: #eee;
+      }
+
+      .fail {
+        background: #fcc;
+      }
+      .warn {
+        background: #ffb;
+      }
+      .pass {
+        background: #cfc;
+      }
+    </style>
+    <script>
+      if (!window.location.search) {
+        window.location += '?runnow=0&q=cts:';
+      }
+    </script>
+  </head>
+  <body>
+    <div id="info"></div>
+    <textarea id="resultsJSON"></textarea>
+    <div id="resultsVis"></div>
+
+    <script type="module" src="out/runtime/standalone.js"></script>
+  </body>
+</html>
