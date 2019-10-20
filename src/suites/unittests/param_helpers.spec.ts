@@ -11,7 +11,9 @@ import {
   pexclude,
   pfilter,
   poptions,
+  pvariant,
 } from '../../framework/index.js';
+import { pvalid } from '../cts/validation/validation_test.js';
 
 import { UnitTest } from './unit_test.js';
 
@@ -66,4 +68,69 @@ g.test('exclude', t => {
     pexclude([{ a: true, x: 1 }, { a: false, y: 2 }], [{ a: true }, { a: false, y: 2 }]),
     [{ a: true, x: 1 }]
   );
+});
+
+g.test('pvariant', t => {
+  t.expectSpecEqual(
+    pvariant('a', [
+      [1, [{ b: 2 }, { b: 3 }]], //
+      [2, [{ b: 2 }, { b: 3 }]],
+    ]),
+    [
+      { a: 1, b: 2 }, //
+      { a: 1, b: 3 },
+      { a: 2, b: 2 },
+      { a: 2, b: 3 },
+    ]
+  );
+});
+
+g.test('pvariant/error', t => {
+  t.shouldThrow('Error', () => {
+    Array.from(
+      pvariant('a', [
+        [1, [{ a: 2 }]], //
+      ])
+    );
+  });
+});
+
+g.test('pvalid', t => {
+  t.expectSpecEqual(
+    pvalid({
+      valid: [
+        { b: 2 }, //
+        { b: 3 },
+      ],
+      invalid: [
+        { b: 2 }, //
+        { b: 3 },
+      ],
+    }),
+    [
+      { _valid: true, b: 2 },
+      { _valid: true, b: 3 },
+      { _valid: false, b: 2 },
+      { _valid: false, b: 3 },
+    ]
+  );
+});
+
+g.test('pvalid/error', t => {
+  t.shouldThrow('Error', () => {
+    Array.from(
+      pvalid({
+        valid: [{ _valid: 1 }], //
+        invalid: [],
+      })
+    );
+  });
+  t.shouldThrow('Error', () => {
+    Array.from(
+      pvalid({
+        valid: [], //
+        invalid: [{ _valid: 1 }],
+      })
+    );
+  });
 });

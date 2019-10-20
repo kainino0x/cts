@@ -2,7 +2,7 @@ import { allowedTestNameCharacters } from './allowed_characters.js';
 import { Fixture } from './fixture.js';
 import { TestCaseID } from './id.js';
 import { LiveTestCaseResult, TestCaseRecorder, TestSpecRecorder } from './logger.js';
-import { ParamArgument, ParamSpecIterable, ParamsAny, paramsEquals } from './params/index.js';
+import { ParamSpecIterable, ParamsAny, paramsEquals } from './params/index.js';
 import { checkPublicParamType, extractPublicParams } from './url_query.js';
 
 export interface RunCase {

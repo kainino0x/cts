@@ -1,8 +1,10 @@
 export * from './combine.js';
+export * from './exclude.js';
 export * from './filter.js';
 export * from './options.js';
-export * from './exclude.js';
+export * from './variant.js';
 
+// XXX: dissolve these types
 export interface ParamsAny {
   [k: string]: ParamArgument;
 }

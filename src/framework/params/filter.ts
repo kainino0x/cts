@@ -2,7 +2,7 @@ import { ParamSpecIterable, ParamSpecIterator, ParamsAny } from './index.js';
 
 type Predicate = (o: ParamsAny) => boolean;
 
-export function pfilter(cases: ParamSpecIterable, pred: Predicate): PFilter {
+export function pfilter(cases: ParamSpecIterable, pred: Predicate): ParamSpecIterable {
   return new PFilter(cases, pred);
 }
 

@@ -1,3 +1,4 @@
+import { ParamSpecIterable, pvariant } from '../../../framework/index.js';
 import { GPUTest } from '../gpu_test.js';
 
 export class ValidationTest extends GPUTest {
@@ -30,4 +31,14 @@ export class ValidationTest extends GPUTest {
       }
     });
   }
+}
+
+export function pvalid({
+  valid,
+  invalid,
+}: {
+  valid: ParamSpecIterable;
+  invalid: ParamSpecIterable;
+}): ParamSpecIterable {
+  return pvariant('_valid', [[true, valid], [false, invalid]]);
 }
