@@ -4,22 +4,15 @@ export * from './filter.js';
 export * from './options.js';
 export * from './variant.js';
 
-// XXX: dissolve these types
-export interface ParamsAny {
-  [k: string]: ParamArgument;
-}
-export type ParamAnyIterable = Iterable<ParamsAny>;
-export type ParamAnyIterator = IterableIterator<ParamsAny>;
-
 // tslint:disable-next-line: no-any
 export type ParamArgument = any;
-export interface ParamsSpec {
+export interface ParamSpec {
   [k: string]: ParamArgument;
 }
-export type ParamSpecIterable = Iterable<ParamsSpec>;
-export type ParamSpecIterator = IterableIterator<ParamsSpec>;
+export type ParamSpecIterable = Iterable<ParamSpec>;
+export type ParamSpecIterator = IterableIterator<ParamSpec>;
 
-export function paramsEquals(x: ParamsSpec | null, y: ParamsSpec | null): boolean {
+export function paramsEquals(x: ParamSpec | null, y: ParamSpec | null): boolean {
   if (x === y) {
     return true;
   }
@@ -44,7 +37,7 @@ export function paramsEquals(x: ParamsSpec | null, y: ParamsSpec | null): boolea
   return true;
 }
 
-export function paramsSupersets(sup: ParamsSpec | null, sub: ParamsSpec | null): boolean {
+export function paramsSupersets(sup: ParamSpec | null, sub: ParamSpec | null): boolean {
   if (sub === null) {
     return true;
   }
