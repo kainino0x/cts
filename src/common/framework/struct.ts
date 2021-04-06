@@ -1,5 +1,14 @@
-import { align } from '../../webgpu/util/math.js';
-import { assert } from './util/util.js';
+// Utilities
+
+export function align(n: number, alignment: number): number {
+  return Math.ceil(n / alignment) * alignment;
+}
+
+export function assert(condition: boolean, msg: () => string): asserts condition {
+  if (!condition) {
+    throw new Error(msg());
+  }
+}
 
 /** Partially forces a type to resolve type definitions, to make it readable/debuggable. */
 export type ResolveType<T> = T extends infer O ? O : never;
@@ -38,17 +47,20 @@ type TypeLayout = TypeLayout_Scalar | TypeLayout_Struct | TypeLayout_Array;
 type TypeLayout_Scalar = TypeLayout_Number | TypeLayout_BigInt;
 type TypeLayout_Number = {
   readonly minByteSize: number;
+  readonly minByteAlign: number;
   readonly unsized: false;
   readonly type: TypeDescriptor_Number;
 };
 type TypeLayout_BigInt = {
   readonly minByteSize: number;
+  readonly minByteAlign: number;
   readonly unsized: false;
   readonly type: TypeDescriptor_BigInt;
 };
 
 type TypeLayout_Struct = {
   readonly minByteSize: number;
+  readonly minByteAlign: number;
   readonly unsized: boolean;
   readonly members: readonly LayoutStruct_Member[];
 };
@@ -60,52 +72,90 @@ type LayoutStruct_Member = {
 
 type TypeLayout_Array = {
   readonly minByteSize: number;
+  readonly minByteAlign: number;
   readonly unsized: boolean;
   readonly arrayLength: number | 'unsized';
   readonly byteStride: number;
   readonly elementType: TypeLayout;
 };
 
-// TODO: provide different defaulting rules (C, WGSL, GLSL)
+// TODO: provide different defaulting rules (C(?), WGSL, GLSL std140/std430/scalar)
 function layOutType(desc: TypeDescriptor): TypeLayout {
   if (typeof desc === 'string') {
     const arrayType = kTypedArrayTypes[desc];
-    return { minByteSize: arrayType.BYTES_PER_ELEMENT, unsized: false, type: desc };
+    return {
+      minByteSize: arrayType.BYTES_PER_ELEMENT,
+      minByteAlign: arrayType.BYTES_PER_ELEMENT,
+      unsized: false,
+      type: desc,
+    };
   } else if (desc instanceof Array) {
     const info = desc[1];
     const byteStride = info.stride;
     const elementType = layOutType(desc[0]);
-    assert(!elementType.unsized, 'Array element type must be sized');
-    assert(elementType.minByteSize <= byteStride, 'Array element must fit within array stride');
+
+    assert(!elementType.unsized, () => 'Array element types must be sized');
+    assert(
+      elementType.minByteSize <= byteStride,
+      () =>
+        `Array element of size ${elementType.minByteSize} must fit within array stride ${byteStride}`
+    );
+    assert(
+      byteStride % elementType.minByteAlign === 0,
+      () =>
+        `Array stride ${byteStride} must be a multiple of element alignment ${elementType.minByteAlign}`
+    );
 
     const unsized = info.length === 'unsized';
     const minByteSize = info.length === 'unsized' ? 0 : info.length * elementType.minByteSize;
-    return { minByteSize, unsized, byteStride, arrayLength: info.length, elementType };
+    return {
+      minByteSize,
+      minByteAlign: elementType.minByteAlign,
+      unsized,
+      byteStride,
+      arrayLength: info.length,
+      elementType,
+    };
   } else {
     let minByteSize = 0;
+    let minByteAlign = 1;
     let byteSize: number | 'unsized' = 0;
     const members: LayoutStruct_Member[] = [];
 
+    let prevName: string | undefined;
     for (const [name, v] of Object.entries(desc)) {
       if ('offset' in v) {
+        assert(
+          v.offset >= byteSize,
+          () =>
+            `Found member ${name} with explicit offset ${v.offset} that is less than the end offset ${byteSize} of previous member ${prevName}`
+        );
         byteSize = v.offset;
       } else {
-        assert(byteSize !== 'unsized', () => `Found member ${name} after unsized struct member`);
+        assert(byteSize !== 'unsized', () => `Unsized struct member ${prevName} must be last, but found subsequent member ${name}`);
         byteSize = align(byteSize, v.align);
+        minByteAlign = Math.max(minByteAlign, v.align);
       }
 
+      const byteOffset = byteSize;
       const type = layOutType(v.type);
-      members.push({ name, byteOffset: byteSize, type: type });
+      assert(
+        byteSize % type.minByteAlign === 0,
+        () => `Member ${name} has offset ${byteOffset} but min alignment ${type.minByteAlign}`
+      );
+      members.push({ name, byteOffset, type: type });
 
       if (type.unsized) {
         byteSize = 'unsized';
       } else {
         byteSize += type.minByteSize;
-        if (byteSize > minByteSize) minByteSize = byteSize;
+        minByteSize = Math.max(minByteSize, byteSize);
       }
+      minByteAlign = Math.max(minByteAlign, type.minByteAlign);
+      prevName = name;
     }
 
-    return { minByteSize, unsized: byteSize === 'unsized', members };
+    return { minByteSize, minByteAlign, unsized: byteSize === 'unsized', members };
   }
 }
 
