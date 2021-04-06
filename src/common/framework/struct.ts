@@ -1,15 +1,15 @@
 // Utilities
 
-export function align(n: number, alignment: number): number {
+function align(n: number, alignment: number): number {
   return Math.ceil(n / alignment) * alignment;
 }
 
-export function assert(condition: boolean, msg: () => string): asserts condition {
+function assert(condition: boolean, msg: () => string): asserts condition {
   if (!condition) throw new Error(msg());
 }
 
 /** Forces a type to resolve its type definitions, to make it readable/debuggable. */
-export type ResolveType<T> = T extends object
+type ResolveType<T> = T extends object
   ? T extends infer O
     ? { [K in keyof O]: ResolveType<O[K]> }
     : never
@@ -164,17 +164,9 @@ function layOutType(desc: TypeDescriptor): TypeLayout {
   }
 }
 
-// Structured Accessor Classes
+// Inner accessor interfaces
 
-// At the root, number/bigint must be wrapped in an object to make them settable.
-type RootAccessor<T extends TypeDescriptor> = T extends TypeDescriptor_Number
-  ? { value: number }
-  : T extends TypeDescriptor_BigInt
-  ? { value: bigint }
-  : InnerAccessor<T>;
-
-// If not at the top level, they're already in an object/array member so can be accessed directly.
-type InnerAccessor<T extends TypeDescriptor> = T extends TypeDescriptor_Number
+type Accessor<T extends TypeDescriptor> = T extends TypeDescriptor_Number
   ? number
   : T extends TypeDescriptor_BigInt
   ? bigint
@@ -187,17 +179,173 @@ type InnerAccessor<T extends TypeDescriptor> = T extends TypeDescriptor_Number
 type InferHelper<T extends TBase, TBase> = T;
 type Accessor_Struct<T extends TypeDescriptor_Struct> = {
   [K in keyof T['struct']]: T['struct'][K][0] extends InferHelper<infer TMember, TypeDescriptor>
-    ? InnerAccessor<TMember>
+    ? Accessor<TMember>
     : 'ERROR: Struct Member was not a GenericMember<T>';
 };
 
 type Accessor_Array<T extends TypeDescriptor_Array> = {
   [i: number]: T['array'][0] extends infer TElement
     ? TElement extends TypeDescriptor
-      ? InnerAccessor<TElement>
+      ? Accessor<TElement>
       : 'ERROR: Element type was not a TypeDescriptor'
     : 'ERROR: ArrayDescriptor was not an ArrayDescriptor';
 };
+
+function makeWrappedAccessor(data: AllTypedArrays, baseOffset: number, layout: TypeLayout): object {
+  return makeAccessor_Struct(data, baseOffset, {
+    minByteSize: layout.minByteSize,
+    minByteAlign: layout.minByteAlign,
+    unsized: layout.unsized,
+    members: [{ name: 'value', byteOffset: 0, type: layout }],
+  });
+}
+
+function makeAccessor(data: AllTypedArrays, baseOffset: number, layout: TypeLayout): object {
+  if ('members' in layout) {
+    return makeAccessor_Struct(data, baseOffset, layout);
+  } else if ('elementType' in layout) {
+    return makeAccessor_Array(data, baseOffset, layout);
+  } else {
+    assert(false, () => 'makeInnerAccessor should not have recursed on a scalar type');
+  }
+}
+
+function makeAccessor_Struct(
+  data: AllTypedArrays,
+  baseOffset: number,
+  layout: TypeLayout_Struct
+): object {
+  const o = {};
+  for (const member of layout.members) {
+    appendAccessorProperty(o, member.name, data, baseOffset + member.byteOffset, member.type);
+  }
+  return o;
+}
+
+function makeAccessor_Array(
+  data: AllTypedArrays,
+  baseOffset: number,
+  layout: TypeLayout_Array
+): object {
+  if (layout.arrayLength === 'unsized') {
+    const elementType = layout.elementType;
+
+    const getAccessor = (target: any, index: number) => {
+      let accessor = target[index];
+      if (accessor === undefined) {
+        // Use a wrappedAccessor always (requiring .value) to simplify things with inlined scalars
+        accessor = target[index] = makeWrappedAccessor(
+          data,
+          baseOffset + index * layout.byteStride,
+          elementType
+        );
+      }
+      return accessor;
+    };
+
+    if ('members' in elementType || 'elementType' in elementType) {
+      return new Proxy(
+        {},
+        {
+          get(target: { [k: string]: any }, prop: string) {
+            const index = parseInt(prop);
+            if (!(index >= 0)) return target[prop];
+            return getAccessor(target, index).value;
+          },
+        }
+      );
+    } else {
+      return new Proxy(
+        {},
+        {
+          get(target: { [k: string]: unknown }, prop: string): unknown {
+            const index = parseInt(prop);
+            if (!(index >= 0)) return target[prop];
+            return getAccessor(target, index).value;
+          },
+          set(target, prop: string, value: number): boolean {
+            const index = parseInt(prop);
+            if (!(index >= 0)) return false;
+            getAccessor(target, index).value = value;
+            return true;
+          },
+        }
+      );
+    }
+  } else {
+    const o = {};
+    for (let k = 0; k < layout.arrayLength; ++k) {
+      appendAccessorProperty(o, k, data, baseOffset + k * layout.byteStride, layout.elementType);
+    }
+    return o;
+  }
+}
+
+// Helpers for defining properties
+
+function appendAccessorProperty(
+  o: object,
+  k: number | string,
+  data: AllTypedArrays,
+  byteOffset: number,
+  layout: TypeLayout
+): void {
+  if ('members' in layout || 'elementType' in layout) {
+    appendAccessorProperty_NonScalar(o, k, data, byteOffset, layout);
+  } else {
+    appendAccessorProperty_Scalar(o, k, data, byteOffset, layout);
+  }
+}
+
+function appendAccessorProperty_Scalar(
+  o: object,
+  k: number | string,
+  data: AllTypedArrays,
+  byteOffset: number,
+  layout: TypeLayout_Scalar
+) {
+  const typedArray = data[layout.type];
+  const typedOffset = byteOffset / typedArray.BYTES_PER_ELEMENT;
+
+  assert(
+    byteOffset % typedArray.BYTES_PER_ELEMENT === 0,
+    () =>
+      `final offset ${byteOffset} of a scalar accessor must be a multiple of its alignment ${typedArray.BYTES_PER_ELEMENT}`
+  );
+  assert(
+    byteOffset < typedArray.byteLength,
+    () =>
+      `final offset ${byteOffset} of a scalar accessor must be within the ArrayBuffer of size ${typedArray.byteLength} bytes`
+  );
+
+  Object.defineProperty(o, k, {
+    enumerable: true,
+    get() {
+      return typedArray[typedOffset];
+    },
+    set(value: number) {
+      typedArray[typedOffset] = value;
+    },
+  });
+}
+
+function appendAccessorProperty_NonScalar(
+  o: object,
+  k: number | string,
+  data: AllTypedArrays,
+  byteOffset: number,
+  layout: TypeLayout_Struct | TypeLayout_Array
+) {
+  const accessor = makeAccessor(data, byteOffset, layout);
+  Object.defineProperty(o, k, {
+    enumerable: true,
+    get() {
+      return accessor;
+    },
+  });
+}
+
+// TypedArray stuff
 
 const kTypedArrayTypes = {
   i8: Int8Array,
@@ -213,6 +361,7 @@ const kTypedArrayTypes = {
 };
 
 interface AllTypedArrays {
+  arrayBuffer: ArrayBuffer;
   i8: Int8Array;
   u8: Uint8Array;
   i16: Int16Array;
@@ -228,6 +377,7 @@ interface AllTypedArrays {
 function allTypedArrays(ab: ArrayBuffer): AllTypedArrays {
   // Round TypedArray sizes down so that any size ArrayBuffer is valid here.
   return {
+    arrayBuffer: ab,
     i8: new Int8Array(ab),
     u8: new Uint8Array(ab),
     i16: new Int16Array(ab, 0, Math.floor(ab.byteLength / Int16Array.BYTES_PER_ELEMENT)),
@@ -241,154 +391,48 @@ function allTypedArrays(ab: ArrayBuffer): AllTypedArrays {
   };
 }
 
-function makeRootAccessor(data: AllTypedArrays, baseOffset: number, layout: TypeLayout): object {
-  if ('members' in layout || 'elementType' in layout) {
-    return makeInnerAccessor(data, baseOffset, layout);
-  } else {
-    return makeScalarAccessor(data, baseOffset, layout);
-  }
-}
+// Accessor factory
 
-function makeScalarAccessor(
-  data: AllTypedArrays,
-  byteOffset: number,
-  layout: TypeLayout_Scalar
-): { value: number | bigint } {
-  const typedArray = data[layout.type];
-  assert(
-    byteOffset % typedArray.BYTES_PER_ELEMENT === 0,
-    () =>
-      `final offset ${byteOffset} of a scalar accessor must be a multiple of its alignment ${typedArray.BYTES_PER_ELEMENT}`
-  );
-  assert(
-    byteOffset < typedArray.byteLength,
-    () =>
-      `final offset ${byteOffset} of a scalar accessor must be within the ArrayBuffer of size ${typedArray.byteLength} bytes`
-  );
-  const typedOffset = byteOffset / typedArray.BYTES_PER_ELEMENT;
-  return {
-    get value(): number | bigint {
-      return typedArray[typedOffset];
-    },
-    set value(val: number | bigint) {
-      typedArray[typedOffset] = val;
-    },
-  };
-}
-
-function appendPropertyToObject(
-  o: object,
-  k: number | string,
-  data: AllTypedArrays,
-  offset: number,
-  layout: TypeLayout
-): void {
-  if (!('members' in layout || 'elementType' in layout)) {
-    const accessor = makeScalarAccessor(data, offset, layout);
-    Object.defineProperty(o, k, {
-      enumerable: true,
-      get() {
-        return accessor.value;
-      },
-      set(value: number) {
-        accessor.value = value;
-      },
-    });
-  } else {
-    const accessor = makeInnerAccessor(data, offset, layout);
-    Object.defineProperty(o, k, {
-      enumerable: true,
-      get() {
-        return accessor;
-      },
-    });
-  }
-}
-
-function makeInnerAccessor(data: AllTypedArrays, baseOffset: number, layout: TypeLayout): object {
-  if ('members' in layout) {
-    const o = {};
-    for (const member of layout.members) {
-      appendPropertyToObject(o, member.name, data, baseOffset + member.byteOffset, member.type);
-    }
-    return o;
-  } else if ('elementType' in layout) {
-    if (layout.arrayLength === 'unsized') {
-      const elementType = layout.elementType;
-
-      const getAccessor = (target: any, index: number) => {
-        let accessor = target[index];
-        if (accessor === undefined) {
-          accessor = target[index] = makeRootAccessor(
-            data,
-            baseOffset + index * layout.byteStride,
-            elementType
-          );
-        }
-        return accessor;
-      };
-
-      if ('members' in elementType || 'elementType' in elementType) {
-        return new Proxy(
-          { length: 'unsized' },
-          {
-            get(target: { [k: string]: any }, prop: string) {
-              const index = parseInt(prop);
-              if (!(index >= 0)) return target[prop];
-              return getAccessor(target, index);
-            },
-          }
-        );
-      } else {
-        return new Proxy(
-          { length: 'unsized' },
-          {
-            get(target: { [k: string]: unknown }, prop: string): unknown {
-              const index = parseInt(prop);
-              if (!(index >= 0)) return target[prop];
-              return getAccessor(target, index).value;
-            },
-            set(target, prop: string, value: number): boolean {
-              const index = parseInt(prop);
-              if (!(index >= 0)) return false;
-              getAccessor(target, index).value = value;
-              return true;
-            },
-          }
-        );
-      }
-    } else {
-      const o = {};
-      for (let k = 0; k < layout.arrayLength; ++k) {
-        appendPropertyToObject(o, k, data, baseOffset + k * layout.byteStride, layout.elementType);
-      }
-      return o;
-    }
-  } else {
-    assert(false, () => 'makeInnerAccessor should not have recursed on a scalar type');
-  }
+interface StructuredAccessor<T extends Accessor<TypeDescriptor>> {
+  value: T;
+  readonly layout: TypeLayout;
+  readonly backing: AllTypedArrays;
+  readonly baseOffset: number;
 }
 
 export class StructuredAccessorFactory<T extends TypeDescriptor> {
-  private desc: T;
+  readonly layout: TypeLayout;
 
   constructor(desc: T) {
-    this.desc = desc;
+    this.layout = layOutType(desc);
   }
 
-  create(buffer: ArrayBuffer, byteOffset: number = 0): ResolveType<RootAccessor<T>> {
-    const layout = layOutType(this.desc);
+  create(
+    buffer: ArrayBuffer,
+    baseOffset: number = 0
+  ): StructuredAccessor<ResolveType<Accessor<T>>> {
     assert(
-      layout.minByteSize <= buffer.byteLength - byteOffset,
+      this.layout.minByteSize <= buffer.byteLength - baseOffset,
       () =>
-        `Accessor requires ${layout.minByteSize} bytes past ${byteOffset}, but ArrayBuffer is ${buffer.byteLength} bytes`
+        `Accessor requires ${this.layout.minByteSize} bytes past ${baseOffset}, but ArrayBuffer is ${buffer.byteLength} bytes`
     );
-    return makeRootAccessor(allTypedArrays(buffer), byteOffset, layout) as any;
+    const backing = allTypedArrays(buffer);
+
+    // Make a wrappedAccessor (.value) but then add some more helpful properties to it.
+    const root = makeWrappedAccessor(backing, baseOffset, this.layout) as object;
+    Object.defineProperties(root, {
+      layout: { enumerable: true, get: () => this.layout },
+      backing: { enumerable: true, get: () => backing },
+      baseOffset: { enumerable: true, get: () => baseOffset },
+    });
+    return root as any;
   }
 }
 
-const ab = new ArrayBuffer(100);
-// TODO: disallow this, or put a toplevel .value instead of a bottomlevel .value
+// Tests
+
+const ab = new ArrayBuffer(32);
+
 const _0 = new StructuredAccessorFactory('i32').create(ab);
 const _1 = new StructuredAccessorFactory({
   array: ['i32', 2, { stride: 4 }], //
@@ -412,6 +456,7 @@ const _5 = new StructuredAccessorFactory({
     x: [{ array: ['i32', 2, { stride: 4 }] }, { offset: 0 }], //
   },
 }).create(ab);
+
 const _6 = new StructuredAccessorFactory({
   struct: {
     x: [{ array: ['i32', 'unsized', { stride: 4 }] }, { offset: 0 }], //
@@ -424,37 +469,47 @@ const _7 = new StructuredAccessorFactory({
         array: [
           {
             struct: {
-              w: ['i32', { offset: 0 }], //
+              w: ['i64', { offset: 0 }], //
             },
           },
           'unsized',
-          { stride: 4 },
+          { stride: 8 },
         ],
       },
       { offset: 0 },
     ],
   },
-}).create(ab, 32);
+}).create(ab, 16);
 
-console.log('_0 == ' + JSON.stringify(_0));
-console.log('_1 == ' + JSON.stringify(_1));
-console.log('_2 == ' + JSON.stringify(_2));
-console.log('_3 == ' + JSON.stringify(_3));
-console.log('_4 == ' + JSON.stringify(_4));
+console.log('_0.value == ' + JSON.stringify(_0.value));
+console.log('    setting _0.value');
+_0.value = 99;
+console.log('    _0.value == ' + JSON.stringify(_0.value));
+console.log('arraybuffer = ' + new Int32Array(ab).toString());
 
-console.log('_5 == ' + JSON.stringify(_5));
-console.log(' setting _5.x[1]');
-_5.x[1] = 123;
-console.log(' _5 == ' + JSON.stringify(_5));
+console.log('_1.value == ' + JSON.stringify(_1.value));
 
-console.log('_6 == ' + JSON.stringify(_6));
-console.log(' _6.x[1] == ' + _6.x[1]);
-console.log(' setting _6.x[1]');
-_6.x[1] = 456;
-console.log(' _6 == ' + JSON.stringify(_6));
+console.log('_2.value == ' + JSON.stringify(_2.value));
 
-console.log('_7 == ' + JSON.stringify(_7));
-console.log(' _7.x[1] == ' + JSON.stringify(_7.x[1]));
-console.log(' setting _7.x[1].w');
-_7.x[1].w = 789;
-console.log(' _7 == ' + JSON.stringify(_7));
+console.log('_3.value == ' + JSON.stringify(_3.value));
+
+console.log('_4.value == ' + JSON.stringify(_4.value));
+
+console.log('_5.value == ' + JSON.stringify(_5.value));
+console.log('    setting _5.value.x[1] = 123');
+_5.value.x[1] = 123;
+console.log('    _5.value == ' + JSON.stringify(_5.value));
+
+console.log('_6.value == ' + JSON.stringify(_6.value));
+console.log('    _6.value.x[1] == ' + _6.value.x[1]);
+console.log('    setting _6.value.x[1] = 456');
+_6.value.x[1] = 456;
+console.log('    _6.value == ' + JSON.stringify(_6.value));
+
+console.log('_7.value == ' + JSON.stringify(_7.value));
+console.log('    _7.value.x[0].w == ' + _7.value.x[0].w.toString());
+console.log('    _7.value.x[1].w == ' + _7.value.x[1].w.toString());
+console.log('    setting _7.value.x[1].w = 789n');
+_7.value.x[1].w = BigInt(789);
+console.log('    _7.value.x[1].w == ' + _7.value.x[1].w.toString());
+console.log('arraybuffer = ' + new Int32Array(ab).toString());
