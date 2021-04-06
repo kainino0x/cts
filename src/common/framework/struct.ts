@@ -5,13 +5,15 @@ export function align(n: number, alignment: number): number {
 }
 
 export function assert(condition: boolean, msg: () => string): asserts condition {
-  if (!condition) {
-    throw new Error(msg());
-  }
+  if (!condition) throw new Error(msg());
 }
 
-/** Partially forces a type to resolve type definitions, to make it readable/debuggable. */
-export type ResolveType<T> = T extends infer O ? O : never;
+/** Forces a type to resolve its type definitions, to make it readable/debuggable. */
+export type ResolveType<T> = T extends object
+  ? T extends infer O
+    ? { [K in keyof O]: ResolveType<O[K]> }
+    : never
+  : T;
 
 // Type Descriptors (how the user specifies the type layout)
 
@@ -22,22 +24,20 @@ type TypeDescriptor_Number = 'i8' | 'u8' | 'i16' | 'u16' | 'i32' | 'u32' | 'f32'
 type TypeDescriptor_BigInt = 'i64' | 'u64';
 
 interface TypeDescriptor_Struct {
-  readonly [x: string]: DescStructMemberWithOffset | DescStructMemberWithAlignment;
+  readonly struct: {
+    readonly [k: string]: DescStructMember;
+  };
 }
-interface DescStructMember {
-  readonly type: TypeDescriptor;
-}
-interface DescStructMemberWithOffset extends DescStructMember {
-  readonly offset: number;
-}
-interface DescStructMemberWithAlignment extends DescStructMember {
-  readonly align: number; // TODO: make optional, with defaulting behaviors
-}
+// TODO: make DescStructMemberInfo optional, with defaulting behaviors
+type DescStructMember = readonly [TypeDescriptor, DescStructMemberInfo];
+type DescStructMemberInfo = { readonly offset: number } | { readonly align: number };
 
-type TypeDescriptor_Array = readonly [TypeDescriptor, ArrayInfo];
-interface ArrayInfo {
-  readonly length: number | 'unsized';
-  readonly stride: number; // TODO: make optional, with defaulting behaviors
+interface TypeDescriptor_Array {
+  // TODO: make DescArrayInfo optional, with defaulting behaviors
+  readonly array: readonly [TypeDescriptor, number | 'unsized', DescArrayInfo];
+}
+interface DescArrayInfo {
+  readonly stride: number;
 }
 
 // Type Layouts (concrete layout generated from the type descriptor)
@@ -89,10 +89,9 @@ function layOutType(desc: TypeDescriptor): TypeLayout {
       unsized: false,
       type: desc,
     };
-  } else if (desc instanceof Array) {
-    const info = desc[1];
-    const byteStride = info.stride;
-    const elementType = layOutType(desc[0]);
+  } else if ('array' in desc) {
+    const [elementDesc, arrayLength, { stride: byteStride }] = desc.array;
+    const elementType = layOutType(elementDesc);
 
     assert(!elementType.unsized, () => 'Array element types must be sized');
     assert(
@@ -106,39 +105,43 @@ function layOutType(desc: TypeDescriptor): TypeLayout {
         `Array stride ${byteStride} must be a multiple of element alignment ${elementType.minByteAlign}`
     );
 
-    const unsized = info.length === 'unsized';
-    const minByteSize = info.length === 'unsized' ? 0 : info.length * elementType.minByteSize;
+    const unsized = arrayLength === 'unsized';
+    const minByteSize = arrayLength === 'unsized' ? 0 : arrayLength * elementType.minByteSize;
     return {
       minByteSize,
       minByteAlign: elementType.minByteAlign,
       unsized,
       byteStride,
-      arrayLength: info.length,
+      arrayLength: arrayLength,
       elementType,
     };
-  } else {
+  } else if ('struct' in desc) {
     let minByteSize = 0;
     let minByteAlign = 1;
     let byteSize: number | 'unsized' = 0;
     const members: LayoutStruct_Member[] = [];
 
     let prevName: string | undefined;
-    for (const [name, v] of Object.entries(desc)) {
-      if ('offset' in v) {
+    for (const [name, [typeDesc, info]] of Object.entries(desc.struct)) {
+      if ('offset' in info) {
         assert(
-          v.offset >= byteSize,
+          info.offset >= byteSize,
           () =>
-            `Found member ${name} with explicit offset ${v.offset} that is less than the end offset ${byteSize} of previous member ${prevName}`
+            `Found member ${name} with explicit offset ${info.offset} that is less than the end offset ${byteSize} of previous member ${prevName}`
         );
-        byteSize = v.offset;
+        byteSize = info.offset;
       } else {
-        assert(byteSize !== 'unsized', () => `Unsized struct member ${prevName} must be last, but found subsequent member ${name}`);
-        byteSize = align(byteSize, v.align);
-        minByteAlign = Math.max(minByteAlign, v.align);
+        assert(
+          byteSize !== 'unsized',
+          () =>
+            `Unsized struct member ${prevName} must be last, but found subsequent member ${name}`
+        );
+        byteSize = align(byteSize, info.align);
+        minByteAlign = Math.max(minByteAlign, info.align);
       }
 
       const byteOffset = byteSize;
-      const type = layOutType(v.type);
+      const type = layOutType(typeDesc);
       assert(
         byteSize % type.minByteAlign === 0,
         () => `Member ${name} has offset ${byteOffset} but min alignment ${type.minByteAlign}`
@@ -156,6 +159,8 @@ function layOutType(desc: TypeDescriptor): TypeLayout {
     }
 
     return { minByteSize, minByteAlign, unsized: byteSize === 'unsized', members };
+  } else {
+    assert(false, () => 'unreachable');
   }
 }
 
@@ -179,18 +184,15 @@ type InnerAccessor<T extends TypeDescriptor> = T extends TypeDescriptor_Number
   ? Accessor_Struct<T>
   : 'ERROR: TypeDescriptor was not a TypeDescriptor';
 
-interface GenericMember<T extends TypeDescriptor> {
-  readonly type: T;
-}
-
+type InferHelper<T extends TBase, TBase> = T;
 type Accessor_Struct<T extends TypeDescriptor_Struct> = {
-  [K in keyof T]: T[K] extends GenericMember<infer TMember>
+  [K in keyof T['struct']]: T['struct'][K][0] extends InferHelper<infer TMember, TypeDescriptor>
     ? InnerAccessor<TMember>
     : 'ERROR: Struct Member was not a GenericMember<T>';
 };
 
 type Accessor_Array<T extends TypeDescriptor_Array> = {
-  [k: number]: T extends readonly [infer TElement, any]
+  [i: number]: T['array'][0] extends infer TElement
     ? TElement extends TypeDescriptor
       ? InnerAccessor<TElement>
       : 'ERROR: Element type was not a TypeDescriptor'
@@ -363,13 +365,11 @@ function makeInnerAccessor(data: AllTypedArrays, baseOffset: number, layout: Typ
       return o;
     }
   } else {
-    assert(false, 'makeInnerAccessor should not have recursed on a scalar type');
+    assert(false, () => 'makeInnerAccessor should not have recursed on a scalar type');
   }
 }
 
 export class StructuredAccessorFactory<T extends TypeDescriptor> {
-  static arrayBuffer: symbol = Symbol('arrayBuffer');
-
   private desc: T;
 
   constructor(desc: T) {
@@ -388,31 +388,51 @@ export class StructuredAccessorFactory<T extends TypeDescriptor> {
 }
 
 const ab = new ArrayBuffer(100);
+// TODO: disallow this, or put a toplevel .value instead of a bottomlevel .value
 const _0 = new StructuredAccessorFactory('i32').create(ab);
-const _1 = new StructuredAccessorFactory(['i32', { length: 2, stride: 4 }]).create(ab);
-const _2 = new StructuredAccessorFactory({}).create(ab);
+const _1 = new StructuredAccessorFactory({
+  array: ['i32', 2, { stride: 4 }], //
+}).create(ab);
+const _2 = new StructuredAccessorFactory({
+  struct: {}, //
+}).create(ab);
 const _3 = new StructuredAccessorFactory({
-  x: { type: 'i32', offset: 0 },
+  struct: {
+    x: ['i32', { offset: 0 }], //
+  },
 }).create(ab);
 const _4 = new StructuredAccessorFactory({
-  x: { type: 'i32', offset: 0 },
-  y: { type: 'i8', size: 1, align: 4 },
+  struct: {
+    x: ['i32', { offset: 0 }],
+    y: ['i8', { size: 1, align: 4 }], //
+  },
 }).create(ab);
 const _5 = new StructuredAccessorFactory({
-  x: { type: ['i32', { length: 2, stride: 4 }], offset: 0 },
+  struct: {
+    x: [{ array: ['i32', 2, { stride: 4 }] }, { offset: 0 }], //
+  },
 }).create(ab);
 const _6 = new StructuredAccessorFactory({
-  x: { type: ['i32', { length: 'unsized', stride: 4 }], offset: 0 },
+  struct: {
+    x: [{ array: ['i32', 'unsized', { stride: 4 }] }, { offset: 0 }], //
+  },
 }).create(ab, 16);
 const _7 = new StructuredAccessorFactory({
-  x: {
-    type: [
+  struct: {
+    x: [
       {
-        w: { type: 'i32', offset: 0 },
+        array: [
+          {
+            struct: {
+              w: ['i32', { offset: 0 }], //
+            },
+          },
+          'unsized',
+          { stride: 4 },
+        ],
       },
-      { length: 'unsized', stride: 4 },
+      { offset: 0 },
     ],
-    offset: 0,
   },
 }).create(ab, 32);
 
