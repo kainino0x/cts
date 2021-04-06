@@ -27,17 +27,22 @@ interface TypeDescriptor_Struct {
   readonly struct: {
     readonly [k: string]: DescStructMember;
   };
+  // TODO: Need a way to set alignment/size on struct as a whole to define vec3, etc.
 }
 // TODO: make DescStructMemberInfo optional, with defaulting behaviors
-type DescStructMember = readonly [TypeDescriptor, DescStructMemberInfo];
-type DescStructMemberInfo = { readonly offset: number } | { readonly align: number };
+type DescStructMember = readonly [TypeDescriptor, DescStructMemberInfo?];
+interface DescStructMemberInfo {
+  readonly offset?: number;
+  readonly align?: number;
+  readonly size?: number;
+}
 
 interface TypeDescriptor_Array {
   // TODO: make DescArrayInfo optional, with defaulting behaviors
-  readonly array: readonly [TypeDescriptor, number | 'unsized', DescArrayInfo];
+  readonly array: readonly [TypeDescriptor, number | 'unsized', DescArrayInfo?];
 }
 interface DescArrayInfo {
-  readonly stride: number;
+  readonly stride?: number;
 }
 
 // Type Layouts (concrete layout generated from the type descriptor)
@@ -79,89 +84,100 @@ type TypeLayout_Array = {
   readonly elementType: TypeLayout;
 };
 
-// TODO: provide different defaulting rules (C(?), WGSL, GLSL std140/std430/scalar)
-function layOutType(desc: TypeDescriptor): TypeLayout {
+// TODO: provide defaulting rules (WGSL, GLSL std140/std430/scalar, C?)
+function computeTypeLayout(desc: TypeDescriptor): TypeLayout {
   if (typeof desc === 'string') {
-    const arrayType = kTypedArrayTypes[desc];
-    return {
-      minByteSize: arrayType.BYTES_PER_ELEMENT,
-      minByteAlign: arrayType.BYTES_PER_ELEMENT,
-      unsized: false,
-      type: desc,
-    };
+    return computeTypeLayout_Scalar(desc);
   } else if ('array' in desc) {
-    const [elementDesc, arrayLength, { stride: byteStride }] = desc.array;
-    const elementType = layOutType(elementDesc);
-
-    assert(!elementType.unsized, () => 'Array element types must be sized');
-    assert(
-      elementType.minByteSize <= byteStride,
-      () =>
-        `Array element of size ${elementType.minByteSize} must fit within array stride ${byteStride}`
-    );
-    assert(
-      byteStride % elementType.minByteAlign === 0,
-      () =>
-        `Array stride ${byteStride} must be a multiple of element alignment ${elementType.minByteAlign}`
-    );
-
-    const unsized = arrayLength === 'unsized';
-    const minByteSize = arrayLength === 'unsized' ? 0 : arrayLength * elementType.minByteSize;
-    return {
-      minByteSize,
-      minByteAlign: elementType.minByteAlign,
-      unsized,
-      byteStride,
-      arrayLength: arrayLength,
-      elementType,
-    };
-  } else if ('struct' in desc) {
-    let minByteSize = 0;
-    let minByteAlign = 1;
-    let byteSize: number | 'unsized' = 0;
-    const members: LayoutStruct_Member[] = [];
-
-    let prevName: string | undefined;
-    for (const [name, [typeDesc, info]] of Object.entries(desc.struct)) {
-      if ('offset' in info) {
-        assert(
-          info.offset >= byteSize,
-          () =>
-            `Found member ${name} with explicit offset ${info.offset} that is less than the end offset ${byteSize} of previous member ${prevName}`
-        );
-        byteSize = info.offset;
-      } else {
-        assert(
-          byteSize !== 'unsized',
-          () =>
-            `Unsized struct member ${prevName} must be last, but found subsequent member ${name}`
-        );
-        byteSize = align(byteSize, info.align);
-        minByteAlign = Math.max(minByteAlign, info.align);
-      }
-
-      const byteOffset = byteSize;
-      const type = layOutType(typeDesc);
-      assert(
-        byteSize % type.minByteAlign === 0,
-        () => `Member ${name} has offset ${byteOffset} but min alignment ${type.minByteAlign}`
-      );
-      members.push({ name, byteOffset, type: type });
-
-      if (type.unsized) {
-        byteSize = 'unsized';
-      } else {
-        byteSize += type.minByteSize;
-        minByteSize = Math.max(minByteSize, byteSize);
-      }
-      minByteAlign = Math.max(minByteAlign, type.minByteAlign);
-      prevName = name;
-    }
-
-    return { minByteSize, minByteAlign, unsized: byteSize === 'unsized', members };
+    return computeTypeLayout_Array(desc);
   } else {
-    assert(false, () => 'unreachable');
+    return computeTypeLayout_Struct(desc);
   }
+}
+
+function computeTypeLayout_Scalar(desc: TypeDescriptor_Scalar): TypeLayout_Scalar {
+  const arrayType = kTypedArrayTypes[desc];
+  return {
+    minByteSize: arrayType.BYTES_PER_ELEMENT,
+    minByteAlign: arrayType.BYTES_PER_ELEMENT,
+    unsized: false,
+    type: desc,
+  };
+}
+
+function computeTypeLayout_Array(desc: TypeDescriptor_Array): TypeLayout_Array {
+  const [elementDesc, arrayLength, info] = desc.array;
+  const elementType = computeTypeLayout(elementDesc);
+
+  if (info?.stride !== undefined) {
+    assert(!elementType.unsized, () => 'Array element types must be sized');
+    /* prettier-ignore */ assert(elementType.minByteSize <= info.stride,
+      () => `Array element of size ${elementType.minByteSize} must fit within array stride ${info.stride}`);
+    /* prettier-ignore */ assert(info.stride % elementType.minByteAlign === 0,
+      () => `Array stride ${info.stride} must be a multiple of element alignment ${elementType.minByteAlign}`);
+  }
+  const byteStride = info?.stride ?? align(elementType.minByteSize, elementType.minByteAlign);
+
+  const unsized = arrayLength === 'unsized';
+  const minByteSize =
+    arrayLength === 'unsized' || arrayLength === 0
+      ? 0
+      : (arrayLength - 1) * byteStride + elementType.minByteSize;
+  return {
+    minByteSize,
+    minByteAlign: elementType.minByteAlign,
+    unsized,
+    byteStride,
+    arrayLength: arrayLength,
+    elementType,
+  };
+}
+
+function computeTypeLayout_Struct(desc: TypeDescriptor_Struct): TypeLayout_Struct {
+  let minByteSize = 0;
+  let minByteAlign = 1;
+  let totalSize: number | 'unsized' = 0;
+  const members: LayoutStruct_Member[] = [];
+
+  let prevName: string | undefined;
+  for (const [name, [typeDesc, info]] of Object.entries(desc.struct)) {
+    const type = computeTypeLayout(typeDesc);
+
+    if (info?.align !== undefined) {
+      /* prettier-ignore */ assert(info.align % type.minByteAlign === 0,
+        () => `Member ${name} has explicit alignment ${memberAlign} that is not a multiple of the type's minByteAlign ${type.minByteAlign}`);
+    }
+    const memberAlign = info?.align ?? type.minByteAlign;
+
+    if (info?.offset !== undefined) {
+      /* prettier-ignore */ assert(info.offset % memberAlign === 0,
+        () => `Member ${name} has explicit offset ${info.offset} that does not align to required alignment ${memberAlign}`);
+    } else {
+      /* prettier-ignore */ assert(totalSize !== 'unsized',
+        () => `Member ${name} follows unsized member ${prevName}, but does not have an explicit offset`);
+    }
+    const memberOffset: number = info?.offset ?? align(totalSize as number, memberAlign);
+
+    if (info?.size !== undefined) {
+      /* prettier-ignore */ assert(info?.size >= type.minByteSize,
+        () => `Member ${name} has explicit size ${memberSize} that is smaller than the type's minByteSize ${type.minByteSize}`);
+    }
+    const memberSize = info?.size ?? type.minByteSize;
+
+    members.push({ name, byteOffset: memberOffset, type: type });
+
+    if (type.unsized) {
+      totalSize = 'unsized';
+    } else {
+      totalSize = memberOffset + memberSize;
+      minByteSize = totalSize;
+    }
+    // Note minByteAlign is set to type.minByteAlign, not to memberAlign.
+    minByteAlign = Math.max(minByteAlign, type.minByteAlign);
+    prevName = name;
+  }
+
+  return { minByteSize, minByteAlign, unsized: totalSize === 'unsized', members };
 }
 
 // Inner accessor interfaces
@@ -228,56 +244,64 @@ function makeAccessor_Array(
   layout: TypeLayout_Array
 ): object {
   if (layout.arrayLength === 'unsized') {
-    const elementType = layout.elementType;
-
-    const getAccessor = (target: any, index: number) => {
-      let accessor = target[index];
-      if (accessor === undefined) {
-        // Use a wrappedAccessor always (requiring .value) to simplify things with inlined scalars
-        accessor = target[index] = makeWrappedAccessor(
-          data,
-          baseOffset + index * layout.byteStride,
-          elementType
-        );
-      }
-      return accessor;
-    };
-
-    if ('members' in elementType || 'elementType' in elementType) {
-      return new Proxy(
-        {},
-        {
-          get(target: { [k: string]: any }, prop: string) {
-            const index = parseInt(prop);
-            if (!(index >= 0)) return target[prop];
-            return getAccessor(target, index).value;
-          },
-        }
-      );
-    } else {
-      return new Proxy(
-        {},
-        {
-          get(target: { [k: string]: unknown }, prop: string): unknown {
-            const index = parseInt(prop);
-            if (!(index >= 0)) return target[prop];
-            return getAccessor(target, index).value;
-          },
-          set(target, prop: string, value: number): boolean {
-            const index = parseInt(prop);
-            if (!(index >= 0)) return false;
-            getAccessor(target, index).value = value;
-            return true;
-          },
-        }
-      );
-    }
+    return makeAccessor_UnsizedArray(data, baseOffset, layout);
   } else {
     const o = {};
     for (let k = 0; k < layout.arrayLength; ++k) {
       appendAccessorProperty(o, k, data, baseOffset + k * layout.byteStride, layout.elementType);
     }
     return o;
+  }
+}
+
+function makeAccessor_UnsizedArray(
+  data: AllTypedArrays,
+  baseOffset: number,
+  layout: TypeLayout_Array
+): object {
+  const elementType = layout.elementType;
+
+  const getAccessor = (target: any, index: number) => {
+    let accessor = target[index];
+    if (accessor === undefined) {
+      // Use a wrappedAccessor always (requiring .value) to simplify things with inlined scalars
+      accessor = target[index] = makeWrappedAccessor(
+        data,
+        baseOffset + index * layout.byteStride,
+        elementType
+      );
+    }
+    return accessor;
+  };
+
+  if ('members' in elementType || 'elementType' in elementType) {
+    return new Proxy(
+      {},
+      {
+        get(target: { [k: string]: any }, prop: string) {
+          const index = parseInt(prop);
+          if (!(index >= 0)) return target[prop];
+          return getAccessor(target, index).value;
+        },
+      }
+    );
+  } else {
+    return new Proxy(
+      {},
+      {
+        get(target: { [k: string]: unknown }, prop: string): unknown {
+          const index = parseInt(prop);
+          if (!(index >= 0)) return target[prop];
+          return getAccessor(target, index).value;
+        },
+        set(target, prop: string, value: number): boolean {
+          const index = parseInt(prop);
+          if (!(index >= 0)) return false;
+          getAccessor(target, index).value = value;
+          return true;
+        },
+      }
+    );
   }
 }
 
@@ -307,16 +331,10 @@ function appendAccessorProperty_Scalar(
   const typedArray = data[layout.type];
   const typedOffset = byteOffset / typedArray.BYTES_PER_ELEMENT;
 
-  assert(
-    byteOffset % typedArray.BYTES_PER_ELEMENT === 0,
-    () =>
-      `final offset ${byteOffset} of a scalar accessor must be a multiple of its alignment ${typedArray.BYTES_PER_ELEMENT}`
-  );
-  assert(
-    byteOffset < typedArray.byteLength,
-    () =>
-      `final offset ${byteOffset} of a scalar accessor must be within the ArrayBuffer of size ${typedArray.byteLength} bytes`
-  );
+  /* prettier-ignore */ assert(byteOffset % typedArray.BYTES_PER_ELEMENT === 0,
+    () => `final offset ${byteOffset} of a scalar accessor must be a multiple of its alignment ${typedArray.BYTES_PER_ELEMENT}`);
+  /* prettier-ignore */ assert(byteOffset < typedArray.byteLength,
+    () => `final offset ${byteOffset} of a scalar accessor must be within the ArrayBuffer of size ${typedArray.byteLength} bytes`);
 
   Object.defineProperty(o, k, {
     enumerable: true,
@@ -404,18 +422,15 @@ export class StructuredAccessorFactory<T extends TypeDescriptor> {
   readonly layout: TypeLayout;
 
   constructor(desc: T) {
-    this.layout = layOutType(desc);
+    this.layout = computeTypeLayout(desc);
   }
 
   create(
     buffer: ArrayBuffer,
     baseOffset: number = 0
   ): StructuredAccessor<ResolveType<Accessor<T>>> {
-    assert(
-      this.layout.minByteSize <= buffer.byteLength - baseOffset,
-      () =>
-        `Accessor requires ${this.layout.minByteSize} bytes past ${baseOffset}, but ArrayBuffer is ${buffer.byteLength} bytes`
-    );
+    /* prettier-ignore */ assert(this.layout.minByteSize <= buffer.byteLength - baseOffset,
+      () => `Accessor requires ${this.layout.minByteSize} bytes past ${baseOffset}, but ArrayBuffer is ${buffer.byteLength} bytes`);
     const backing = allTypedArrays(buffer);
 
     // Make a wrappedAccessor (.value) but then add some more helpful properties to it.
