@@ -30,7 +30,8 @@ interface TypeDescriptor_Struct {
   readonly struct: {
     readonly [k: string]: DescStructMember;
   };
-  // TODO: Need a way to set alignment/size on struct as a whole to define vec3, etc.
+  readonly align?: number;
+  readonly size?: number;
 }
 // TODO: make DescStructMemberInfo optional, with defaulting behaviors
 type DescStructMember = readonly [TypeDescriptor, DescStructMemberInfo?];
@@ -138,8 +139,8 @@ function computeTypeLayout_Array(desc: TypeDescriptor_Array): TypeLayout_Array {
 }
 
 function computeTypeLayout_Struct(desc: TypeDescriptor_Struct): TypeLayout_Struct {
-  let minByteSize = 0;
-  let minByteAlign = 1;
+  let computedMinByteSize = 0;
+  let computedMinByteAlign = 1;
   let totalSize: number | 'unsized' = 0;
   const members: LayoutStruct_Member[] = [];
 
@@ -174,12 +175,24 @@ function computeTypeLayout_Struct(desc: TypeDescriptor_Struct): TypeLayout_Struc
       totalSize = 'unsized';
     } else {
       totalSize = memberOffset + memberSize;
-      minByteSize = totalSize;
+      computedMinByteSize = totalSize;
     }
     // Note minByteAlign is set to type.minByteAlign, not to memberAlign.
-    minByteAlign = Math.max(minByteAlign, type.minByteAlign);
+    computedMinByteAlign = Math.max(computedMinByteAlign, type.minByteAlign);
     prevName = name;
   }
+
+  if (desc.align !== undefined) {
+    /* prettier-ignore */ assert(desc.align % computedMinByteAlign === 0,
+      () => `Struct has explicit alignment ${desc.align} that does not align to required alignment ${computedMinByteAlign}`);
+  }
+  const minByteAlign = desc.align ?? computedMinByteAlign;
+
+  if (desc.size !== undefined) {
+    /* prettier-ignore */ assert(desc.size >= computedMinByteSize,
+      () => `Struct has explicit size ${desc.size} that is smaller than required size ${computedMinByteSize}`);
+  }
+  const minByteSize = desc.size ?? computedMinByteSize;
 
   return { minByteSize, minByteAlign, unsized: totalSize === 'unsized', members };
 }
