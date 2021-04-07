@@ -8,14 +8,12 @@ function assert(condition: boolean, msg: () => string): asserts condition {
   if (!condition) throw new Error(msg());
 }
 
-/** Forces a type to resolve its type definitions, to make it readable/debuggable. */
-type ResolveType<T> = T extends object
-  ? T extends infer O
-    ? { [K in keyof O]: ResolveType<O[K]> }
-    : never
-  : T;
 /** Use as `InferSubtypeOf<Supertype, infer Subtype>` to constrain a type `infer`ence. */
 type InferSubtypeOf<TBase, T extends TBase> = T;
+/** Forces a type to resolve its type definitions, to make it readable/debuggable. */
+type ResolveType<T> = T extends InferSubtypeOf<object, infer O>
+  ? { [K in keyof O]: ResolveType<O[K]> }
+  : T;
 
 // Type Descriptors
 
