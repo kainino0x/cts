@@ -482,6 +482,28 @@ export class StructuredAccessorFactory<T extends TypeDescriptor> {
   }
 }
 
+// Vectors and matrices
+
+export const wgsl = {
+  vec3<T extends 'i32' | 'u32' | 'f32'>(component: T) {
+    return {
+      struct: {
+        0: [component, { offset: 0 }],
+        1: [component, { offset: 4 }],
+        2: [component, { offset: 8 }],
+        x: [component, { offset: 0 }],
+        y: [component, { offset: 4 }],
+        z: [component, { offset: 8 }],
+        r: [component, { offset: 0 }],
+        g: [component, { offset: 4 }],
+        b: [component, { offset: 8 }],
+      },
+      align: 16,
+      size: 12,
+    } as const;
+  },
+} as const;
+
 // Tests
 
 const ab = new ArrayBuffer(32);
@@ -495,7 +517,7 @@ const _2 = new StructuredAccessorFactory({
 }).create(ab);
 const _3 = new StructuredAccessorFactory({
   struct: {
-    x: ['i32'], //
+    x: [wgsl.vec3('i32')], //
   },
 }).create(ab);
 const _4 = new StructuredAccessorFactory({
