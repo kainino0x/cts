@@ -33,7 +33,6 @@ interface TypeDescriptor_Struct {
   readonly align?: number;
   readonly size?: number;
 }
-// TODO: make DescStructMemberInfo optional, with defaulting behaviors
 type DescStructMember = readonly [TypeDescriptor, DescStructMemberInfo?];
 interface DescStructMemberInfo {
   readonly offset?: number;
@@ -42,7 +41,6 @@ interface DescStructMemberInfo {
 }
 
 interface TypeDescriptor_Array {
-  // TODO: make DescArrayInfo optional, with defaulting behaviors
   readonly array: readonly [TypeDescriptor, number | 'unsized', DescArrayInfo?];
 }
 interface DescArrayInfo {
@@ -101,10 +99,10 @@ function computeTypeLayout(desc: TypeDescriptor): TypeLayout {
 }
 
 function computeTypeLayout_Scalar(desc: TypeDescriptor_Scalar): TypeLayout_Scalar {
-  const arrayType = kTypedArrayConstructors[desc];
+  const typedArrayConstructor = kTypedArrayConstructors[desc];
   return {
-    minByteSize: arrayType.BYTES_PER_ELEMENT,
-    minByteAlign: arrayType.BYTES_PER_ELEMENT,
+    minByteSize: typedArrayConstructor.BYTES_PER_ELEMENT,
+    minByteAlign: typedArrayConstructor.BYTES_PER_ELEMENT,
     unsized: false,
     type: desc,
   };
@@ -492,31 +490,32 @@ const ab = new ArrayBuffer(32);
 
 const _0 = new StructuredAccessorFactory('i32').create(ab);
 const _1 = new StructuredAccessorFactory({
-  array: ['i32', 2, { stride: 4 }], //
+  array: ['i32', 2], //
 }).create(ab);
 const _2 = new StructuredAccessorFactory({
   struct: {}, //
 }).create(ab);
 const _3 = new StructuredAccessorFactory({
   struct: {
-    x: ['i32', { offset: 0 }], //
+    x: ['i32'], //
   },
 }).create(ab);
 const _4 = new StructuredAccessorFactory({
   struct: {
-    x: ['i32', { offset: 0 }],
-    y: ['i8', { size: 1, align: 4 }], //
+    x: ['i8', { size: 1, align: 4 }], //
+    y: ['i32', { offset: 4 }],
+    z: ['i8', { size: 1, align: 4 }],
   },
 }).create(ab);
 const _5 = new StructuredAccessorFactory({
   struct: {
-    x: [{ array: ['i32', 2, { stride: 4 }] }, { offset: 0 }], //
+    x: [{ array: ['i32', 2, { stride: 4 }] }], //
   },
 }).create(ab);
 
 const _6 = new StructuredAccessorFactory({
   struct: {
-    x: [{ array: ['i32', 'unsized', { stride: 4 }] }, { offset: 0 }], //
+    x: [{ array: ['i32', 'unsized'] }], //
   },
 }).create(ab, 16);
 const _7 = new StructuredAccessorFactory({
@@ -526,14 +525,12 @@ const _7 = new StructuredAccessorFactory({
         array: [
           {
             struct: {
-              w: ['i64', { offset: 0 }], //
+              w: ['i64'], //
             },
           },
           'unsized',
-          { stride: 8 },
         ],
       },
-      { offset: 0 },
     ],
   },
 }).create(ab, 16);
