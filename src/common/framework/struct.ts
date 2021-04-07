@@ -85,18 +85,23 @@ type TypeLayout_Array = {
   readonly elementType: TypeLayout;
 };
 
-// TODO: provide defaulting rules (WGSL, GLSL std140/std430/scalar, C?)
-function computeTypeLayout(desc: TypeDescriptor): TypeLayout {
+// TODO: provide more defaulting rules (GLSL std140/std430, C?)
+type LayoutRules = 'wgsl' | 'glsl_scalar';
+
+function computeTypeLayout(desc: TypeDescriptor, rules: LayoutRules): TypeLayout {
   if (typeof desc === 'string') {
-    return computeTypeLayout_Scalar(desc);
+    return computeTypeLayout_Scalar(desc, rules);
   } else if ('array' in desc) {
-    return computeTypeLayout_Array(desc);
+    return computeTypeLayout_Array(desc, rules);
   } else {
-    return computeTypeLayout_Struct(desc);
+    return computeTypeLayout_Struct(desc, rules);
   }
 }
 
-function computeTypeLayout_Scalar(desc: TypeDescriptor_Scalar): TypeLayout_Scalar {
+function computeTypeLayout_Scalar(
+  desc: TypeDescriptor_Scalar,
+  rules: LayoutRules
+): TypeLayout_Scalar {
   const typedArrayConstructor = kTypedArrayConstructors[desc];
   return {
     minByteSize: typedArrayConstructor.BYTES_PER_ELEMENT,
@@ -106,9 +111,31 @@ function computeTypeLayout_Scalar(desc: TypeDescriptor_Scalar): TypeLayout_Scala
   };
 }
 
-function computeTypeLayout_Array(desc: TypeDescriptor_Array): TypeLayout_Array {
+function computeArraySize(
+  rules: LayoutRules,
+  {
+    arrayLength,
+    byteStride,
+    elementSize,
+  }: {
+    arrayLength: number | 'unsized';
+    byteStride: number;
+    elementSize: number;
+  }
+): number {
+  switch (rules) {
+    case 'wgsl':
+      return arrayLength === 'unsized' || arrayLength === 0 ? 0 : arrayLength * byteStride;
+    case 'glsl_scalar':
+      return arrayLength === 'unsized' || arrayLength === 0
+        ? 0
+        : (arrayLength - 1) * byteStride + elementSize;
+  }
+}
+
+function computeTypeLayout_Array(desc: TypeDescriptor_Array, rules: LayoutRules): TypeLayout_Array {
   const [elementDesc, arrayLength, info] = desc.array;
-  const elementType = computeTypeLayout(elementDesc);
+  const elementType = computeTypeLayout(elementDesc, rules);
 
   if (info?.stride !== undefined) {
     assert(!elementType.unsized, () => 'Array element types must be sized');
@@ -120,10 +147,11 @@ function computeTypeLayout_Array(desc: TypeDescriptor_Array): TypeLayout_Array {
   const byteStride = info?.stride ?? align(elementType.minByteSize, elementType.minByteAlign);
 
   const unsized = arrayLength === 'unsized';
-  const minByteSize =
-    arrayLength === 'unsized' || arrayLength === 0
-      ? 0
-      : (arrayLength - 1) * byteStride + elementType.minByteSize;
+  const minByteSize = computeArraySize(rules, {
+    arrayLength,
+    byteStride,
+    elementSize: elementType.minByteSize,
+  });
   return {
     minByteSize,
     minByteAlign: elementType.minByteAlign,
@@ -134,7 +162,32 @@ function computeTypeLayout_Array(desc: TypeDescriptor_Array): TypeLayout_Array {
   };
 }
 
-function computeTypeLayout_Struct(desc: TypeDescriptor_Struct): TypeLayout_Struct {
+function computeStructSize(
+  rules: LayoutRules,
+  {
+    structAlign,
+    structExplicitSize,
+    computedMinByteSize,
+  }: {
+    structAlign: number;
+    structExplicitSize: number | undefined;
+    computedMinByteSize: number;
+  }
+): number {
+  switch (rules) {
+    case 'wgsl':
+      // Would check that `structExplicitSize % structAlign === 0` here, but that prevents defining
+      // `vec3` for which that is not true.
+      return structExplicitSize ?? align(computedMinByteSize, structAlign);
+    case 'glsl_scalar':
+      return structExplicitSize ?? computedMinByteSize;
+  }
+}
+
+function computeTypeLayout_Struct(
+  desc: TypeDescriptor_Struct,
+  rules: LayoutRules
+): TypeLayout_Struct {
   let computedMinByteSize = 0;
   let computedMinByteAlign = 1;
   let totalSize: number | 'unsized' = 0;
@@ -142,7 +195,7 @@ function computeTypeLayout_Struct(desc: TypeDescriptor_Struct): TypeLayout_Struc
 
   let prevName: string | undefined;
   for (const [name, [typeDesc, info]] of Object.entries(desc.struct)) {
-    const type = computeTypeLayout(typeDesc);
+    const type = computeTypeLayout(typeDesc, rules);
 
     if (info?.align !== undefined) {
       /* prettier-ignore */ assert(info.align % type.minByteAlign === 0,
@@ -188,7 +241,11 @@ function computeTypeLayout_Struct(desc: TypeDescriptor_Struct): TypeLayout_Struc
     /* prettier-ignore */ assert(desc.size >= computedMinByteSize,
       () => `Struct has explicit size ${desc.size} that is smaller than required size ${computedMinByteSize}`);
   }
-  const minByteSize = desc.size ?? computedMinByteSize;
+  const minByteSize = computeStructSize(rules, {
+    structAlign: minByteAlign,
+    structExplicitSize: desc.size,
+    computedMinByteSize,
+  });
 
   return { minByteSize, minByteAlign, unsized: totalSize === 'unsized', members };
 }
@@ -458,8 +515,8 @@ interface StructuredAccessor<T extends Accessor<TypeDescriptor>> {
 export class StructuredAccessorFactory<T extends TypeDescriptor> {
   readonly layout: TypeLayout;
 
-  constructor(desc: T) {
-    this.layout = computeTypeLayout(desc);
+  constructor(desc: T, rules: LayoutRules = 'wgsl') {
+    this.layout = computeTypeLayout(desc, rules);
   }
 
   create(
