@@ -14,9 +14,12 @@ type ResolveType<T> = T extends object
     ? { [K in keyof O]: ResolveType<O[K]> }
     : never
   : T;
+/** Use as `InferSubtypeOf<Supertype, infer Subtype>` to constrain a type `infer`ence. */
+type InferSubtypeOf<TBase, T extends TBase> = T;
 
-// Type Descriptors (how the user specifies the type layout)
+// Type Descriptors
 
+/** User-provided description of a structured datatype */
 type TypeDescriptor = TypeDescriptor_Scalar | TypeDescriptor_Struct | TypeDescriptor_Array;
 
 type TypeDescriptor_Scalar = TypeDescriptor_Number | TypeDescriptor_BigInt;
@@ -45,8 +48,9 @@ interface DescArrayInfo {
   readonly stride?: number;
 }
 
-// Type Layouts (concrete layout generated from the type descriptor)
+// Type Layouts
 
+/** Concrete layout computed from the TypeDescriptor */
 type TypeLayout = TypeLayout_Scalar | TypeLayout_Struct | TypeLayout_Array;
 
 type TypeLayout_Scalar = TypeLayout_Number | TypeLayout_BigInt;
@@ -96,7 +100,7 @@ function computeTypeLayout(desc: TypeDescriptor): TypeLayout {
 }
 
 function computeTypeLayout_Scalar(desc: TypeDescriptor_Scalar): TypeLayout_Scalar {
-  const arrayType = kTypedArrayTypes[desc];
+  const arrayType = kTypedArrayConstructors[desc];
   return {
     minByteSize: arrayType.BYTES_PER_ELEMENT,
     minByteAlign: arrayType.BYTES_PER_ELEMENT,
@@ -182,6 +186,7 @@ function computeTypeLayout_Struct(desc: TypeDescriptor_Struct): TypeLayout_Struc
 
 // Inner accessor interfaces
 
+/** TS type of a member whose structured type is described by T */
 type Accessor<T extends TypeDescriptor> = T extends TypeDescriptor_Number
   ? number
   : T extends TypeDescriptor_BigInt
@@ -192,9 +197,8 @@ type Accessor<T extends TypeDescriptor> = T extends TypeDescriptor_Number
   ? Accessor_Struct<T>
   : 'ERROR: TypeDescriptor was not a TypeDescriptor';
 
-type InferHelper<T extends TBase, TBase> = T;
 type Accessor_Struct<T extends TypeDescriptor_Struct> = {
-  [K in keyof T['struct']]: T['struct'][K][0] extends InferHelper<infer TMember, TypeDescriptor>
+  [K in keyof T['struct']]: T['struct'][K][0] extends InferSubtypeOf<TypeDescriptor, infer TMember>
     ? Accessor<TMember>
     : 'ERROR: Struct Member was not a GenericMember<T>';
 };
@@ -207,7 +211,12 @@ type Accessor_Array<T extends TypeDescriptor_Array> = {
     : 'ERROR: ArrayDescriptor was not an ArrayDescriptor';
 };
 
-function makeWrappedAccessor(data: AllTypedArrays, baseOffset: number, layout: TypeLayout): object {
+/** Make an accessor that is wrapped in one extra `.value` layer so scalar types can be settable. */
+function makeWrappedAccessor(
+  data: AllTypedArrays,
+  baseOffset: number,
+  layout: TypeLayout
+): Accessor<TypeDescriptor> {
   return makeAccessor_Struct(data, baseOffset, {
     minByteSize: layout.minByteSize,
     minByteAlign: layout.minByteAlign,
@@ -216,7 +225,11 @@ function makeWrappedAccessor(data: AllTypedArrays, baseOffset: number, layout: T
   });
 }
 
-function makeAccessor(data: AllTypedArrays, baseOffset: number, layout: TypeLayout): object {
+function makeAccessor(
+  data: AllTypedArrays,
+  baseOffset: number,
+  layout: TypeLayout
+): Accessor<TypeDescriptor> {
   if ('members' in layout) {
     return makeAccessor_Struct(data, baseOffset, layout);
   } else if ('elementType' in layout) {
@@ -230,7 +243,7 @@ function makeAccessor_Struct(
   data: AllTypedArrays,
   baseOffset: number,
   layout: TypeLayout_Struct
-): object {
+): Accessor_Struct<TypeDescriptor_Struct> {
   const o = {};
   for (const member of layout.members) {
     appendAccessorProperty(o, member.name, data, baseOffset + member.byteOffset, member.type);
@@ -242,7 +255,7 @@ function makeAccessor_Array(
   data: AllTypedArrays,
   baseOffset: number,
   layout: TypeLayout_Array
-): object {
+): Accessor_Array<TypeDescriptor_Array> {
   if (layout.arrayLength === 'unsized') {
     return makeAccessor_UnsizedArray(data, baseOffset, layout);
   } else {
@@ -258,10 +271,11 @@ function makeAccessor_UnsizedArray(
   data: AllTypedArrays,
   baseOffset: number,
   layout: TypeLayout_Array
-): object {
+): Accessor_Array<TypeDescriptor_Array> {
   const elementType = layout.elementType;
 
-  const getAccessor = (target: any, index: number) => {
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  const getAccessor = (target: { [k: number]: any }, index: number) => {
     let accessor = target[index];
     if (accessor === undefined) {
       // Use a wrappedAccessor always (requiring .value) to simplify things with inlined scalars
@@ -278,6 +292,7 @@ function makeAccessor_UnsizedArray(
     return new Proxy(
       {},
       {
+        /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
         get(target: { [k: string]: any }, prop: string) {
           const index = parseInt(prop);
           if (!(index >= 0)) return target[prop];
@@ -289,7 +304,8 @@ function makeAccessor_UnsizedArray(
     return new Proxy(
       {},
       {
-        get(target: { [k: string]: unknown }, prop: string): unknown {
+        /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+        get(target: { [k: string]: any }, prop: string): any {
           const index = parseInt(prop);
           if (!(index >= 0)) return target[prop];
           return getAccessor(target, index).value;
@@ -305,7 +321,7 @@ function makeAccessor_UnsizedArray(
   }
 }
 
-// Helpers for defining properties
+// Helpers for defining properties in makeAccessor
 
 function appendAccessorProperty(
   o: object,
@@ -365,7 +381,8 @@ function appendAccessorProperty_NonScalar(
 
 // TypedArray stuff
 
-const kTypedArrayTypes = {
+/** All `TypedArray` constructors (indexable by `TypeDescriptor_Scalar`). */
+const kTypedArrayConstructors = {
   i8: Int8Array,
   u8: Uint8Array,
   i16: Int16Array,
@@ -378,6 +395,7 @@ const kTypedArrayTypes = {
   u64: BigUint64Array,
 };
 
+/** An `ArrayBuffer` and every type of `TypedArray` pointing at it. */
 interface AllTypedArrays {
   arrayBuffer: ArrayBuffer;
   i8: Int8Array;
@@ -411,13 +429,23 @@ function allTypedArrays(ab: ArrayBuffer): AllTypedArrays {
 
 // Accessor factory
 
+/** A structured accessor allowing structured read/write access to a section of an `ArrayBuffer`. */
 interface StructuredAccessor<T extends Accessor<TypeDescriptor>> {
+  /** Root property (getter/setter) for the structured accessor. */
   value: T;
+  /** TypeLayout computed from the given TypeDescriptor. */
   readonly layout: TypeLayout;
+  /** ArrayBuffer and TypedArrays of all types for the given ArrayBuffer. */
   readonly backing: AllTypedArrays;
+  /** The provided base offset into the ArrayBuffer. */
   readonly baseOffset: number;
 }
 
+/**
+ * Factory for StructuredAccessors of a particular TypeDescriptor.
+ * Construct this once for each structured type, then use `.create()` to point it at parts of
+ * `ArrayBuffer`s.
+ */
 export class StructuredAccessorFactory<T extends TypeDescriptor> {
   readonly layout: TypeLayout;
 
@@ -434,12 +462,13 @@ export class StructuredAccessorFactory<T extends TypeDescriptor> {
     const backing = allTypedArrays(buffer);
 
     // Make a wrappedAccessor (.value) but then add some more helpful properties to it.
-    const root = makeWrappedAccessor(backing, baseOffset, this.layout) as object;
+    const root = makeWrappedAccessor(backing, baseOffset, this.layout);
     Object.defineProperties(root, {
       layout: { enumerable: true, get: () => this.layout },
       backing: { enumerable: true, get: () => backing },
       baseOffset: { enumerable: true, get: () => baseOffset },
     });
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     return root as any;
   }
 }
