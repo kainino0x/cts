@@ -1,0 +1,347 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>webgpu/util/texture/texel_data | @webgpu/cts</title>
+	<meta name="description" content="Documentation for @webgpu/cts">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+	<script async src="../assets/js/search.js" id="search-script"></script>
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">@webgpu/cts</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../modules.html">@webgpu/cts</a>
+				</li>
+				<li>
+					<a href="webgpu_util_texture_texel_data.html">webgpu/util/texture/texel_data</a>
+				</li>
+			</ul>
+			<h1>Module webgpu/util/texture/texel_data</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Enumerations</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-enum tsd-parent-kind-module"><a href="../enums/webgpu_util_texture_texel_data.texelcomponent.html" class="tsd-kind-icon">Texel<wbr>Component</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Type aliases</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="webgpu_util_texture_texel_data.html#componentdatatype" class="tsd-kind-icon">Component<wbr>Data<wbr>Type</a></li>
+								<li class="tsd-kind-type-alias tsd-parent-kind-module tsd-has-type-parameter"><a href="webgpu_util_texture_texel_data.html#pertexelcomponent" class="tsd-kind-icon">Per<wbr>Texel<wbr>Component</a></li>
+								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="webgpu_util_texture_texel_data.html#texelrepresentationinfo" class="tsd-kind-icon">Texel<wbr>Representation<wbr>Info</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Variables</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-variable tsd-parent-kind-module"><a href="webgpu_util_texture_texel_data.html#ktexelrepresentationinfo" class="tsd-kind-icon">k<wbr>Texel<wbr>Representation<wbr>Info</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Functions</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_texture_texel_data.html#getcomponentreadbacktraits" class="tsd-kind-icon">get<wbr>Component<wbr>Readback<wbr>Traits</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_texture_texel_data.html#getsingledatatype" class="tsd-kind-icon">get<wbr>Single<wbr>Data<wbr>Type</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Type aliases</h2>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module">
+					<a name="componentdatatype" class="tsd-anchor"></a>
+					<h3>Component<wbr>Data<wbr>Type</h3>
+					<div class="tsd-signature tsd-kind-icon">Component<wbr>Data<wbr>Type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;uint&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;sint&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;unorm&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;snorm&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;float&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;ufloat&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/texture/texel_data.ts#L28">src/webgpu/util/texture/texel_data.ts:28</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>How a component is encoded in its bit range of a texel format.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module tsd-has-type-parameter">
+					<a name="pertexelcomponent" class="tsd-anchor"></a>
+					<h3>Per<wbr>Texel<wbr>Component</h3>
+					<div class="tsd-signature tsd-kind-icon">Per<wbr>Texel<wbr>Component&lt;T&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{</span><span class="tsd-signature-symbol">[ </span><span class="tsd-signature-type">c</span><span class="tsd-signature-symbol"> in </span><a href="../enums/webgpu_util_texture_texel_data.texelcomponent.html" class="tsd-signature-type" data-tsd-kind="Enumeration">TexelComponent</a><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol"> }</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/texture/texel_data.ts#L25">src/webgpu/util/texture/texel_data.ts:25</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Arbitrary data, per component of a texel format.</p>
+						</div>
+					</div>
+					<h4 class="tsd-type-parameters-title">Type parameters</h4>
+					<ul class="tsd-type-parameters">
+						<li>
+							<h4>T</h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module">
+					<a name="texelrepresentationinfo" class="tsd-anchor"></a>
+					<h3>Texel<wbr>Representation<wbr>Info</h3>
+					<div class="tsd-signature tsd-kind-icon">Texel<wbr>Representation<wbr>Info<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>componentInfo<span class="tsd-signature-symbol">: </span><a href="webgpu_util_texture_texel_data.html#pertexelcomponent" class="tsd-signature-type" data-tsd-kind="Type alias">PerTexelComponent</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span>bitLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>dataType<span class="tsd-signature-symbol">: </span><a href="webgpu_util_texture_texel_data.html#componentdatatype" class="tsd-signature-type" data-tsd-kind="Type alias">ComponentDataType</a><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">; </span>componentOrder<span class="tsd-signature-symbol">: </span><a href="../enums/webgpu_util_texture_texel_data.texelcomponent.html" class="tsd-signature-type" data-tsd-kind="Enumeration">TexelComponent</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">; </span>decode<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ComponentMapFn</span><span class="tsd-signature-symbol">; </span>encode<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ComponentMapFn</span><span class="tsd-signature-symbol">; </span>pack<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ComponentPackFn</span><span class="tsd-signature-symbol"> }</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/texture/texel_data.ts#L351">src/webgpu/util/texture/texel_data.ts:351</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter">
+								<h5><span class="tsd-flag ts-flagReadonly">Readonly</span> component<wbr>Info<span class="tsd-signature-symbol">: </span><a href="webgpu_util_texture_texel_data.html#pertexelcomponent" class="tsd-signature-type" data-tsd-kind="Type alias">PerTexelComponent</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span>bitLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>dataType<span class="tsd-signature-symbol">: </span><a href="webgpu_util_texture_texel_data.html#componentdatatype" class="tsd-signature-type" data-tsd-kind="Type alias">ComponentDataType</a><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Data type and bit length of each component in the format.</p>
+									</div>
+								</div>
+							</li>
+							<li class="tsd-parameter">
+								<h5><span class="tsd-flag ts-flagReadonly">Readonly</span> component<wbr>Order<span class="tsd-signature-symbol">: </span><a href="../enums/webgpu_util_texture_texel_data.texelcomponent.html" class="tsd-signature-type" data-tsd-kind="Enumeration">TexelComponent</a><span class="tsd-signature-symbol">[]</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Order of components in the packed representation.</p>
+									</div>
+								</div>
+							</li>
+							<li class="tsd-parameter">
+								<h5><span class="tsd-flag ts-flagReadonly">Readonly</span> decode<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ComponentMapFn</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Decode the data representation into the shader values. ex.) unorm8 255 -&gt; float 1.0</p>
+									</div>
+								</div>
+							</li>
+							<li class="tsd-parameter">
+								<h5><span class="tsd-flag ts-flagReadonly">Readonly</span> encode<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ComponentMapFn</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Encode shader values into their data representation. ex.) float 1.0 -&gt; unorm8 255</p>
+									</div>
+								</div>
+							</li>
+							<li class="tsd-parameter">
+								<h5><span class="tsd-flag ts-flagReadonly">Readonly</span> pack<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ComponentPackFn</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Pack texel component values into an ArrayBuffer. ex.) rg8unorm {r: 0, g:255} -&gt; 0xFF00</p>
+									</div>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Variables</h2>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module">
+					<a name="ktexelrepresentationinfo" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> k<wbr>Texel<wbr>Representation<wbr>Info</h3>
+					<div class="tsd-signature tsd-kind-icon">k<wbr>Texel<wbr>Representation<wbr>Info<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{</span><span class="tsd-signature-symbol">readonly </span><span class="tsd-signature-symbol">[ </span><span class="tsd-signature-type">k</span><span class="tsd-signature-symbol"> in </span><a href="webgpu_capability_info.html#uncompressedtextureformat" class="tsd-signature-type" data-tsd-kind="Type alias">UncompressedTextureFormat</a><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">?: </span><a href="webgpu_util_texture_texel_data.html#texelrepresentationinfo" class="tsd-signature-type" data-tsd-kind="Type alias">TexelRepresentationInfo</a><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> = ...</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/texture/texel_data.ts#L367">src/webgpu/util/texture/texel_data.ts:367</a></li>
+						</ul>
+					</aside>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Functions</h2>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="getcomponentreadbacktraits" class="tsd-anchor"></a>
+					<h3>get<wbr>Component<wbr>Readback<wbr>Traits</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Component<wbr>Readback<wbr>Traits<span class="tsd-signature-symbol">(</span>dataType<span class="tsd-signature-symbol">: </span><a href="webgpu_util_texture_texel_data.html#componentdatatype" class="tsd-signature-type" data-tsd-kind="Type alias">ComponentDataType</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>ReadbackTypedArray<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Float32ArrayConstructor</span><span class="tsd-signature-symbol">; </span>shaderType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;f32&quot;</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>ReadbackTypedArray<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Uint32ArrayConstructor</span><span class="tsd-signature-symbol">; </span>shaderType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;u32&quot;</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>ReadbackTypedArray<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Int32ArrayConstructor</span><span class="tsd-signature-symbol">; </span>shaderType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;i32&quot;</span><span class="tsd-signature-symbol"> }</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/texture/texel_data.ts#L620">src/webgpu/util/texture/texel_data.ts:620</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p> Get traits for generating code to readback data from a component.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>dataType: <a href="webgpu_util_texture_texel_data.html#componentdatatype" class="tsd-signature-type" data-tsd-kind="Type alias">ComponentDataType</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The input component data type.</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-symbol">{ </span>ReadbackTypedArray<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Float32ArrayConstructor</span><span class="tsd-signature-symbol">; </span>shaderType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;f32&quot;</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>ReadbackTypedArray<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Uint32ArrayConstructor</span><span class="tsd-signature-symbol">; </span>shaderType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;u32&quot;</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>ReadbackTypedArray<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Int32ArrayConstructor</span><span class="tsd-signature-symbol">; </span>shaderType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">&quot;i32&quot;</span><span class="tsd-signature-symbol"> }</span></h4>
+							<p>A dictionary containing the respective <code>ReadbackTypedArray</code> and <code>shaderType</code>.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="getsingledatatype" class="tsd-anchor"></a>
+					<h3>get<wbr>Single<wbr>Data<wbr>Type</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Single<wbr>Data<wbr>Type<span class="tsd-signature-symbol">(</span>format<span class="tsd-signature-symbol">: </span><a href="webgpu_capability_info.html#uncompressedtextureformat" class="tsd-signature-type" data-tsd-kind="Type alias">UncompressedTextureFormat</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="webgpu_util_texture_texel_data.html#componentdatatype" class="tsd-signature-type" data-tsd-kind="Type alias">ComponentDataType</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/texture/texel_data.ts#L605">src/webgpu/util/texture/texel_data.ts:605</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get the <code>ComponentDataType</code> for a format. All components must have the same type.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>format: <a href="webgpu_capability_info.html#uncompressedtextureformat" class="tsd-signature-type" data-tsd-kind="Type alias">UncompressedTextureFormat</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The input format.</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="webgpu_util_texture_texel_data.html#componentdatatype" class="tsd-signature-type" data-tsd-kind="Type alias">ComponentDataType</a></h4>
+							<p>The data of the components.</p>
+						</li>
+					</ul>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class=" ">
+						<a href="../modules.html">Modules</a>
+					</li>
+					<li class="current tsd-kind-module">
+						<a href="webgpu_util_texture_texel_data.html">webgpu/util/texture/texel_<wbr>data</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-enum tsd-parent-kind-module">
+						<a href="../enums/webgpu_util_texture_texel_data.texelcomponent.html" class="tsd-kind-icon">Texel<wbr>Component</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="webgpu_util_texture_texel_data.html#componentdatatype" class="tsd-kind-icon">Component<wbr>Data<wbr>Type</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module tsd-has-type-parameter">
+						<a href="webgpu_util_texture_texel_data.html#pertexelcomponent" class="tsd-kind-icon">Per<wbr>Texel<wbr>Component</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="webgpu_util_texture_texel_data.html#texelrepresentationinfo" class="tsd-kind-icon">Texel<wbr>Representation<wbr>Info</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module">
+						<a href="webgpu_util_texture_texel_data.html#ktexelrepresentationinfo" class="tsd-kind-icon">k<wbr>Texel<wbr>Representation<wbr>Info</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_texture_texel_data.html#getcomponentreadbacktraits" class="tsd-kind-icon">get<wbr>Component<wbr>Readback<wbr>Traits</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_texture_texel_data.html#getsingledatatype" class="tsd-kind-icon">get<wbr>Single<wbr>Data<wbr>Type</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-namespace"><span class="tsd-kind-icon">Namespace</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,837 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>webgpu/shader/types | @webgpu/cts</title>
+	<meta name="description" content="Documentation for @webgpu/cts">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+	<script async src="../assets/js/search.js" id="search-script"></script>
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">@webgpu/cts</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../modules.html">@webgpu/cts</a>
+				</li>
+				<li>
+					<a href="webgpu_shader_types.html">webgpu/shader/types</a>
+				</li>
+			</ul>
+			<h1>Module webgpu/shader/types</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Type aliases</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="webgpu_shader_types.html#containertype" class="tsd-kind-icon">Container<wbr>Type</a></li>
+								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="webgpu_shader_types.html#scalartype" class="tsd-kind-icon">Scalar<wbr>Type</a></li>
+								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="webgpu_shader_types.html#storageclass" class="tsd-kind-icon">Storage<wbr>Class</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Variables</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-variable tsd-parent-kind-module"><a href="webgpu_shader_types.html#hostsharabletypes" class="tsd-kind-icon">Host<wbr>Sharable<wbr>Types</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-module"><a href="webgpu_shader_types.html#kmatrixcontainertypeinfo" class="tsd-kind-icon">k<wbr>Matrix<wbr>Container<wbr>Type<wbr>Info</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-module"><a href="webgpu_shader_types.html#kmatrixcontainertypes" class="tsd-kind-icon">k<wbr>Matrix<wbr>Container<wbr>Types</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-module"><a href="webgpu_shader_types.html#kscalartypeinfo" class="tsd-kind-icon">k<wbr>Scalar<wbr>Type<wbr>Info</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-module"><a href="webgpu_shader_types.html#kscalartypes" class="tsd-kind-icon">k<wbr>Scalar<wbr>Types</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-module"><a href="webgpu_shader_types.html#kvectorcontainertypeinfo" class="tsd-kind-icon">k<wbr>Vector<wbr>Container<wbr>Type<wbr>Info</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-module"><a href="webgpu_shader_types.html#kvectorcontainertypes" class="tsd-kind-icon">k<wbr>Vector<wbr>Container<wbr>Types</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Functions</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_shader_types.html#generatetypes" class="tsd-kind-icon">generate<wbr>Types</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_shader_types.html#supportedscalartypes" class="tsd-kind-icon">supported<wbr>Scalar<wbr>Types</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_shader_types.html#supportsatomics-4" class="tsd-kind-icon">supports<wbr>Atomics</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Type aliases</h2>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module">
+					<a name="containertype" class="tsd-anchor"></a>
+					<h3>Container<wbr>Type</h3>
+					<div class="tsd-signature tsd-kind-icon">Container<wbr>Type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;scalar&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;vector&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;matrix&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;atomic&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;array&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/shader/types.ts#L7">src/webgpu/shader/types.ts:7</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module">
+					<a name="scalartype" class="tsd-anchor"></a>
+					<h3>Scalar<wbr>Type</h3>
+					<div class="tsd-signature tsd-kind-icon">Scalar<wbr>Type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;i32&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;u32&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;f32&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;bool&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/shader/types.ts#L8">src/webgpu/shader/types.ts:8</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module">
+					<a name="storageclass" class="tsd-anchor"></a>
+					<h3>Storage<wbr>Class</h3>
+					<div class="tsd-signature tsd-kind-icon">Storage<wbr>Class<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;storage&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;uniform&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;private&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;function&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;workgroup&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/shader/types.ts#L46">src/webgpu/shader/types.ts:46</a></li>
+						</ul>
+					</aside>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Variables</h2>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module">
+					<a name="hostsharabletypes" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> Host<wbr>Sharable<wbr>Types</h3>
+					<div class="tsd-signature tsd-kind-icon">Host<wbr>Sharable<wbr>Types<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">readonly </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">&quot;i32&quot;</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;u32&quot;</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;f32&quot;</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol"> = ...</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/shader/types.ts#L10">src/webgpu/shader/types.ts:10</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module">
+					<a name="kmatrixcontainertypeinfo" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> k<wbr>Matrix<wbr>Container<wbr>Type<wbr>Info</h3>
+					<div class="tsd-signature tsd-kind-icon">k<wbr>Matrix<wbr>Container<wbr>Type<wbr>Info<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>mat2x2<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>mat2x3<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">32</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>mat2x4<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">32</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>mat3x2<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">24</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>mat3x3<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">48</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>mat3x4<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">48</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>mat4x2<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">32</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>mat4x3<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">64</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>mat4x4<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">64</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> = ...</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/shader/types.ts#L32">src/webgpu/shader/types.ts:32</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Info for each matNxN&lt;&gt; container type.</p>
+						</div>
+					</div>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter">
+								<h5>mat2x2<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span></h5>
+								<ul class="tsd-parameters">
+									<li class="tsd-parameter">
+										<h5>array<wbr>Length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>inner<wbr>Length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol"> }</span></h5>
+										<ul class="tsd-parameters">
+											<li class="tsd-parameter">
+												<h5>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8</span></h5>
+											</li>
+											<li class="tsd-parameter">
+												<h5>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span></h5>
+											</li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+							<li class="tsd-parameter">
+								<h5>mat2x3<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">32</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span></h5>
+								<ul class="tsd-parameters">
+									<li class="tsd-parameter">
+										<h5>array<wbr>Length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>inner<wbr>Length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">32</span><span class="tsd-signature-symbol"> }</span></h5>
+										<ul class="tsd-parameters">
+											<li class="tsd-parameter">
+												<h5>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span></h5>
+											</li>
+											<li class="tsd-parameter">
+												<h5>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">32</span></h5>
+											</li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+							<li class="tsd-parameter">
+								<h5>mat2x4<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">32</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span></h5>
+								<ul class="tsd-parameters">
+									<li class="tsd-parameter">
+										<h5>array<wbr>Length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>inner<wbr>Length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">32</span><span class="tsd-signature-symbol"> }</span></h5>
+										<ul class="tsd-parameters">
+											<li class="tsd-parameter">
+												<h5>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span></h5>
+											</li>
+											<li class="tsd-parameter">
+												<h5>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">32</span></h5>
+											</li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+							<li class="tsd-parameter">
+								<h5>mat3x2<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">24</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span></h5>
+								<ul class="tsd-parameters">
+									<li class="tsd-parameter">
+										<h5>array<wbr>Length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>inner<wbr>Length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">24</span><span class="tsd-signature-symbol"> }</span></h5>
+										<ul class="tsd-parameters">
+											<li class="tsd-parameter">
+												<h5>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8</span></h5>
+											</li>
+											<li class="tsd-parameter">
+												<h5>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">24</span></h5>
+											</li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+							<li class="tsd-parameter">
+								<h5>mat3x3<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">48</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span></h5>
+								<ul class="tsd-parameters">
+									<li class="tsd-parameter">
+										<h5>array<wbr>Length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>inner<wbr>Length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">48</span><span class="tsd-signature-symbol"> }</span></h5>
+										<ul class="tsd-parameters">
+											<li class="tsd-parameter">
+												<h5>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span></h5>
+											</li>
+											<li class="tsd-parameter">
+												<h5>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">48</span></h5>
+											</li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+							<li class="tsd-parameter">
+								<h5>mat3x4<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">48</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span></h5>
+								<ul class="tsd-parameters">
+									<li class="tsd-parameter">
+										<h5>array<wbr>Length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>inner<wbr>Length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">48</span><span class="tsd-signature-symbol"> }</span></h5>
+										<ul class="tsd-parameters">
+											<li class="tsd-parameter">
+												<h5>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span></h5>
+											</li>
+											<li class="tsd-parameter">
+												<h5>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">48</span></h5>
+											</li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+							<li class="tsd-parameter">
+								<h5>mat4x2<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">32</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span></h5>
+								<ul class="tsd-parameters">
+									<li class="tsd-parameter">
+										<h5>array<wbr>Length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>inner<wbr>Length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">32</span><span class="tsd-signature-symbol"> }</span></h5>
+										<ul class="tsd-parameters">
+											<li class="tsd-parameter">
+												<h5>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8</span></h5>
+											</li>
+											<li class="tsd-parameter">
+												<h5>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">32</span></h5>
+											</li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+							<li class="tsd-parameter">
+								<h5>mat4x3<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">64</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span></h5>
+								<ul class="tsd-parameters">
+									<li class="tsd-parameter">
+										<h5>array<wbr>Length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>inner<wbr>Length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">64</span><span class="tsd-signature-symbol"> }</span></h5>
+										<ul class="tsd-parameters">
+											<li class="tsd-parameter">
+												<h5>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span></h5>
+											</li>
+											<li class="tsd-parameter">
+												<h5>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">64</span></h5>
+											</li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+							<li class="tsd-parameter">
+								<h5>mat4x4<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">64</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span></h5>
+								<ul class="tsd-parameters">
+									<li class="tsd-parameter">
+										<h5>array<wbr>Length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>inner<wbr>Length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">64</span><span class="tsd-signature-symbol"> }</span></h5>
+										<ul class="tsd-parameters">
+											<li class="tsd-parameter">
+												<h5>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span></h5>
+											</li>
+											<li class="tsd-parameter">
+												<h5>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">64</span></h5>
+											</li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module">
+					<a name="kmatrixcontainertypes" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> k<wbr>Matrix<wbr>Container<wbr>Types</h3>
+					<div class="tsd-signature tsd-kind-icon">k<wbr>Matrix<wbr>Container<wbr>Types<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">readonly </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-type">&quot;mat2x2&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;mat3x2&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;mat4x2&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;mat2x3&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;mat3x3&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;mat4x3&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;mat2x4&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;mat3x4&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;mat4x4&quot;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = ...</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/shader/types.ts#L44">src/webgpu/shader/types.ts:44</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>List of all matNxN&lt;&gt; container types.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module">
+					<a name="kscalartypeinfo" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> k<wbr>Scalar<wbr>Type<wbr>Info</h3>
+					<div class="tsd-signature tsd-kind-icon">k<wbr>Scalar<wbr>Type<wbr>Info<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>bool<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol">; </span>supportsAtomics<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>f32<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>supportsAtomics<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>i32<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>supportsAtomics<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>u32<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>supportsAtomics<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> = ...</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/shader/types.ts#L13">src/webgpu/shader/types.ts:13</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Info for each plain scalar type.</p>
+						</div>
+					</div>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter">
+								<h5>bool<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol">; </span>supportsAtomics<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> }</span></h5>
+								<ul class="tsd-parameters">
+									<li class="tsd-parameter">
+										<h5>array<wbr>Length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>inner<wbr>Length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">undefined</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>supports<wbr>Atomics<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">false</span></h5>
+									</li>
+								</ul>
+							</li>
+							<li class="tsd-parameter">
+								<h5>f32<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>supportsAtomics<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> }</span></h5>
+								<ul class="tsd-parameters">
+									<li class="tsd-parameter">
+										<h5>array<wbr>Length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>inner<wbr>Length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol"> }</span></h5>
+										<ul class="tsd-parameters">
+											<li class="tsd-parameter">
+												<h5>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span></h5>
+											</li>
+											<li class="tsd-parameter">
+												<h5>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span></h5>
+											</li>
+										</ul>
+									</li>
+									<li class="tsd-parameter">
+										<h5>supports<wbr>Atomics<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">false</span></h5>
+									</li>
+								</ul>
+							</li>
+							<li class="tsd-parameter">
+								<h5>i32<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>supportsAtomics<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> }</span></h5>
+								<ul class="tsd-parameters">
+									<li class="tsd-parameter">
+										<h5>array<wbr>Length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>inner<wbr>Length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol"> }</span></h5>
+										<ul class="tsd-parameters">
+											<li class="tsd-parameter">
+												<h5>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span></h5>
+											</li>
+											<li class="tsd-parameter">
+												<h5>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span></h5>
+											</li>
+										</ul>
+									</li>
+									<li class="tsd-parameter">
+										<h5>supports<wbr>Atomics<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">true</span></h5>
+									</li>
+								</ul>
+							</li>
+							<li class="tsd-parameter">
+								<h5>u32<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>supportsAtomics<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> }</span></h5>
+								<ul class="tsd-parameters">
+									<li class="tsd-parameter">
+										<h5>array<wbr>Length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>inner<wbr>Length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol"> }</span></h5>
+										<ul class="tsd-parameters">
+											<li class="tsd-parameter">
+												<h5>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span></h5>
+											</li>
+											<li class="tsd-parameter">
+												<h5>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span></h5>
+											</li>
+										</ul>
+									</li>
+									<li class="tsd-parameter">
+										<h5>supports<wbr>Atomics<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">true</span></h5>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module">
+					<a name="kscalartypes" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> k<wbr>Scalar<wbr>Types</h3>
+					<div class="tsd-signature tsd-kind-icon">k<wbr>Scalar<wbr>Types<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">readonly </span><a href="webgpu_shader_types.html#scalartype" class="tsd-signature-type" data-tsd-kind="Type alias">ScalarType</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = ...</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/shader/types.ts#L20">src/webgpu/shader/types.ts:20</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>List of all plain scalar types.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module">
+					<a name="kvectorcontainertypeinfo" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> k<wbr>Vector<wbr>Container<wbr>Type<wbr>Info</h3>
+					<div class="tsd-signature tsd-kind-icon">k<wbr>Vector<wbr>Container<wbr>Type<wbr>Info<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>vec2<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>vec3<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">12</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>vec4<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> = ...</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/shader/types.ts#L23">src/webgpu/shader/types.ts:23</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Info for each vecN&lt;&gt; container type.</p>
+						</div>
+					</div>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter">
+								<h5>vec2<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span></h5>
+								<ul class="tsd-parameters">
+									<li class="tsd-parameter">
+										<h5>array<wbr>Length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>inner<wbr>Length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8</span><span class="tsd-signature-symbol"> }</span></h5>
+										<ul class="tsd-parameters">
+											<li class="tsd-parameter">
+												<h5>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8</span></h5>
+											</li>
+											<li class="tsd-parameter">
+												<h5>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8</span></h5>
+											</li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+							<li class="tsd-parameter">
+								<h5>vec3<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">12</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span></h5>
+								<ul class="tsd-parameters">
+									<li class="tsd-parameter">
+										<h5>array<wbr>Length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>inner<wbr>Length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">12</span><span class="tsd-signature-symbol"> }</span></h5>
+										<ul class="tsd-parameters">
+											<li class="tsd-parameter">
+												<h5>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span></h5>
+											</li>
+											<li class="tsd-parameter">
+												<h5>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">12</span></h5>
+											</li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+							<li class="tsd-parameter">
+								<h5>vec4<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span></h5>
+								<ul class="tsd-parameters">
+									<li class="tsd-parameter">
+										<h5>array<wbr>Length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>inner<wbr>Length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol"> }</span></h5>
+										<ul class="tsd-parameters">
+											<li class="tsd-parameter">
+												<h5>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span></h5>
+											</li>
+											<li class="tsd-parameter">
+												<h5>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span></h5>
+											</li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module">
+					<a name="kvectorcontainertypes" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> k<wbr>Vector<wbr>Container<wbr>Types</h3>
+					<div class="tsd-signature tsd-kind-icon">k<wbr>Vector<wbr>Container<wbr>Types<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">readonly </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-type">&quot;vec2&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;vec3&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;vec4&quot;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = ...</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/shader/types.ts#L29">src/webgpu/shader/types.ts:29</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>List of all vecN&lt;&gt; container types.</p>
+						</div>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Functions</h2>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="generatetypes" class="tsd-anchor"></a>
+					<h3>generate<wbr>Types</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">generate<wbr>Types<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>baseType<span class="tsd-signature-symbol">: </span><a href="webgpu_shader_types.html#scalartype" class="tsd-signature-type" data-tsd-kind="Type alias">ScalarType</a><span class="tsd-signature-symbol">; </span>containerType<span class="tsd-signature-symbol">: </span><a href="webgpu_shader_types.html#containertype" class="tsd-signature-type" data-tsd-kind="Type alias">ContainerType</a><span class="tsd-signature-symbol">; </span>isAtomic<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>storageClass<span class="tsd-signature-symbol">: </span><a href="webgpu_shader_types.html#storageclass" class="tsd-signature-type" data-tsd-kind="Type alias">StorageClass</a><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Generator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span>_kTypeInfo<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2</span><span class="tsd-signature-symbol">; </span>elementBaseType<span class="tsd-signature-symbol">: </span><a href="webgpu_shader_types.html#scalartype" class="tsd-signature-type" data-tsd-kind="Type alias">ScalarType</a><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3</span><span class="tsd-signature-symbol">; </span>elementBaseType<span class="tsd-signature-symbol">: </span><a href="webgpu_shader_types.html#scalartype" class="tsd-signature-type" data-tsd-kind="Type alias">ScalarType</a><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">12</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol">; </span>elementBaseType<span class="tsd-signature-symbol">: </span><a href="webgpu_shader_types.html#scalartype" class="tsd-signature-type" data-tsd-kind="Type alias">ScalarType</a><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>_kTypeInfo<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2</span><span class="tsd-signature-symbol">; </span>elementBaseType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3</span><span class="tsd-signature-symbol">; </span>elementBaseType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">24</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol">; </span>elementBaseType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">32</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2</span><span class="tsd-signature-symbol">; </span>elementBaseType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">32</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3</span><span class="tsd-signature-symbol">; </span>elementBaseType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">48</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol">; </span>elementBaseType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">64</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2</span><span class="tsd-signature-symbol">; </span>elementBaseType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">32</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3</span><span class="tsd-signature-symbol">; </span>elementBaseType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">48</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol">; </span>elementBaseType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">64</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>_kTypeInfo<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>elementBaseType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/shader/types.ts#L51">src/webgpu/shader/types.ts:51</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Generate a bunch types (vec, mat, sized/unsized array) for testing.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>__namedParameters: <span class="tsd-signature-symbol">{ </span>baseType<span class="tsd-signature-symbol">: </span><a href="webgpu_shader_types.html#scalartype" class="tsd-signature-type" data-tsd-kind="Type alias">ScalarType</a><span class="tsd-signature-symbol">; </span>containerType<span class="tsd-signature-symbol">: </span><a href="webgpu_shader_types.html#containertype" class="tsd-signature-type" data-tsd-kind="Type alias">ContainerType</a><span class="tsd-signature-symbol">; </span>isAtomic<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>storageClass<span class="tsd-signature-symbol">: </span><a href="webgpu_shader_types.html#storageclass" class="tsd-signature-type" data-tsd-kind="Type alias">StorageClass</a><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>base<wbr>Type<span class="tsd-signature-symbol">: </span><a href="webgpu_shader_types.html#scalartype" class="tsd-signature-type" data-tsd-kind="Type alias">ScalarType</a></h5>
+											<div class="tsd-comment tsd-typography">
+												<div class="lead">
+													<p>Base scalar type (i32/u32/f32/bool).</p>
+												</div>
+											</div>
+										</li>
+										<li class="tsd-parameter">
+											<h5>container<wbr>Type<span class="tsd-signature-symbol">: </span><a href="webgpu_shader_types.html#containertype" class="tsd-signature-type" data-tsd-kind="Type alias">ContainerType</a></h5>
+											<div class="tsd-comment tsd-typography">
+												<div class="lead">
+													<p>Container type (scalar/vector/matrix/array)</p>
+												</div>
+											</div>
+										</li>
+										<li class="tsd-parameter">
+											<h5><span class="tsd-flag ts-flagOptional">Optional</span> is<wbr>Atomic<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span></h5>
+											<div class="tsd-comment tsd-typography">
+												<div class="lead">
+													<p>Whether to wrap the baseType in <code>atomic&lt;&gt;</code>.</p>
+												</div>
+											</div>
+										</li>
+										<li class="tsd-parameter">
+											<h5>storage<wbr>Class<span class="tsd-signature-symbol">: </span><a href="webgpu_shader_types.html#storageclass" class="tsd-signature-type" data-tsd-kind="Type alias">StorageClass</a></h5>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Generator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span>_kTypeInfo<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2</span><span class="tsd-signature-symbol">; </span>elementBaseType<span class="tsd-signature-symbol">: </span><a href="webgpu_shader_types.html#scalartype" class="tsd-signature-type" data-tsd-kind="Type alias">ScalarType</a><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3</span><span class="tsd-signature-symbol">; </span>elementBaseType<span class="tsd-signature-symbol">: </span><a href="webgpu_shader_types.html#scalartype" class="tsd-signature-type" data-tsd-kind="Type alias">ScalarType</a><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">12</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol">; </span>elementBaseType<span class="tsd-signature-symbol">: </span><a href="webgpu_shader_types.html#scalartype" class="tsd-signature-type" data-tsd-kind="Type alias">ScalarType</a><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>_kTypeInfo<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2</span><span class="tsd-signature-symbol">; </span>elementBaseType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3</span><span class="tsd-signature-symbol">; </span>elementBaseType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">24</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol">; </span>elementBaseType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">32</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2</span><span class="tsd-signature-symbol">; </span>elementBaseType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">32</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3</span><span class="tsd-signature-symbol">; </span>elementBaseType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">48</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol">; </span>elementBaseType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">64</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2</span><span class="tsd-signature-symbol">; </span>elementBaseType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">32</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3</span><span class="tsd-signature-symbol">; </span>elementBaseType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">48</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol">; </span>elementBaseType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>innerLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">64</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>_kTypeInfo<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>arrayLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>elementBaseType<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>layout<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">{ </span>alignment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol">; </span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="supportedscalartypes" class="tsd-anchor"></a>
+					<h3>supported<wbr>Scalar<wbr>Types</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">supported<wbr>Scalar<wbr>Types<span class="tsd-signature-symbol">(</span>p<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>isAtomic<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>storageClass<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Generator</span><span class="tsd-signature-symbol">&lt;</span><a href="webgpu_shader_types.html#scalartype" class="tsd-signature-type" data-tsd-kind="Type alias">ScalarType</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/shader/types.ts#L176">src/webgpu/shader/types.ts:176</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Generates an iterator of supported base types (i32/u32/f32/bool)</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>p: <span class="tsd-signature-symbol">{ </span>isAtomic<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>storageClass<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>is<wbr>Atomic<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>storage<wbr>Class<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Generator</span><span class="tsd-signature-symbol">&lt;</span><a href="webgpu_shader_types.html#scalartype" class="tsd-signature-type" data-tsd-kind="Type alias">ScalarType</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="supportsatomics-4" class="tsd-anchor"></a>
+					<h3>supports<wbr>Atomics</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">supports<wbr>Atomics<span class="tsd-signature-symbol">(</span>p<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>access<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>containerType<span class="tsd-signature-symbol">: </span><a href="webgpu_shader_types.html#containertype" class="tsd-signature-type" data-tsd-kind="Type alias">ContainerType</a><span class="tsd-signature-symbol">; </span>storageClass<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>storageMode<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/shader/types.ts#L162">src/webgpu/shader/types.ts:162</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Atomic access requires scalar/array container type and storage/workgroup memory.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>p: <span class="tsd-signature-symbol">{ </span>access<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>containerType<span class="tsd-signature-symbol">: </span><a href="webgpu_shader_types.html#containertype" class="tsd-signature-type" data-tsd-kind="Type alias">ContainerType</a><span class="tsd-signature-symbol">; </span>storageClass<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>storageMode<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>access<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>container<wbr>Type<span class="tsd-signature-symbol">: </span><a href="webgpu_shader_types.html#containertype" class="tsd-signature-type" data-tsd-kind="Type alias">ContainerType</a></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>storage<wbr>Class<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>storage<wbr>Mode<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></h5>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class=" ">
+						<a href="../modules.html">Modules</a>
+					</li>
+					<li class="current tsd-kind-module">
+						<a href="webgpu_shader_types.html">webgpu/shader/types</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="webgpu_shader_types.html#containertype" class="tsd-kind-icon">Container<wbr>Type</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="webgpu_shader_types.html#scalartype" class="tsd-kind-icon">Scalar<wbr>Type</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="webgpu_shader_types.html#storageclass" class="tsd-kind-icon">Storage<wbr>Class</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module">
+						<a href="webgpu_shader_types.html#hostsharabletypes" class="tsd-kind-icon">Host<wbr>Sharable<wbr>Types</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module">
+						<a href="webgpu_shader_types.html#kmatrixcontainertypeinfo" class="tsd-kind-icon">k<wbr>Matrix<wbr>Container<wbr>Type<wbr>Info</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module">
+						<a href="webgpu_shader_types.html#kmatrixcontainertypes" class="tsd-kind-icon">k<wbr>Matrix<wbr>Container<wbr>Types</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module">
+						<a href="webgpu_shader_types.html#kscalartypeinfo" class="tsd-kind-icon">k<wbr>Scalar<wbr>Type<wbr>Info</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module">
+						<a href="webgpu_shader_types.html#kscalartypes" class="tsd-kind-icon">k<wbr>Scalar<wbr>Types</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module">
+						<a href="webgpu_shader_types.html#kvectorcontainertypeinfo" class="tsd-kind-icon">k<wbr>Vector<wbr>Container<wbr>Type<wbr>Info</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module">
+						<a href="webgpu_shader_types.html#kvectorcontainertypes" class="tsd-kind-icon">k<wbr>Vector<wbr>Container<wbr>Types</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_shader_types.html#generatetypes" class="tsd-kind-icon">generate<wbr>Types</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_shader_types.html#supportedscalartypes" class="tsd-kind-icon">supported<wbr>Scalar<wbr>Types</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_shader_types.html#supportsatomics-4" class="tsd-kind-icon">supports<wbr>Atomics</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-namespace"><span class="tsd-kind-icon">Namespace</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

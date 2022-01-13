@@ -1,0 +1,1407 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>webgpu/shader/execution/builtin/builtin | @webgpu/cts</title>
+	<meta name="description" content="Documentation for @webgpu/cts">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+	<script async src="../assets/js/search.js" id="search-script"></script>
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">@webgpu/cts</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../modules.html">@webgpu/cts</a>
+				</li>
+				<li>
+					<a href="webgpu_shader_execution_builtin_builtin.html">webgpu/shader/execution/builtin/builtin</a>
+				</li>
+			</ul>
+			<h1>Module webgpu/shader/execution/builtin/builtin</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Interfaces</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/webgpu_shader_execution_builtin_builtin.comparator.html" class="tsd-kind-icon">Comparator</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/webgpu_shader_execution_builtin_builtin.comparison.html" class="tsd-kind-icon">Comparison</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/webgpu_shader_execution_builtin_builtin.floatmatch.html" class="tsd-kind-icon">Float<wbr>Match</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Type aliases</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="webgpu_shader_execution_builtin_builtin.html#case" class="tsd-kind-icon">Case</a></li>
+								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="webgpu_shader_execution_builtin_builtin.html#caselist" class="tsd-kind-icon">Case<wbr>List</a></li>
+								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="webgpu_shader_execution_builtin_builtin.html#config" class="tsd-kind-icon">Config</a></li>
+								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="webgpu_shader_execution_builtin_builtin.html#storageclass-1" class="tsd-kind-icon">Storage<wbr>Class</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Variables</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-variable tsd-parent-kind-module"><a href="webgpu_shader_execution_builtin_builtin.html#kbit" class="tsd-kind-icon">k<wbr>Bit</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-module"><a href="webgpu_shader_execution_builtin_builtin.html#kvalue" class="tsd-kind-icon">k<wbr>Value</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Functions</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_shader_execution_builtin_builtin.html#absthreshold" class="tsd-kind-icon">abs<wbr>Threshold</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_shader_execution_builtin_builtin.html#anyof" class="tsd-kind-icon">any<wbr>Of</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_shader_execution_builtin_builtin.html#correctlyroundedthreshold" class="tsd-kind-icon">correctly<wbr>Rounded<wbr>Threshold</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_shader_execution_builtin_builtin.html#run" class="tsd-kind-icon">run</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_shader_execution_builtin_builtin.html#ulpthreshold" class="tsd-kind-icon">ulp<wbr>Threshold</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Type aliases</h2>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module">
+					<a name="case" class="tsd-anchor"></a>
+					<h3>Case</h3>
+					<div class="tsd-signature tsd-kind-icon">Case<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>expected<span class="tsd-signature-symbol">: </span><a href="webgpu_util_conversion.html#value" class="tsd-signature-type" data-tsd-kind="Type alias">Value</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/webgpu_shader_execution_builtin_builtin.comparator.html" class="tsd-signature-type" data-tsd-kind="Interface">Comparator</a><span class="tsd-signature-symbol">; </span>input<span class="tsd-signature-symbol">: </span><a href="webgpu_util_conversion.html#value" class="tsd-signature-type" data-tsd-kind="Type alias">Value</a><span class="tsd-signature-symbol"> | </span><a href="webgpu_util_conversion.html#value" class="tsd-signature-type" data-tsd-kind="Type alias">Value</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> }</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/shader/execution/builtin/builtin.ts#L158">src/webgpu/shader/execution/builtin/builtin.ts:158</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Case is a single builtin test case.</p>
+						</div>
+					</div>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter">
+								<h5>expected<span class="tsd-signature-symbol">: </span><a href="webgpu_util_conversion.html#value" class="tsd-signature-type" data-tsd-kind="Type alias">Value</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/webgpu_shader_execution_builtin_builtin.comparator.html" class="tsd-signature-type" data-tsd-kind="Interface">Comparator</a></h5>
+							</li>
+							<li class="tsd-parameter">
+								<h5>input<span class="tsd-signature-symbol">: </span><a href="webgpu_util_conversion.html#value" class="tsd-signature-type" data-tsd-kind="Type alias">Value</a><span class="tsd-signature-symbol"> | </span><a href="webgpu_util_conversion.html#value" class="tsd-signature-type" data-tsd-kind="Type alias">Value</a><span class="tsd-signature-symbol">[]</span></h5>
+							</li>
+						</ul>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module">
+					<a name="caselist" class="tsd-anchor"></a>
+					<h3>Case<wbr>List</h3>
+					<div class="tsd-signature tsd-kind-icon">Case<wbr>List<span class="tsd-signature-symbol">:</span> <a href="webgpu_shader_execution_builtin_builtin.html#case" class="tsd-signature-type" data-tsd-kind="Type alias">Case</a><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/shader/execution/builtin/builtin.ts#L166">src/webgpu/shader/execution/builtin/builtin.ts:166</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>CaseList is a list of Cases</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module">
+					<a name="config" class="tsd-anchor"></a>
+					<h3>Config</h3>
+					<div class="tsd-signature tsd-kind-icon">Config<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>cmpFloats<span class="tsd-signature-symbol">?: </span><a href="../interfaces/webgpu_shader_execution_builtin_builtin.floatmatch.html" class="tsd-signature-type" data-tsd-kind="Interface">FloatMatch</a><span class="tsd-signature-symbol">; </span>storageClass<span class="tsd-signature-symbol">: </span><a href="webgpu_shader_execution_builtin_builtin.html#storageclass-1" class="tsd-signature-type" data-tsd-kind="Type alias">StorageClass</a><span class="tsd-signature-symbol">; </span>vectorize<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/shader/execution/builtin/builtin.ts#L172">src/webgpu/shader/execution/builtin/builtin.ts:172</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Configuration for running a builtin test</p>
+						</div>
+					</div>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter">
+								<h5><span class="tsd-flag ts-flagOptional">Optional</span> cmp<wbr>Floats<span class="tsd-signature-symbol">?: </span><a href="../interfaces/webgpu_shader_execution_builtin_builtin.floatmatch.html" class="tsd-signature-type" data-tsd-kind="Interface">FloatMatch</a></h5>
+							</li>
+							<li class="tsd-parameter">
+								<h5>storage<wbr>Class<span class="tsd-signature-symbol">: </span><a href="webgpu_shader_execution_builtin_builtin.html#storageclass-1" class="tsd-signature-type" data-tsd-kind="Type alias">StorageClass</a></h5>
+							</li>
+							<li class="tsd-parameter">
+								<h5><span class="tsd-flag ts-flagOptional">Optional</span> vectorize<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span></h5>
+							</li>
+						</ul>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module">
+					<a name="storageclass-1" class="tsd-anchor"></a>
+					<h3>Storage<wbr>Class</h3>
+					<div class="tsd-signature tsd-kind-icon">Storage<wbr>Class<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;uniform&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;storage_r&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;storage_rw&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/shader/execution/builtin/builtin.ts#L169">src/webgpu/shader/execution/builtin/builtin.ts:169</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The storage class to use on test input buffers</p>
+						</div>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Variables</h2>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module">
+					<a name="kbit" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> k<wbr>Bit</h3>
+					<div class="tsd-signature tsd-kind-icon">k<wbr>Bit<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>f32<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>infinity<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>negative<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4286578688</span><span class="tsd-signature-symbol">; </span>positive<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2139095040</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>nan<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>negative<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>q<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4290772993</span><span class="tsd-signature-symbol">; </span>s<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4286578689</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>positive<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>q<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2143289345</span><span class="tsd-signature-symbol">; </span>s<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2139095041</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>negative<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>max<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2155872256</span><span class="tsd-signature-symbol">; </span>min<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4286578687</span><span class="tsd-signature-symbol">; </span>zero<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2147483648</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>positive<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>max<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2139095039</span><span class="tsd-signature-symbol">; </span>min<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8388608</span><span class="tsd-signature-symbol">; </span>zero<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>subnormal<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>negative<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>max<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2147483649</span><span class="tsd-signature-symbol">; </span>min<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2155872255</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>positive<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>max<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8388607</span><span class="tsd-signature-symbol">; </span>min<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>i32<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>negative<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>max<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span><span class="tsd-signature-symbol">; </span>min<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2147483648</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>positive<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>max<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2147483647</span><span class="tsd-signature-symbol">; </span>min<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>negPowTwo<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>to0<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294967295</span><span class="tsd-signature-symbol">; </span>to1<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294967294</span><span class="tsd-signature-symbol">; </span>to10<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294966272</span><span class="tsd-signature-symbol">; </span>to11<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294965248</span><span class="tsd-signature-symbol">; </span>to12<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294963200</span><span class="tsd-signature-symbol">; </span>to13<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294959104</span><span class="tsd-signature-symbol">; </span>to14<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294950912</span><span class="tsd-signature-symbol">; </span>to15<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294934528</span><span class="tsd-signature-symbol">; </span>to16<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294901760</span><span class="tsd-signature-symbol">; </span>to17<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294836224</span><span class="tsd-signature-symbol">; </span>to18<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294705152</span><span class="tsd-signature-symbol">; </span>to19<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294443008</span><span class="tsd-signature-symbol">; </span>to2<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294967292</span><span class="tsd-signature-symbol">; </span>to20<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4293918720</span><span class="tsd-signature-symbol">; </span>to21<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4292870144</span><span class="tsd-signature-symbol">; </span>to22<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4290772992</span><span class="tsd-signature-symbol">; </span>to23<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4286578688</span><span class="tsd-signature-symbol">; </span>to24<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4278190080</span><span class="tsd-signature-symbol">; </span>to25<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4261412864</span><span class="tsd-signature-symbol">; </span>to26<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4227858432</span><span class="tsd-signature-symbol">; </span>to27<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4160749568</span><span class="tsd-signature-symbol">; </span>to28<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4026531840</span><span class="tsd-signature-symbol">; </span>to29<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3758096384</span><span class="tsd-signature-symbol">; </span>to3<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294967288</span><span class="tsd-signature-symbol">; </span>to30<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3221225472</span><span class="tsd-signature-symbol">; </span>to31<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2147483648</span><span class="tsd-signature-symbol">; </span>to4<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294967280</span><span class="tsd-signature-symbol">; </span>to5<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294967264</span><span class="tsd-signature-symbol">; </span>to6<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294967232</span><span class="tsd-signature-symbol">; </span>to7<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294967168</span><span class="tsd-signature-symbol">; </span>to8<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294967040</span><span class="tsd-signature-symbol">; </span>to9<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294966784</span><span class="tsd-signature-symbol">; </span>toMinus1<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3204448256</span><span class="tsd-signature-symbol">; </span>toMinus10<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3128950784</span><span class="tsd-signature-symbol">; </span>toMinus11<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3120562176</span><span class="tsd-signature-symbol">; </span>toMinus12<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3112173568</span><span class="tsd-signature-symbol">; </span>toMinus13<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3103784960</span><span class="tsd-signature-symbol">; </span>toMinus14<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3095396352</span><span class="tsd-signature-symbol">; </span>toMinus15<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3087007744</span><span class="tsd-signature-symbol">; </span>toMinus16<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3078619136</span><span class="tsd-signature-symbol">; </span>toMinus17<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3070230528</span><span class="tsd-signature-symbol">; </span>toMinus18<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3061841920</span><span class="tsd-signature-symbol">; </span>toMinus19<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3053453312</span><span class="tsd-signature-symbol">; </span>toMinus2<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3196059648</span><span class="tsd-signature-symbol">; </span>toMinus20<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3045064704</span><span class="tsd-signature-symbol">; </span>toMinus21<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3036676096</span><span class="tsd-signature-symbol">; </span>toMinus22<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3028287488</span><span class="tsd-signature-symbol">; </span>toMinus23<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3019898880</span><span class="tsd-signature-symbol">; </span>toMinus24<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3011510272</span><span class="tsd-signature-symbol">; </span>toMinus25<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3003121664</span><span class="tsd-signature-symbol">; </span>toMinus26<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2994733056</span><span class="tsd-signature-symbol">; </span>toMinus27<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2986344448</span><span class="tsd-signature-symbol">; </span>toMinus28<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2977955840</span><span class="tsd-signature-symbol">; </span>toMinus29<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2969567232</span><span class="tsd-signature-symbol">; </span>toMinus3<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3187671040</span><span class="tsd-signature-symbol">; </span>toMinus30<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2961178624</span><span class="tsd-signature-symbol">; </span>toMinus31<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2952790016</span><span class="tsd-signature-symbol">; </span>toMinus4<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3179282432</span><span class="tsd-signature-symbol">; </span>toMinus5<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3170893824</span><span class="tsd-signature-symbol">; </span>toMinus6<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3162505216</span><span class="tsd-signature-symbol">; </span>toMinus7<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3154116608</span><span class="tsd-signature-symbol">; </span>toMinus8<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3145728000</span><span class="tsd-signature-symbol">; </span>toMinus9<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3137339392</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>powTwo<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>to0<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1</span><span class="tsd-signature-symbol">; </span>to1<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2</span><span class="tsd-signature-symbol">; </span>to10<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1024</span><span class="tsd-signature-symbol">; </span>to11<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2048</span><span class="tsd-signature-symbol">; </span>to12<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4096</span><span class="tsd-signature-symbol">; </span>to13<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8192</span><span class="tsd-signature-symbol">; </span>to14<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16384</span><span class="tsd-signature-symbol">; </span>to15<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">32768</span><span class="tsd-signature-symbol">; </span>to16<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">65536</span><span class="tsd-signature-symbol">; </span>to17<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">131072</span><span class="tsd-signature-symbol">; </span>to18<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">262144</span><span class="tsd-signature-symbol">; </span>to19<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">524288</span><span class="tsd-signature-symbol">; </span>to2<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol">; </span>to20<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1048576</span><span class="tsd-signature-symbol">; </span>to21<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2097152</span><span class="tsd-signature-symbol">; </span>to22<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4194304</span><span class="tsd-signature-symbol">; </span>to23<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8388608</span><span class="tsd-signature-symbol">; </span>to24<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16777216</span><span class="tsd-signature-symbol">; </span>to25<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">33554432</span><span class="tsd-signature-symbol">; </span>to26<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">67108864</span><span class="tsd-signature-symbol">; </span>to27<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">134217728</span><span class="tsd-signature-symbol">; </span>to28<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">268435456</span><span class="tsd-signature-symbol">; </span>to29<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">536870912</span><span class="tsd-signature-symbol">; </span>to3<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8</span><span class="tsd-signature-symbol">; </span>to30<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1073741824</span><span class="tsd-signature-symbol">; </span>to31<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2147483648</span><span class="tsd-signature-symbol">; </span>to4<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol">; </span>to5<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">32</span><span class="tsd-signature-symbol">; </span>to6<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">64</span><span class="tsd-signature-symbol">; </span>to7<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">128</span><span class="tsd-signature-symbol">; </span>to8<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">256</span><span class="tsd-signature-symbol">; </span>to9<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">512</span><span class="tsd-signature-symbol">; </span>toMinus1<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1056964608</span><span class="tsd-signature-symbol">; </span>toMinus10<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">981467136</span><span class="tsd-signature-symbol">; </span>toMinus11<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">973078528</span><span class="tsd-signature-symbol">; </span>toMinus12<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">964689920</span><span class="tsd-signature-symbol">; </span>toMinus13<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">956301312</span><span class="tsd-signature-symbol">; </span>toMinus14<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">947912704</span><span class="tsd-signature-symbol">; </span>toMinus15<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">939524096</span><span class="tsd-signature-symbol">; </span>toMinus16<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">931135488</span><span class="tsd-signature-symbol">; </span>toMinus17<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">922746880</span><span class="tsd-signature-symbol">; </span>toMinus18<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">914358272</span><span class="tsd-signature-symbol">; </span>toMinus19<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">905969664</span><span class="tsd-signature-symbol">; </span>toMinus2<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1048576000</span><span class="tsd-signature-symbol">; </span>toMinus20<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">897581056</span><span class="tsd-signature-symbol">; </span>toMinus21<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">889192448</span><span class="tsd-signature-symbol">; </span>toMinus22<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">880803840</span><span class="tsd-signature-symbol">; </span>toMinus23<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">872415232</span><span class="tsd-signature-symbol">; </span>toMinus24<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">864026624</span><span class="tsd-signature-symbol">; </span>toMinus25<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">855638016</span><span class="tsd-signature-symbol">; </span>toMinus26<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">847249408</span><span class="tsd-signature-symbol">; </span>toMinus27<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">838860800</span><span class="tsd-signature-symbol">; </span>toMinus28<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">830472192</span><span class="tsd-signature-symbol">; </span>toMinus29<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">822083584</span><span class="tsd-signature-symbol">; </span>toMinus3<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1040187392</span><span class="tsd-signature-symbol">; </span>toMinus30<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">813694976</span><span class="tsd-signature-symbol">; </span>toMinus31<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">805306368</span><span class="tsd-signature-symbol">; </span>toMinus4<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1031798784</span><span class="tsd-signature-symbol">; </span>toMinus5<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1023410176</span><span class="tsd-signature-symbol">; </span>toMinus6<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1015021568</span><span class="tsd-signature-symbol">; </span>toMinus7<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1006632960</span><span class="tsd-signature-symbol">; </span>toMinus8<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">998244352</span><span class="tsd-signature-symbol">; </span>toMinus9<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">989855744</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>u32<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>max<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294967295</span><span class="tsd-signature-symbol">; </span>min<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> = ...</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/shader/execution/builtin/builtin.ts#L512">src/webgpu/shader/execution/builtin/builtin.ts:512</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter">
+								<h5>f32<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>infinity<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>negative<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4286578688</span><span class="tsd-signature-symbol">; </span>positive<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2139095040</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>nan<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>negative<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>q<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4290772993</span><span class="tsd-signature-symbol">; </span>s<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4286578689</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>positive<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>q<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2143289345</span><span class="tsd-signature-symbol">; </span>s<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2139095041</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>negative<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>max<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2155872256</span><span class="tsd-signature-symbol">; </span>min<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4286578687</span><span class="tsd-signature-symbol">; </span>zero<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2147483648</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>positive<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>max<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2139095039</span><span class="tsd-signature-symbol">; </span>min<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8388608</span><span class="tsd-signature-symbol">; </span>zero<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>subnormal<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>negative<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>max<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2147483649</span><span class="tsd-signature-symbol">; </span>min<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2155872255</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>positive<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>max<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8388607</span><span class="tsd-signature-symbol">; </span>min<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span></h5>
+								<ul class="tsd-parameters">
+									<li class="tsd-parameter">
+										<h5>infinity<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>negative<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4286578688</span><span class="tsd-signature-symbol">; </span>positive<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2139095040</span><span class="tsd-signature-symbol"> }</span></h5>
+										<ul class="tsd-parameters">
+											<li class="tsd-parameter">
+												<h5>negative<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4286578688</span></h5>
+											</li>
+											<li class="tsd-parameter">
+												<h5>positive<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2139095040</span></h5>
+											</li>
+										</ul>
+									</li>
+									<li class="tsd-parameter">
+										<h5>nan<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>negative<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>q<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4290772993</span><span class="tsd-signature-symbol">; </span>s<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4286578689</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>positive<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>q<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2143289345</span><span class="tsd-signature-symbol">; </span>s<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2139095041</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span></h5>
+										<ul class="tsd-parameters">
+											<li class="tsd-parameter">
+												<h5>negative<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>q<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4290772993</span><span class="tsd-signature-symbol">; </span>s<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4286578689</span><span class="tsd-signature-symbol"> }</span></h5>
+												<ul class="tsd-parameters">
+													<li class="tsd-parameter">
+														<h5>q<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4290772993</span></h5>
+													</li>
+													<li class="tsd-parameter">
+														<h5>s<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4286578689</span></h5>
+													</li>
+												</ul>
+											</li>
+											<li class="tsd-parameter">
+												<h5>positive<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>q<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2143289345</span><span class="tsd-signature-symbol">; </span>s<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2139095041</span><span class="tsd-signature-symbol"> }</span></h5>
+												<ul class="tsd-parameters">
+													<li class="tsd-parameter">
+														<h5>q<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2143289345</span></h5>
+													</li>
+													<li class="tsd-parameter">
+														<h5>s<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2139095041</span></h5>
+													</li>
+												</ul>
+											</li>
+										</ul>
+									</li>
+									<li class="tsd-parameter">
+										<h5>negative<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>max<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2155872256</span><span class="tsd-signature-symbol">; </span>min<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4286578687</span><span class="tsd-signature-symbol">; </span>zero<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2147483648</span><span class="tsd-signature-symbol"> }</span></h5>
+										<ul class="tsd-parameters">
+											<li class="tsd-parameter">
+												<h5>max<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2155872256</span></h5>
+											</li>
+											<li class="tsd-parameter">
+												<h5>min<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4286578687</span></h5>
+											</li>
+											<li class="tsd-parameter">
+												<h5>zero<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2147483648</span></h5>
+											</li>
+										</ul>
+									</li>
+									<li class="tsd-parameter">
+										<h5>positive<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>max<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2139095039</span><span class="tsd-signature-symbol">; </span>min<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8388608</span><span class="tsd-signature-symbol">; </span>zero<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span><span class="tsd-signature-symbol"> }</span></h5>
+										<ul class="tsd-parameters">
+											<li class="tsd-parameter">
+												<h5>max<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2139095039</span></h5>
+											</li>
+											<li class="tsd-parameter">
+												<h5>min<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8388608</span></h5>
+											</li>
+											<li class="tsd-parameter">
+												<h5>zero<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span></h5>
+											</li>
+										</ul>
+									</li>
+									<li class="tsd-parameter">
+										<h5>subnormal<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>negative<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>max<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2147483649</span><span class="tsd-signature-symbol">; </span>min<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2155872255</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>positive<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>max<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8388607</span><span class="tsd-signature-symbol">; </span>min<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span></h5>
+										<ul class="tsd-parameters">
+											<li class="tsd-parameter">
+												<h5>negative<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>max<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2147483649</span><span class="tsd-signature-symbol">; </span>min<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2155872255</span><span class="tsd-signature-symbol"> }</span></h5>
+												<ul class="tsd-parameters">
+													<li class="tsd-parameter">
+														<h5>max<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2147483649</span></h5>
+													</li>
+													<li class="tsd-parameter">
+														<h5>min<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2155872255</span></h5>
+													</li>
+												</ul>
+											</li>
+											<li class="tsd-parameter">
+												<h5>positive<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>max<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8388607</span><span class="tsd-signature-symbol">; </span>min<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1</span><span class="tsd-signature-symbol"> }</span></h5>
+												<ul class="tsd-parameters">
+													<li class="tsd-parameter">
+														<h5>max<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8388607</span></h5>
+													</li>
+													<li class="tsd-parameter">
+														<h5>min<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1</span></h5>
+													</li>
+												</ul>
+											</li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+							<li class="tsd-parameter">
+								<h5>i32<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>negative<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>max<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span><span class="tsd-signature-symbol">; </span>min<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2147483648</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>positive<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>max<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2147483647</span><span class="tsd-signature-symbol">; </span>min<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span></h5>
+								<ul class="tsd-parameters">
+									<li class="tsd-parameter">
+										<h5>negative<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>max<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span><span class="tsd-signature-symbol">; </span>min<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2147483648</span><span class="tsd-signature-symbol"> }</span></h5>
+										<ul class="tsd-parameters">
+											<li class="tsd-parameter">
+												<h5>max<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span></h5>
+											</li>
+											<li class="tsd-parameter">
+												<h5>min<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2147483648</span></h5>
+											</li>
+										</ul>
+									</li>
+									<li class="tsd-parameter">
+										<h5>positive<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>max<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2147483647</span><span class="tsd-signature-symbol">; </span>min<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span><span class="tsd-signature-symbol"> }</span></h5>
+										<ul class="tsd-parameters">
+											<li class="tsd-parameter">
+												<h5>max<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2147483647</span></h5>
+											</li>
+											<li class="tsd-parameter">
+												<h5>min<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span></h5>
+											</li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+							<li class="tsd-parameter">
+								<h5>neg<wbr>Pow<wbr>Two<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>to0<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294967295</span><span class="tsd-signature-symbol">; </span>to1<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294967294</span><span class="tsd-signature-symbol">; </span>to10<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294966272</span><span class="tsd-signature-symbol">; </span>to11<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294965248</span><span class="tsd-signature-symbol">; </span>to12<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294963200</span><span class="tsd-signature-symbol">; </span>to13<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294959104</span><span class="tsd-signature-symbol">; </span>to14<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294950912</span><span class="tsd-signature-symbol">; </span>to15<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294934528</span><span class="tsd-signature-symbol">; </span>to16<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294901760</span><span class="tsd-signature-symbol">; </span>to17<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294836224</span><span class="tsd-signature-symbol">; </span>to18<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294705152</span><span class="tsd-signature-symbol">; </span>to19<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294443008</span><span class="tsd-signature-symbol">; </span>to2<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294967292</span><span class="tsd-signature-symbol">; </span>to20<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4293918720</span><span class="tsd-signature-symbol">; </span>to21<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4292870144</span><span class="tsd-signature-symbol">; </span>to22<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4290772992</span><span class="tsd-signature-symbol">; </span>to23<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4286578688</span><span class="tsd-signature-symbol">; </span>to24<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4278190080</span><span class="tsd-signature-symbol">; </span>to25<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4261412864</span><span class="tsd-signature-symbol">; </span>to26<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4227858432</span><span class="tsd-signature-symbol">; </span>to27<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4160749568</span><span class="tsd-signature-symbol">; </span>to28<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4026531840</span><span class="tsd-signature-symbol">; </span>to29<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3758096384</span><span class="tsd-signature-symbol">; </span>to3<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294967288</span><span class="tsd-signature-symbol">; </span>to30<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3221225472</span><span class="tsd-signature-symbol">; </span>to31<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2147483648</span><span class="tsd-signature-symbol">; </span>to4<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294967280</span><span class="tsd-signature-symbol">; </span>to5<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294967264</span><span class="tsd-signature-symbol">; </span>to6<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294967232</span><span class="tsd-signature-symbol">; </span>to7<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294967168</span><span class="tsd-signature-symbol">; </span>to8<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294967040</span><span class="tsd-signature-symbol">; </span>to9<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294966784</span><span class="tsd-signature-symbol">; </span>toMinus1<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3204448256</span><span class="tsd-signature-symbol">; </span>toMinus10<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3128950784</span><span class="tsd-signature-symbol">; </span>toMinus11<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3120562176</span><span class="tsd-signature-symbol">; </span>toMinus12<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3112173568</span><span class="tsd-signature-symbol">; </span>toMinus13<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3103784960</span><span class="tsd-signature-symbol">; </span>toMinus14<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3095396352</span><span class="tsd-signature-symbol">; </span>toMinus15<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3087007744</span><span class="tsd-signature-symbol">; </span>toMinus16<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3078619136</span><span class="tsd-signature-symbol">; </span>toMinus17<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3070230528</span><span class="tsd-signature-symbol">; </span>toMinus18<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3061841920</span><span class="tsd-signature-symbol">; </span>toMinus19<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3053453312</span><span class="tsd-signature-symbol">; </span>toMinus2<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3196059648</span><span class="tsd-signature-symbol">; </span>toMinus20<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3045064704</span><span class="tsd-signature-symbol">; </span>toMinus21<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3036676096</span><span class="tsd-signature-symbol">; </span>toMinus22<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3028287488</span><span class="tsd-signature-symbol">; </span>toMinus23<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3019898880</span><span class="tsd-signature-symbol">; </span>toMinus24<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3011510272</span><span class="tsd-signature-symbol">; </span>toMinus25<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3003121664</span><span class="tsd-signature-symbol">; </span>toMinus26<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2994733056</span><span class="tsd-signature-symbol">; </span>toMinus27<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2986344448</span><span class="tsd-signature-symbol">; </span>toMinus28<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2977955840</span><span class="tsd-signature-symbol">; </span>toMinus29<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2969567232</span><span class="tsd-signature-symbol">; </span>toMinus3<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3187671040</span><span class="tsd-signature-symbol">; </span>toMinus30<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2961178624</span><span class="tsd-signature-symbol">; </span>toMinus31<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2952790016</span><span class="tsd-signature-symbol">; </span>toMinus4<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3179282432</span><span class="tsd-signature-symbol">; </span>toMinus5<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3170893824</span><span class="tsd-signature-symbol">; </span>toMinus6<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3162505216</span><span class="tsd-signature-symbol">; </span>toMinus7<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3154116608</span><span class="tsd-signature-symbol">; </span>toMinus8<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3145728000</span><span class="tsd-signature-symbol">; </span>toMinus9<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3137339392</span><span class="tsd-signature-symbol"> }</span></h5>
+								<ul class="tsd-parameters">
+									<li class="tsd-parameter">
+										<h5>to0<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294967295</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to1<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294967294</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to10<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294966272</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to11<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294965248</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to12<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294963200</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to13<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294959104</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to14<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294950912</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to15<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294934528</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to16<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294901760</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to17<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294836224</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to18<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294705152</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to19<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294443008</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to2<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294967292</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to20<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4293918720</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to21<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4292870144</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to22<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4290772992</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to23<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4286578688</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to24<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4278190080</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to25<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4261412864</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to26<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4227858432</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to27<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4160749568</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to28<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4026531840</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to29<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3758096384</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to3<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294967288</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to30<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3221225472</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to31<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2147483648</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to4<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294967280</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to5<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294967264</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to6<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294967232</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to7<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294967168</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to8<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294967040</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to9<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294966784</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus1<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3204448256</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus10<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3128950784</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus11<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3120562176</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus12<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3112173568</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus13<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3103784960</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus14<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3095396352</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus15<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3087007744</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus16<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3078619136</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus17<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3070230528</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus18<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3061841920</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus19<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3053453312</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus2<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3196059648</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus20<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3045064704</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus21<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3036676096</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus22<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3028287488</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus23<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3019898880</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus24<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3011510272</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus25<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3003121664</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus26<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2994733056</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus27<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2986344448</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus28<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2977955840</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus29<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2969567232</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus3<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3187671040</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus30<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2961178624</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus31<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2952790016</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus4<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3179282432</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus5<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3170893824</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus6<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3162505216</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus7<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3154116608</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus8<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3145728000</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus9<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">3137339392</span></h5>
+									</li>
+								</ul>
+							</li>
+							<li class="tsd-parameter">
+								<h5>pow<wbr>Two<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>to0<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1</span><span class="tsd-signature-symbol">; </span>to1<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2</span><span class="tsd-signature-symbol">; </span>to10<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1024</span><span class="tsd-signature-symbol">; </span>to11<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2048</span><span class="tsd-signature-symbol">; </span>to12<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4096</span><span class="tsd-signature-symbol">; </span>to13<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8192</span><span class="tsd-signature-symbol">; </span>to14<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16384</span><span class="tsd-signature-symbol">; </span>to15<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">32768</span><span class="tsd-signature-symbol">; </span>to16<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">65536</span><span class="tsd-signature-symbol">; </span>to17<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">131072</span><span class="tsd-signature-symbol">; </span>to18<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">262144</span><span class="tsd-signature-symbol">; </span>to19<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">524288</span><span class="tsd-signature-symbol">; </span>to2<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span><span class="tsd-signature-symbol">; </span>to20<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1048576</span><span class="tsd-signature-symbol">; </span>to21<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2097152</span><span class="tsd-signature-symbol">; </span>to22<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4194304</span><span class="tsd-signature-symbol">; </span>to23<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8388608</span><span class="tsd-signature-symbol">; </span>to24<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16777216</span><span class="tsd-signature-symbol">; </span>to25<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">33554432</span><span class="tsd-signature-symbol">; </span>to26<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">67108864</span><span class="tsd-signature-symbol">; </span>to27<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">134217728</span><span class="tsd-signature-symbol">; </span>to28<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">268435456</span><span class="tsd-signature-symbol">; </span>to29<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">536870912</span><span class="tsd-signature-symbol">; </span>to3<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8</span><span class="tsd-signature-symbol">; </span>to30<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1073741824</span><span class="tsd-signature-symbol">; </span>to31<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2147483648</span><span class="tsd-signature-symbol">; </span>to4<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span><span class="tsd-signature-symbol">; </span>to5<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">32</span><span class="tsd-signature-symbol">; </span>to6<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">64</span><span class="tsd-signature-symbol">; </span>to7<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">128</span><span class="tsd-signature-symbol">; </span>to8<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">256</span><span class="tsd-signature-symbol">; </span>to9<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">512</span><span class="tsd-signature-symbol">; </span>toMinus1<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1056964608</span><span class="tsd-signature-symbol">; </span>toMinus10<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">981467136</span><span class="tsd-signature-symbol">; </span>toMinus11<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">973078528</span><span class="tsd-signature-symbol">; </span>toMinus12<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">964689920</span><span class="tsd-signature-symbol">; </span>toMinus13<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">956301312</span><span class="tsd-signature-symbol">; </span>toMinus14<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">947912704</span><span class="tsd-signature-symbol">; </span>toMinus15<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">939524096</span><span class="tsd-signature-symbol">; </span>toMinus16<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">931135488</span><span class="tsd-signature-symbol">; </span>toMinus17<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">922746880</span><span class="tsd-signature-symbol">; </span>toMinus18<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">914358272</span><span class="tsd-signature-symbol">; </span>toMinus19<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">905969664</span><span class="tsd-signature-symbol">; </span>toMinus2<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1048576000</span><span class="tsd-signature-symbol">; </span>toMinus20<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">897581056</span><span class="tsd-signature-symbol">; </span>toMinus21<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">889192448</span><span class="tsd-signature-symbol">; </span>toMinus22<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">880803840</span><span class="tsd-signature-symbol">; </span>toMinus23<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">872415232</span><span class="tsd-signature-symbol">; </span>toMinus24<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">864026624</span><span class="tsd-signature-symbol">; </span>toMinus25<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">855638016</span><span class="tsd-signature-symbol">; </span>toMinus26<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">847249408</span><span class="tsd-signature-symbol">; </span>toMinus27<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">838860800</span><span class="tsd-signature-symbol">; </span>toMinus28<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">830472192</span><span class="tsd-signature-symbol">; </span>toMinus29<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">822083584</span><span class="tsd-signature-symbol">; </span>toMinus3<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1040187392</span><span class="tsd-signature-symbol">; </span>toMinus30<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">813694976</span><span class="tsd-signature-symbol">; </span>toMinus31<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">805306368</span><span class="tsd-signature-symbol">; </span>toMinus4<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1031798784</span><span class="tsd-signature-symbol">; </span>toMinus5<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1023410176</span><span class="tsd-signature-symbol">; </span>toMinus6<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1015021568</span><span class="tsd-signature-symbol">; </span>toMinus7<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1006632960</span><span class="tsd-signature-symbol">; </span>toMinus8<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">998244352</span><span class="tsd-signature-symbol">; </span>toMinus9<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">989855744</span><span class="tsd-signature-symbol"> }</span></h5>
+								<ul class="tsd-parameters">
+									<li class="tsd-parameter">
+										<h5>to0<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to1<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to10<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1024</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to11<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2048</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to12<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4096</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to13<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8192</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to14<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16384</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to15<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">32768</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to16<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">65536</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to17<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">131072</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to18<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">262144</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to19<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">524288</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to2<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to20<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1048576</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to21<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2097152</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to22<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4194304</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to23<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8388608</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to24<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16777216</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to25<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">33554432</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to26<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">67108864</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to27<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">134217728</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to28<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">268435456</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to29<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">536870912</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to3<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">8</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to30<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1073741824</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to31<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">2147483648</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to4<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">16</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to5<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">32</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to6<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">64</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to7<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">128</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to8<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">256</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to9<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">512</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus1<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1056964608</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus10<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">981467136</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus11<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">973078528</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus12<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">964689920</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus13<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">956301312</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus14<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">947912704</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus15<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">939524096</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus16<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">931135488</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus17<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">922746880</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus18<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">914358272</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus19<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">905969664</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus2<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1048576000</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus20<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">897581056</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus21<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">889192448</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus22<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">880803840</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus23<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">872415232</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus24<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">864026624</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus25<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">855638016</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus26<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">847249408</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus27<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">838860800</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus28<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">830472192</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus29<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">822083584</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus3<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1040187392</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus30<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">813694976</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus31<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">805306368</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus4<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1031798784</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus5<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1023410176</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus6<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1015021568</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus7<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">1006632960</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus8<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">998244352</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus9<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">989855744</span></h5>
+									</li>
+								</ul>
+							</li>
+							<li class="tsd-parameter">
+								<h5>u32<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>max<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294967295</span><span class="tsd-signature-symbol">; </span>min<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span><span class="tsd-signature-symbol"> }</span></h5>
+								<ul class="tsd-parameters">
+									<li class="tsd-parameter">
+										<h5>max<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">4294967295</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>min<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span></h5>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module">
+					<a name="kvalue" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> k<wbr>Value</h3>
+					<div class="tsd-signature tsd-kind-icon">k<wbr>Value<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>negPowTwo<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>to0<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to1<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to10<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to11<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to12<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to13<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to14<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to15<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to16<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to17<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to18<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to19<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to2<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to20<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to21<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to22<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to23<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to24<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to25<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to26<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to27<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to28<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to29<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to3<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to30<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to31<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to32<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to4<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to5<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to6<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to7<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to8<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to9<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus1<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus10<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus11<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus12<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus13<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus14<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus15<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus16<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus17<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus18<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus19<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus2<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus20<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus21<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus22<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus23<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus24<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus25<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus26<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus27<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus28<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus29<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus3<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus30<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus31<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus32<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus4<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus5<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus6<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus7<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus8<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus9<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">; </span>powTwo<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>to0<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to1<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to10<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to11<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to12<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to13<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to14<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to15<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to16<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to17<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to18<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to19<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to2<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to20<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to21<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to22<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to23<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to24<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to25<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to26<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to27<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to28<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to29<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to3<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to30<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to31<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to32<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to4<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to5<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to6<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to7<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to8<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to9<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus1<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus10<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus11<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus12<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus13<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus14<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus15<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus16<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus17<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus18<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus19<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus2<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus20<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus21<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus22<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus23<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus24<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus25<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus26<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus27<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus28<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus29<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus3<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus30<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus31<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus32<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus4<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus5<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus6<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus7<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus8<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus9<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> = ...</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/shader/execution/builtin/builtin.ts#L710">src/webgpu/shader/execution/builtin/builtin.ts:710</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter">
+								<h5>neg<wbr>Pow<wbr>Two<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>to0<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to1<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to10<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to11<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to12<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to13<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to14<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to15<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to16<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to17<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to18<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to19<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to2<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to20<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to21<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to22<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to23<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to24<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to25<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to26<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to27<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to28<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to29<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to3<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to30<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to31<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to32<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to4<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to5<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to6<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to7<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to8<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to9<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus1<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus10<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus11<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus12<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus13<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus14<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus15<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus16<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus17<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus18<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus19<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus2<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus20<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus21<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus22<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus23<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus24<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus25<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus26<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus27<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus28<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus29<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus3<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus30<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus31<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus32<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus4<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus5<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus6<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus7<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus8<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus9<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span></h5>
+								<ul class="tsd-parameters">
+									<li class="tsd-parameter">
+										<h5>to0<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to1<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to10<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to11<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to12<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to13<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to14<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to15<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to16<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to17<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to18<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to19<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to2<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to20<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to21<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to22<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to23<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to24<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to25<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to26<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to27<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to28<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to29<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to3<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to30<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to31<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to32<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to4<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to5<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to6<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to7<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to8<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to9<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus1<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus10<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus11<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus12<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus13<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus14<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus15<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus16<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus17<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus18<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus19<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus2<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus20<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus21<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus22<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus23<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus24<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus25<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus26<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus27<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus28<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus29<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus3<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus30<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus31<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus32<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus4<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus5<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus6<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus7<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus8<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus9<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+								</ul>
+							</li>
+							<li class="tsd-parameter">
+								<h5>pow<wbr>Two<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>to0<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to1<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to10<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to11<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to12<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to13<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to14<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to15<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to16<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to17<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to18<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to19<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to2<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to20<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to21<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to22<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to23<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to24<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to25<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to26<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to27<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to28<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to29<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to3<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to30<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to31<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to32<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to4<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to5<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to6<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to7<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to8<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>to9<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus1<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus10<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus11<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus12<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus13<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus14<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus15<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus16<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus17<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus18<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus19<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus2<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus20<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus21<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus22<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus23<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus24<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus25<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus26<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus27<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus28<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus29<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus3<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus30<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus31<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus32<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus4<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus5<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus6<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus7<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus8<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>toMinus9<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span></h5>
+								<ul class="tsd-parameters">
+									<li class="tsd-parameter">
+										<h5>to0<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to1<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to10<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to11<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to12<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to13<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to14<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to15<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to16<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to17<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to18<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to19<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to2<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to20<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to21<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to22<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to23<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to24<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to25<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to26<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to27<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to28<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to29<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to3<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to30<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to31<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to32<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to4<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to5<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to6<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to7<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to8<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to9<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus1<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus10<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus11<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus12<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus13<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus14<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus15<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus16<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus17<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus18<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus19<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus2<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus20<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus21<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus22<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus23<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus24<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus25<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus26<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus27<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus28<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus29<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus3<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus30<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus31<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus32<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus4<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus5<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus6<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus7<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus8<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5>to<wbr>Minus9<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Functions</h2>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="absthreshold" class="tsd-anchor"></a>
+					<h3>abs<wbr>Threshold</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">abs<wbr>Threshold<span class="tsd-signature-symbol">(</span>diff<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/webgpu_shader_execution_builtin_builtin.floatmatch.html" class="tsd-signature-type" data-tsd-kind="Interface">FloatMatch</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/shader/execution/builtin/builtin.ts#L37">src/webgpu/shader/execution/builtin/builtin.ts:37</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>diff: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/webgpu_shader_execution_builtin_builtin.floatmatch.html" class="tsd-signature-type" data-tsd-kind="Interface">FloatMatch</a></h4>
+							<p>a FloatMatch that returns true iff the two numbers are equal to, or
+							less than the specified absolute error threshold.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="anyof" class="tsd-anchor"></a>
+					<h3>any<wbr>Of</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">any<wbr>Of<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>values<span class="tsd-signature-symbol">: </span><a href="webgpu_util_conversion.html#value" class="tsd-signature-type" data-tsd-kind="Type alias">Value</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/webgpu_shader_execution_builtin_builtin.comparator.html" class="tsd-signature-type" data-tsd-kind="Interface">Comparator</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/shader/execution/builtin/builtin.ts#L135">src/webgpu/shader/execution/builtin/builtin.ts:135</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>values: <a href="webgpu_util_conversion.html#value" class="tsd-signature-type" data-tsd-kind="Type alias">Value</a><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/webgpu_shader_execution_builtin_builtin.comparator.html" class="tsd-signature-type" data-tsd-kind="Interface">Comparator</a></h4>
+							<p>a Comparator that checks whether a test value matches any of the provided values</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="correctlyroundedthreshold" class="tsd-anchor"></a>
+					<h3>correctly<wbr>Rounded<wbr>Threshold</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">correctly<wbr>Rounded<wbr>Threshold<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/webgpu_shader_execution_builtin_builtin.floatmatch.html" class="tsd-signature-type" data-tsd-kind="Interface">FloatMatch</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/shader/execution/builtin/builtin.ts#L67">src/webgpu/shader/execution/builtin/builtin.ts:67</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/webgpu_shader_execution_builtin_builtin.floatmatch.html" class="tsd-signature-type" data-tsd-kind="Interface">FloatMatch</a></h4>
+							<p>a FloatMatch that returns true iff |expected| is a correctly round
+								to |got|.
+							|got| must be expressible as a float32.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="run" class="tsd-anchor"></a>
+					<h3>run</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">run<span class="tsd-signature-symbol">(</span>t<span class="tsd-signature-symbol">: </span><a href="../classes/webgpu_gpu_test.gputest.html" class="tsd-signature-type" data-tsd-kind="Class">GPUTest</a>, builtin<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, parameterTypes<span class="tsd-signature-symbol">: </span><a href="webgpu_util_conversion.html#type" class="tsd-signature-type" data-tsd-kind="Type alias">Type</a><span class="tsd-signature-symbol">[]</span>, returnType<span class="tsd-signature-symbol">: </span><a href="webgpu_util_conversion.html#type" class="tsd-signature-type" data-tsd-kind="Type alias">Type</a>, cfg<span class="tsd-signature-symbol">?: </span><a href="webgpu_shader_execution_builtin_builtin.html#config" class="tsd-signature-type" data-tsd-kind="Type alias">Config</a>, cases<span class="tsd-signature-symbol">: </span><a href="webgpu_shader_execution_builtin_builtin.html#caselist" class="tsd-signature-type" data-tsd-kind="Type alias">CaseList</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/shader/execution/builtin/builtin.ts#L245">src/webgpu/shader/execution/builtin/builtin.ts:245</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Runs the list of builtin tests, possibly splitting the tests into multiple
+										dispatches to keep the input data within the buffer binding limits.
+										run() will pack the scalar test cases into smaller set of vectorized tests
+									if <code>cfg.vectorize</code> is defined.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>t: <a href="../classes/webgpu_gpu_test.gputest.html" class="tsd-signature-type" data-tsd-kind="Class">GPUTest</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>the GPUTest</p>
+									</div>
+								</li>
+								<li>
+									<h5>builtin: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>the builtin being tested</p>
+									</div>
+								</li>
+								<li>
+									<h5>parameterTypes: <a href="webgpu_util_conversion.html#type" class="tsd-signature-type" data-tsd-kind="Type alias">Type</a><span class="tsd-signature-symbol">[]</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>the list of builtin parameter types</p>
+									</div>
+								</li>
+								<li>
+									<h5>returnType: <a href="webgpu_util_conversion.html#type" class="tsd-signature-type" data-tsd-kind="Type alias">Type</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>the return type for the builtin overload</p>
+									</div>
+								</li>
+								<li>
+									<h5>cfg: <a href="webgpu_shader_execution_builtin_builtin.html#config" class="tsd-signature-type" data-tsd-kind="Type alias">Config</a><span class="tsd-signature-symbol"> = ...</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>test configuration values</p>
+									</div>
+								</li>
+								<li>
+									<h5>cases: <a href="webgpu_shader_execution_builtin_builtin.html#caselist" class="tsd-signature-type" data-tsd-kind="Type alias">CaseList</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>list of test cases</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="ulpthreshold" class="tsd-anchor"></a>
+					<h3>ulp<wbr>Threshold</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">ulp<wbr>Threshold<span class="tsd-signature-symbol">(</span>ulp<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/webgpu_shader_execution_builtin_builtin.floatmatch.html" class="tsd-signature-type" data-tsd-kind="Interface">FloatMatch</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/shader/execution/builtin/builtin.ts#L53">src/webgpu/shader/execution/builtin/builtin.ts:53</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>ulp: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/webgpu_shader_execution_builtin_builtin.floatmatch.html" class="tsd-signature-type" data-tsd-kind="Interface">FloatMatch</a></h4>
+							<p>a FloatMatch that returns true iff the two numbers are within or
+							equal to the specified ULP threshold value.</p>
+						</li>
+					</ul>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class=" ">
+						<a href="../modules.html">Modules</a>
+					</li>
+					<li class="current tsd-kind-module">
+						<a href="webgpu_shader_execution_builtin_builtin.html">webgpu/shader/execution/builtin/builtin</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/webgpu_shader_execution_builtin_builtin.comparator.html" class="tsd-kind-icon">Comparator</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/webgpu_shader_execution_builtin_builtin.comparison.html" class="tsd-kind-icon">Comparison</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/webgpu_shader_execution_builtin_builtin.floatmatch.html" class="tsd-kind-icon">Float<wbr>Match</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="webgpu_shader_execution_builtin_builtin.html#case" class="tsd-kind-icon">Case</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="webgpu_shader_execution_builtin_builtin.html#caselist" class="tsd-kind-icon">Case<wbr>List</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="webgpu_shader_execution_builtin_builtin.html#config" class="tsd-kind-icon">Config</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="webgpu_shader_execution_builtin_builtin.html#storageclass-1" class="tsd-kind-icon">Storage<wbr>Class</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module">
+						<a href="webgpu_shader_execution_builtin_builtin.html#kbit" class="tsd-kind-icon">k<wbr>Bit</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module">
+						<a href="webgpu_shader_execution_builtin_builtin.html#kvalue" class="tsd-kind-icon">k<wbr>Value</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_shader_execution_builtin_builtin.html#absthreshold" class="tsd-kind-icon">abs<wbr>Threshold</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_shader_execution_builtin_builtin.html#anyof" class="tsd-kind-icon">any<wbr>Of</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_shader_execution_builtin_builtin.html#correctlyroundedthreshold" class="tsd-kind-icon">correctly<wbr>Rounded<wbr>Threshold</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_shader_execution_builtin_builtin.html#run" class="tsd-kind-icon">run</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_shader_execution_builtin_builtin.html#ulpthreshold" class="tsd-kind-icon">ulp<wbr>Threshold</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-namespace"><span class="tsd-kind-icon">Namespace</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

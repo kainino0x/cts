@@ -1,0 +1,1570 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>webgpu/util/conversion | @webgpu/cts</title>
+	<meta name="description" content="Documentation for @webgpu/cts">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+	<script async src="../assets/js/search.js" id="search-script"></script>
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">@webgpu/cts</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../modules.html">@webgpu/cts</a>
+				</li>
+				<li>
+					<a href="webgpu_util_conversion.html">webgpu/util/conversion</a>
+				</li>
+			</ul>
+			<h1>Module webgpu/util/conversion</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Classes</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-kind-icon">Scalar</a></li>
+								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/webgpu_util_conversion.scalartype.html" class="tsd-kind-icon">Scalar<wbr>Type</a></li>
+								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/webgpu_util_conversion.vector.html" class="tsd-kind-icon">Vector</a></li>
+								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/webgpu_util_conversion.vectortype.html" class="tsd-kind-icon">Vector<wbr>Type</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Type aliases</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="webgpu_util_conversion.html#scalarkind" class="tsd-kind-icon">Scalar<wbr>Kind</a></li>
+								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="webgpu_util_conversion.html#type" class="tsd-kind-icon">Type</a></li>
+								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="webgpu_util_conversion.html#value" class="tsd-kind-icon">Value</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Variables</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-variable tsd-parent-kind-module"><a href="webgpu_util_conversion.html#false" class="tsd-kind-icon">False</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-module"><a href="webgpu_util_conversion.html#true" class="tsd-kind-icon">True</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-module"><a href="webgpu_util_conversion.html#typebool" class="tsd-kind-icon">Type<wbr>Bool</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-module"><a href="webgpu_util_conversion.html#typef16" class="tsd-kind-icon">Type<wbr>F16</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-module"><a href="webgpu_util_conversion.html#typef32" class="tsd-kind-icon">Type<wbr>F32</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-module"><a href="webgpu_util_conversion.html#typei16" class="tsd-kind-icon">Type<wbr>I16</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-module"><a href="webgpu_util_conversion.html#typei32" class="tsd-kind-icon">Type<wbr>I32</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-module"><a href="webgpu_util_conversion.html#typei8" class="tsd-kind-icon">Type<wbr>I8</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-module"><a href="webgpu_util_conversion.html#typeu16" class="tsd-kind-icon">Type<wbr>U16</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-module"><a href="webgpu_util_conversion.html#typeu32" class="tsd-kind-icon">Type<wbr>U32</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-module"><a href="webgpu_util_conversion.html#typeu8" class="tsd-kind-icon">Type<wbr>U8</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Functions</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_conversion.html#typevec" class="tsd-kind-icon">Type<wbr>Vec</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_conversion.html#assertinintegerrange" class="tsd-kind-icon">assert<wbr>InInteger<wbr>Range</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_conversion.html#bool" class="tsd-kind-icon">bool</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_conversion.html#f16bits" class="tsd-kind-icon">f16<wbr>Bits</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_conversion.html#f32" class="tsd-kind-icon">f32</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_conversion.html#f32bits" class="tsd-kind-icon">f32<wbr>Bits</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_conversion.html#float16bitstofloat32" class="tsd-kind-icon">float16<wbr>Bits<wbr>ToFloat32</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_conversion.html#float32tofloat16bits" class="tsd-kind-icon">float32<wbr>ToFloat16<wbr>Bits</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_conversion.html#float32tofloatbits" class="tsd-kind-icon">float32<wbr>ToFloat<wbr>Bits</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_conversion.html#float32toint32" class="tsd-kind-icon">float32<wbr>ToInt32</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_conversion.html#float32touint32" class="tsd-kind-icon">float32<wbr>ToUint32</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_conversion.html#floatasnormalizedinteger" class="tsd-kind-icon">float<wbr>AsNormalized<wbr>Integer</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_conversion.html#gammacompress" class="tsd-kind-icon">gamma<wbr>Compress</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_conversion.html#gammadecompress" class="tsd-kind-icon">gamma<wbr>Decompress</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_conversion.html#i16" class="tsd-kind-icon">i16</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_conversion.html#i16bits" class="tsd-kind-icon">i16<wbr>Bits</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_conversion.html#i32" class="tsd-kind-icon">i32</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_conversion.html#i32bits" class="tsd-kind-icon">i32<wbr>Bits</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_conversion.html#i8" class="tsd-kind-icon">i8</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_conversion.html#i8bits" class="tsd-kind-icon">i8<wbr>Bits</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_conversion.html#normalizedintegerasfloat" class="tsd-kind-icon">normalized<wbr>Integer<wbr>AsFloat</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_conversion.html#numelementsof" class="tsd-kind-icon">num<wbr>Elements<wbr>Of</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_conversion.html#packrgb9e5ufloat" class="tsd-kind-icon">packRGB9<wbr>E5UFloat</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_conversion.html#scalartypeof" class="tsd-kind-icon">scalar<wbr>Type<wbr>Of</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_conversion.html#u16" class="tsd-kind-icon">u16</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_conversion.html#u16bits" class="tsd-kind-icon">u16<wbr>Bits</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_conversion.html#u32" class="tsd-kind-icon">u32</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_conversion.html#u32bits" class="tsd-kind-icon">u32<wbr>Bits</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_conversion.html#u8" class="tsd-kind-icon">u8</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_conversion.html#u8bits" class="tsd-kind-icon">u8<wbr>Bits</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_conversion.html#uint32tofloat32" class="tsd-kind-icon">uint32<wbr>ToFloat32</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_conversion.html#uint32toint32" class="tsd-kind-icon">uint32<wbr>ToInt32</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_conversion.html#vec2" class="tsd-kind-icon">vec2</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_conversion.html#vec3" class="tsd-kind-icon">vec3</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_conversion.html#vec4" class="tsd-kind-icon">vec4</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Type aliases</h2>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module">
+					<a name="scalarkind" class="tsd-anchor"></a>
+					<h3>Scalar<wbr>Kind</h3>
+					<div class="tsd-signature tsd-kind-icon">Scalar<wbr>Kind<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;f32&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;f16&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;u32&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;u16&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;u8&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;i32&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;i16&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;i8&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;bool&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L229">src/webgpu/util/conversion.ts:229</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>A type of number representable by Scalar.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module">
+					<a name="type" class="tsd-anchor"></a>
+					<h3>Type</h3>
+					<div class="tsd-signature tsd-kind-icon">Type<span class="tsd-signature-symbol">:</span> <a href="../classes/webgpu_util_conversion.scalartype.html" class="tsd-signature-type" data-tsd-kind="Class">ScalarType</a><span class="tsd-signature-symbol"> | </span><a href="../classes/webgpu_util_conversion.vectortype.html" class="tsd-signature-type" data-tsd-kind="Class">VectorType</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L291">src/webgpu/util/conversion.ts:291</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Type is a ScalarType or VectorType.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module">
+					<a name="value" class="tsd-anchor"></a>
+					<h3>Value</h3>
+					<div class="tsd-signature tsd-kind-icon">Value<span class="tsd-signature-symbol">:</span> <a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a><span class="tsd-signature-symbol"> | </span><a href="../classes/webgpu_util_conversion.vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L556">src/webgpu/util/conversion.ts:556</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Value is a Scalar or Vector value.</p>
+						</div>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Variables</h2>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module">
+					<a name="false" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> False</h3>
+					<div class="tsd-signature tsd-kind-icon">False<span class="tsd-signature-symbol">:</span> <a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a><span class="tsd-signature-symbol"> = ...</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L477">src/webgpu/util/conversion.ts:477</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>A &#39;false&#39; literal value</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module">
+					<a name="true" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> True</h3>
+					<div class="tsd-signature tsd-kind-icon">True<span class="tsd-signature-symbol">:</span> <a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a><span class="tsd-signature-symbol"> = ...</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L474">src/webgpu/util/conversion.ts:474</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>A &#39;true&#39; literal value</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module">
+					<a name="typebool" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> Type<wbr>Bool</h3>
+					<div class="tsd-signature tsd-kind-icon">Type<wbr>Bool<span class="tsd-signature-symbol">:</span> <a href="../classes/webgpu_util_conversion.scalartype.html" class="tsd-signature-type" data-tsd-kind="Class">ScalarType</a><span class="tsd-signature-symbol"> = ...</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L317">src/webgpu/util/conversion.ts:317</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module">
+					<a name="typef16" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> Type<wbr>F16</h3>
+					<div class="tsd-signature tsd-kind-icon">Type<wbr>F16<span class="tsd-signature-symbol">:</span> <a href="../classes/webgpu_util_conversion.scalartype.html" class="tsd-signature-type" data-tsd-kind="Class">ScalarType</a><span class="tsd-signature-symbol"> = ...</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L308">src/webgpu/util/conversion.ts:308</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module">
+					<a name="typef32" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> Type<wbr>F32</h3>
+					<div class="tsd-signature tsd-kind-icon">Type<wbr>F32<span class="tsd-signature-symbol">:</span> <a href="../classes/webgpu_util_conversion.scalartype.html" class="tsd-signature-type" data-tsd-kind="Class">ScalarType</a><span class="tsd-signature-symbol"> = ...</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L299">src/webgpu/util/conversion.ts:299</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module">
+					<a name="typei16" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> Type<wbr>I16</h3>
+					<div class="tsd-signature tsd-kind-icon">Type<wbr>I16<span class="tsd-signature-symbol">:</span> <a href="../classes/webgpu_util_conversion.scalartype.html" class="tsd-signature-type" data-tsd-kind="Class">ScalarType</a><span class="tsd-signature-symbol"> = ...</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L302">src/webgpu/util/conversion.ts:302</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module">
+					<a name="typei32" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> Type<wbr>I32</h3>
+					<div class="tsd-signature tsd-kind-icon">Type<wbr>I32<span class="tsd-signature-symbol">:</span> <a href="../classes/webgpu_util_conversion.scalartype.html" class="tsd-signature-type" data-tsd-kind="Class">ScalarType</a><span class="tsd-signature-symbol"> = ...</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L293">src/webgpu/util/conversion.ts:293</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module">
+					<a name="typei8" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> Type<wbr>I8</h3>
+					<div class="tsd-signature tsd-kind-icon">Type<wbr>I8<span class="tsd-signature-symbol">:</span> <a href="../classes/webgpu_util_conversion.scalartype.html" class="tsd-signature-type" data-tsd-kind="Class">ScalarType</a><span class="tsd-signature-symbol"> = ...</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L311">src/webgpu/util/conversion.ts:311</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module">
+					<a name="typeu16" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> Type<wbr>U16</h3>
+					<div class="tsd-signature tsd-kind-icon">Type<wbr>U16<span class="tsd-signature-symbol">:</span> <a href="../classes/webgpu_util_conversion.scalartype.html" class="tsd-signature-type" data-tsd-kind="Class">ScalarType</a><span class="tsd-signature-symbol"> = ...</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L305">src/webgpu/util/conversion.ts:305</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module">
+					<a name="typeu32" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> Type<wbr>U32</h3>
+					<div class="tsd-signature tsd-kind-icon">Type<wbr>U32<span class="tsd-signature-symbol">:</span> <a href="../classes/webgpu_util_conversion.scalartype.html" class="tsd-signature-type" data-tsd-kind="Class">ScalarType</a><span class="tsd-signature-symbol"> = ...</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L296">src/webgpu/util/conversion.ts:296</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module">
+					<a name="typeu8" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> Type<wbr>U8</h3>
+					<div class="tsd-signature tsd-kind-icon">Type<wbr>U8<span class="tsd-signature-symbol">:</span> <a href="../classes/webgpu_util_conversion.scalartype.html" class="tsd-signature-type" data-tsd-kind="Class">ScalarType</a><span class="tsd-signature-symbol"> = ...</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L314">src/webgpu/util/conversion.ts:314</a></li>
+						</ul>
+					</aside>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Functions</h2>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="typevec" class="tsd-anchor"></a>
+					<h3>Type<wbr>Vec</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">Type<wbr>Vec<span class="tsd-signature-symbol">(</span>width<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, elementType<span class="tsd-signature-symbol">: </span><a href="../classes/webgpu_util_conversion.scalartype.html" class="tsd-signature-type" data-tsd-kind="Class">ScalarType</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/webgpu_util_conversion.vectortype.html" class="tsd-signature-type" data-tsd-kind="Class">VectorType</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L279">src/webgpu/util/conversion.ts:279</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>width: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>elementType: <a href="../classes/webgpu_util_conversion.scalartype.html" class="tsd-signature-type" data-tsd-kind="Class">ScalarType</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../classes/webgpu_util_conversion.vectortype.html" class="tsd-signature-type" data-tsd-kind="Class">VectorType</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="assertinintegerrange" class="tsd-anchor"></a>
+					<h3>assert<wbr>InInteger<wbr>Range</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">assert<wbr>InInteger<wbr>Range<span class="tsd-signature-symbol">(</span>n<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, bits<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, signed<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L169">src/webgpu/util/conversion.ts:169</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Asserts that a number is within the representable (inclusive) of the integer type with the
+									specified number of bits and signedness.</p>
+								</div>
+								<p>MAINTENANCE_TODO: Assert isInteger? Then this function &quot;asserts that a number is representable&quot;
+								by the type.</p>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>n: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>bits: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>signed: <span class="tsd-signature-type">boolean</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="bool" class="tsd-anchor"></a>
+					<h3>bool</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">bool<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L465">src/webgpu/util/conversion.ts:465</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Create a boolean value.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>value: <span class="tsd-signature-type">boolean</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="f16bits" class="tsd-anchor"></a>
+					<h3>f16<wbr>Bits</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">f16<wbr>Bits<span class="tsd-signature-symbol">(</span>bits<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L395">src/webgpu/util/conversion.ts:395</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Create an f16 from a bit representation, a uint16 represented as a JS <code>number</code>.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>bits: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="f32" class="tsd-anchor"></a>
+					<h3>f32</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">f32<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L385">src/webgpu/util/conversion.ts:385</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Create an f32 from a numeric value, a JS <code>number</code>.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>value: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="f32bits" class="tsd-anchor"></a>
+					<h3>f32<wbr>Bits</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">f32<wbr>Bits<span class="tsd-signature-symbol">(</span>bits<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L390">src/webgpu/util/conversion.ts:390</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Create an f32 from a bit representation, a uint32 represented as a JS <code>number</code>.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>bits: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="float16bitstofloat32" class="tsd-anchor"></a>
+					<h3>float16<wbr>Bits<wbr>ToFloat32</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">float16<wbr>Bits<wbr>ToFloat32<span class="tsd-signature-symbol">(</span>float16Bits<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L103">src/webgpu/util/conversion.ts:103</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Decodes an IEEE754 16 bit floating point number into a JS <code>number</code> and returns.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>float16Bits: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="float32tofloat16bits" class="tsd-anchor"></a>
+					<h3>float32<wbr>ToFloat16<wbr>Bits</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">float32<wbr>ToFloat16<wbr>Bits<span class="tsd-signature-symbol">(</span>n<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L96">src/webgpu/util/conversion.ts:96</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Encodes a JS <code>number</code> into an IEEE754 16 bit floating point number.
+									Returns the result as an integer-valued JS <code>number</code>.</p>
+								</div>
+								<p>Does not handle clamping, underflow, overflow, or denormalized numbers.</p>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>n: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="float32tofloatbits" class="tsd-anchor"></a>
+					<h3>float32<wbr>ToFloat<wbr>Bits</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">float32<wbr>ToFloat<wbr>Bits<span class="tsd-signature-symbol">(</span>n<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, signBits<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">0</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">1</span>, exponentBits<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, mantissaBits<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, bias<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L49">src/webgpu/util/conversion.ts:49</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Encodes a JS <code>number</code> into an IEEE754 floating point number with the specified number of
+										sign, exponent, mantissa bits, and exponent bias.
+									Returns the result as an integer-valued JS <code>number</code>.</p>
+								</div>
+								<p>Does not handle clamping, underflow, overflow, or denormalized numbers.</p>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>n: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>signBits: <span class="tsd-signature-type">0</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">1</span></h5>
+								</li>
+								<li>
+									<h5>exponentBits: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>mantissaBits: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>bias: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="float32toint32" class="tsd-anchor"></a>
+					<h3>float32<wbr>ToInt32</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">float32<wbr>ToInt32<span class="tsd-signature-symbol">(</span>f32<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L213">src/webgpu/util/conversion.ts:213</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Converts a 32-bit float value to a 32-bit signed integer value</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>f32: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="float32touint32" class="tsd-anchor"></a>
+					<h3>float32<wbr>ToUint32</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">float32<wbr>ToUint32<span class="tsd-signature-symbol">(</span>f32<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L197">src/webgpu/util/conversion.ts:197</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Converts a 32-bit float value to a 32-bit unsigned integer value</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>f32: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="floatasnormalizedinteger" class="tsd-anchor"></a>
+					<h3>float<wbr>AsNormalized<wbr>Integer</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">float<wbr>AsNormalized<wbr>Integer<span class="tsd-signature-symbol">(</span>float<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, bits<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, signed<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L10">src/webgpu/util/conversion.ts:10</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Encodes a JS <code>number</code> into a &quot;normalized&quot; (unorm/snorm) integer representation with <code>bits</code> bits.
+									Input must be between -1 and 1 if signed, or 0 and 1 if unsigned.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>float: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>bits: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>signed: <span class="tsd-signature-type">boolean</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="gammacompress" class="tsd-anchor"></a>
+					<h3>gamma<wbr>Compress</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">gamma<wbr>Compress<span class="tsd-signature-symbol">(</span>n<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L183">src/webgpu/util/conversion.ts:183</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Converts a linear value into a &quot;gamma&quot;-encoded value using the sRGB-clamped transfer function.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>n: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="gammadecompress" class="tsd-anchor"></a>
+					<h3>gamma<wbr>Decompress</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">gamma<wbr>Decompress<span class="tsd-signature-symbol">(</span>n<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L191">src/webgpu/util/conversion.ts:191</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Converts a &quot;gamma&quot;-encoded value into a linear value using the sRGB-clamped transfer function.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>n: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="i16" class="tsd-anchor"></a>
+					<h3>i16</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">i16<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L406">src/webgpu/util/conversion.ts:406</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Create an i16 from a numeric value, a JS <code>number</code>.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>value: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="i16bits" class="tsd-anchor"></a>
+					<h3>i16<wbr>Bits</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">i16<wbr>Bits<span class="tsd-signature-symbol">(</span>bits<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L422">src/webgpu/util/conversion.ts:422</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Create an i16 from a bit representation, a uint16 represented as a JS <code>number</code>.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>bits: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="i32" class="tsd-anchor"></a>
+					<h3>i32</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">i32<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L401">src/webgpu/util/conversion.ts:401</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Create an i32 from a numeric value, a JS <code>number</code>.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>value: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="i32bits" class="tsd-anchor"></a>
+					<h3>i32<wbr>Bits</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">i32<wbr>Bits<span class="tsd-signature-symbol">(</span>bits<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L417">src/webgpu/util/conversion.ts:417</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Create an i32 from a bit representation, a uint32 represented as a JS <code>number</code>.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>bits: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="i8" class="tsd-anchor"></a>
+					<h3>i8</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">i8<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L411">src/webgpu/util/conversion.ts:411</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Create an i8 from a numeric value, a JS <code>number</code>.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>value: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="i8bits" class="tsd-anchor"></a>
+					<h3>i8<wbr>Bits</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">i8<wbr>Bits<span class="tsd-signature-symbol">(</span>bits<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L427">src/webgpu/util/conversion.ts:427</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Create an i8 from a bit representation, a uint8 represented as a JS <code>number</code>.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>bits: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="normalizedintegerasfloat" class="tsd-anchor"></a>
+					<h3>normalized<wbr>Integer<wbr>AsFloat</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">normalized<wbr>Integer<wbr>AsFloat<span class="tsd-signature-symbol">(</span>integer<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, bits<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, signed<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L26">src/webgpu/util/conversion.ts:26</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Decodes a JS <code>number</code> from a &quot;normalized&quot; (unorm/snorm) integer representation with <code>bits</code> bits.
+									Input must be an integer in the range of the specified unorm/snorm type.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>integer: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>bits: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>signed: <span class="tsd-signature-type">boolean</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="numelementsof" class="tsd-anchor"></a>
+					<h3>num<wbr>Elements<wbr>Of</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">num<wbr>Elements<wbr>Of<span class="tsd-signature-symbol">(</span>ty<span class="tsd-signature-symbol">: </span><a href="webgpu_util_conversion.html#type" class="tsd-signature-type" data-tsd-kind="Type alias">Type</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L322">src/webgpu/util/conversion.ts:322</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>ty: <a href="webgpu_util_conversion.html#type" class="tsd-signature-type" data-tsd-kind="Type alias">Type</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+							<p>the number of scalar (element) types of the given Type</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="packrgb9e5ufloat" class="tsd-anchor"></a>
+					<h3>packRGB9<wbr>E5UFloat</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">packRGB9<wbr>E5UFloat<span class="tsd-signature-symbol">(</span>r<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, g<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, b<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L120">src/webgpu/util/conversion.ts:120</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Encodes three JS <code>number</code> values into RGB9E5, returned as an integer-valued JS <code>number</code>.</p>
+								</div>
+								<p>RGB9E5 represents three partial-precision floating-point numbers encoded into a single 32-bit
+									value all sharing the same 5-bit exponent.
+									There is no sign bit, and there is a shared 5-bit biased (15) exponent and a 9-bit
+									mantissa for each channel. The mantissa does NOT have an implicit leading &quot;1.&quot;,
+								and instead has an implicit leading &quot;0.&quot;.</p>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>r: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>g: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>b: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="scalartypeof" class="tsd-anchor"></a>
+					<h3>scalar<wbr>Type<wbr>Of</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">scalar<wbr>Type<wbr>Of<span class="tsd-signature-symbol">(</span>ty<span class="tsd-signature-symbol">: </span><a href="webgpu_util_conversion.html#type" class="tsd-signature-type" data-tsd-kind="Type alias">Type</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/webgpu_util_conversion.scalartype.html" class="tsd-signature-type" data-tsd-kind="Class">ScalarType</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L333">src/webgpu/util/conversion.ts:333</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>ty: <a href="webgpu_util_conversion.html#type" class="tsd-signature-type" data-tsd-kind="Type alias">Type</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../classes/webgpu_util_conversion.scalartype.html" class="tsd-signature-type" data-tsd-kind="Class">ScalarType</a></h4>
+							<p>the scalar (element) type of the given Type</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="u16" class="tsd-anchor"></a>
+					<h3>u16</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">u16<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L438">src/webgpu/util/conversion.ts:438</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Create a u16 from a numeric value, a JS <code>number</code>.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>value: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="u16bits" class="tsd-anchor"></a>
+					<h3>u16<wbr>Bits</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">u16<wbr>Bits<span class="tsd-signature-symbol">(</span>bits<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L454">src/webgpu/util/conversion.ts:454</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Create an u16 from a bit representation, a uint16 represented as a JS <code>number</code>.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>bits: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="u32" class="tsd-anchor"></a>
+					<h3>u32</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">u32<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L433">src/webgpu/util/conversion.ts:433</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Create a u32 from a numeric value, a JS <code>number</code>.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>value: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="u32bits" class="tsd-anchor"></a>
+					<h3>u32<wbr>Bits</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">u32<wbr>Bits<span class="tsd-signature-symbol">(</span>bits<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L449">src/webgpu/util/conversion.ts:449</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Create an u32 from a bit representation, a uint32 represented as a JS <code>number</code>.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>bits: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="u8" class="tsd-anchor"></a>
+					<h3>u8</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">u8<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L443">src/webgpu/util/conversion.ts:443</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Create a u8 from a numeric value, a JS <code>number</code>.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>value: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="u8bits" class="tsd-anchor"></a>
+					<h3>u8<wbr>Bits</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">u8<wbr>Bits<span class="tsd-signature-symbol">(</span>bits<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L459">src/webgpu/util/conversion.ts:459</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Create an u8 from a bit representation, a uint8 represented as a JS <code>number</code>.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>bits: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="uint32tofloat32" class="tsd-anchor"></a>
+					<h3>uint32<wbr>ToFloat32</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">uint32<wbr>ToFloat32<span class="tsd-signature-symbol">(</span>u32<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L205">src/webgpu/util/conversion.ts:205</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Converts a 32-bit unsigned integer value to a 32-bit float value</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>u32: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="uint32toint32" class="tsd-anchor"></a>
+					<h3>uint32<wbr>ToInt32</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">uint32<wbr>ToInt32<span class="tsd-signature-symbol">(</span>u32<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L221">src/webgpu/util/conversion.ts:221</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Converts a 32-bit unsigned integer value to a 32-bit signed integer value</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>u32: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="vec2" class="tsd-anchor"></a>
+					<h3>vec2</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">vec2<span class="tsd-signature-symbol">(</span>x<span class="tsd-signature-symbol">: </span><a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a>, y<span class="tsd-signature-symbol">: </span><a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/webgpu_util_conversion.vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L541">src/webgpu/util/conversion.ts:541</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Helper for constructing a new two-element vector with the provided values</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>x: <a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a></h5>
+								</li>
+								<li>
+									<h5>y: <a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../classes/webgpu_util_conversion.vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="vec3" class="tsd-anchor"></a>
+					<h3>vec3</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">vec3<span class="tsd-signature-symbol">(</span>x<span class="tsd-signature-symbol">: </span><a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a>, y<span class="tsd-signature-symbol">: </span><a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a>, z<span class="tsd-signature-symbol">: </span><a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/webgpu_util_conversion.vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L546">src/webgpu/util/conversion.ts:546</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Helper for constructing a new three-element vector with the provided values</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>x: <a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a></h5>
+								</li>
+								<li>
+									<h5>y: <a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a></h5>
+								</li>
+								<li>
+									<h5>z: <a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../classes/webgpu_util_conversion.vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="vec4" class="tsd-anchor"></a>
+					<h3>vec4</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">vec4<span class="tsd-signature-symbol">(</span>x<span class="tsd-signature-symbol">: </span><a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a>, y<span class="tsd-signature-symbol">: </span><a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a>, z<span class="tsd-signature-symbol">: </span><a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a>, w<span class="tsd-signature-symbol">: </span><a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/webgpu_util_conversion.vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/conversion.ts#L551">src/webgpu/util/conversion.ts:551</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Helper for constructing a new four-element vector with the provided values</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>x: <a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a></h5>
+								</li>
+								<li>
+									<h5>y: <a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a></h5>
+								</li>
+								<li>
+									<h5>z: <a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a></h5>
+								</li>
+								<li>
+									<h5>w: <a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-signature-type" data-tsd-kind="Class">Scalar</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../classes/webgpu_util_conversion.vector.html" class="tsd-signature-type" data-tsd-kind="Class">Vector</a></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class=" ">
+						<a href="../modules.html">Modules</a>
+					</li>
+					<li class="current tsd-kind-module">
+						<a href="webgpu_util_conversion.html">webgpu/util/conversion</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="../classes/webgpu_util_conversion.scalar.html" class="tsd-kind-icon">Scalar</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="../classes/webgpu_util_conversion.scalartype.html" class="tsd-kind-icon">Scalar<wbr>Type</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="../classes/webgpu_util_conversion.vector.html" class="tsd-kind-icon">Vector</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="../classes/webgpu_util_conversion.vectortype.html" class="tsd-kind-icon">Vector<wbr>Type</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#scalarkind" class="tsd-kind-icon">Scalar<wbr>Kind</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#type" class="tsd-kind-icon">Type</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#value" class="tsd-kind-icon">Value</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#false" class="tsd-kind-icon">False</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#true" class="tsd-kind-icon">True</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#typebool" class="tsd-kind-icon">Type<wbr>Bool</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#typef16" class="tsd-kind-icon">Type<wbr>F16</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#typef32" class="tsd-kind-icon">Type<wbr>F32</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#typei16" class="tsd-kind-icon">Type<wbr>I16</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#typei32" class="tsd-kind-icon">Type<wbr>I32</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#typei8" class="tsd-kind-icon">Type<wbr>I8</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#typeu16" class="tsd-kind-icon">Type<wbr>U16</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#typeu32" class="tsd-kind-icon">Type<wbr>U32</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#typeu8" class="tsd-kind-icon">Type<wbr>U8</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#typevec" class="tsd-kind-icon">Type<wbr>Vec</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#assertinintegerrange" class="tsd-kind-icon">assert<wbr>InInteger<wbr>Range</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#bool" class="tsd-kind-icon">bool</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#f16bits" class="tsd-kind-icon">f16<wbr>Bits</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#f32" class="tsd-kind-icon">f32</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#f32bits" class="tsd-kind-icon">f32<wbr>Bits</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#float16bitstofloat32" class="tsd-kind-icon">float16<wbr>Bits<wbr>ToFloat32</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#float32tofloat16bits" class="tsd-kind-icon">float32<wbr>ToFloat16<wbr>Bits</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#float32tofloatbits" class="tsd-kind-icon">float32<wbr>ToFloat<wbr>Bits</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#float32toint32" class="tsd-kind-icon">float32<wbr>ToInt32</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#float32touint32" class="tsd-kind-icon">float32<wbr>ToUint32</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#floatasnormalizedinteger" class="tsd-kind-icon">float<wbr>AsNormalized<wbr>Integer</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#gammacompress" class="tsd-kind-icon">gamma<wbr>Compress</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#gammadecompress" class="tsd-kind-icon">gamma<wbr>Decompress</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#i16" class="tsd-kind-icon">i16</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#i16bits" class="tsd-kind-icon">i16<wbr>Bits</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#i32" class="tsd-kind-icon">i32</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#i32bits" class="tsd-kind-icon">i32<wbr>Bits</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#i8" class="tsd-kind-icon">i8</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#i8bits" class="tsd-kind-icon">i8<wbr>Bits</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#normalizedintegerasfloat" class="tsd-kind-icon">normalized<wbr>Integer<wbr>AsFloat</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#numelementsof" class="tsd-kind-icon">num<wbr>Elements<wbr>Of</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#packrgb9e5ufloat" class="tsd-kind-icon">packRGB9<wbr>E5UFloat</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#scalartypeof" class="tsd-kind-icon">scalar<wbr>Type<wbr>Of</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#u16" class="tsd-kind-icon">u16</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#u16bits" class="tsd-kind-icon">u16<wbr>Bits</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#u32" class="tsd-kind-icon">u32</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#u32bits" class="tsd-kind-icon">u32<wbr>Bits</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#u8" class="tsd-kind-icon">u8</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#u8bits" class="tsd-kind-icon">u8<wbr>Bits</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#uint32tofloat32" class="tsd-kind-icon">uint32<wbr>ToFloat32</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#uint32toint32" class="tsd-kind-icon">uint32<wbr>ToInt32</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#vec2" class="tsd-kind-icon">vec2</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#vec3" class="tsd-kind-icon">vec3</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_conversion.html#vec4" class="tsd-kind-icon">vec4</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-namespace"><span class="tsd-kind-icon">Namespace</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

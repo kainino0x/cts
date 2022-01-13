@@ -1,0 +1,479 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>webgpu/util/check_contents | @webgpu/cts</title>
+	<meta name="description" content="Documentation for @webgpu/cts">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+	<script async src="../assets/js/search.js" id="search-script"></script>
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">@webgpu/cts</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../modules.html">@webgpu/cts</a>
+				</li>
+				<li>
+					<a href="webgpu_util_check_contents.html">webgpu/util/check_contents</a>
+				</li>
+			</ul>
+			<h1>Module webgpu/util/check_contents</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Type aliases</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="webgpu_util_check_contents.html#checkelementsgenerator" class="tsd-kind-icon">Check<wbr>Elements<wbr>Generator</a></li>
+								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="webgpu_util_check_contents.html#checkelementspredicate" class="tsd-kind-icon">Check<wbr>Elements<wbr>Predicate</a></li>
+								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="webgpu_util_check_contents.html#checkelementssupplementaltablerows" class="tsd-kind-icon">Check<wbr>Elements<wbr>Supplemental<wbr>Table<wbr>Rows</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Functions</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_check_contents.html#checkelementsbetween" class="tsd-kind-icon">check<wbr>Elements<wbr>Between</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_check_contents.html#checkelementsequal" class="tsd-kind-icon">check<wbr>Elements<wbr>Equal</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_check_contents.html#checkelementsequaleither" class="tsd-kind-icon">check<wbr>Elements<wbr>Equal<wbr>Either</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_check_contents.html#checkelementsequalgenerated" class="tsd-kind-icon">check<wbr>Elements<wbr>Equal<wbr>Generated</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_check_contents.html#checkelementsfloat16between" class="tsd-kind-icon">check<wbr>Elements<wbr>Float16<wbr>Between</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_check_contents.html#checkelementspasspredicate" class="tsd-kind-icon">check<wbr>Elements<wbr>Pass<wbr>Predicate</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Type aliases</h2>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module">
+					<a name="checkelementsgenerator" class="tsd-anchor"></a>
+					<h3>Check<wbr>Elements<wbr>Generator</h3>
+					<div class="tsd-signature tsd-kind-icon">Check<wbr>Elements<wbr>Generator<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/check_contents.ts#L13">src/webgpu/util/check_contents.ts:13</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Generate an expected value at <code>index</code>, to test for equality with the actual value.</p>
+						</div>
+					</div>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter-signature">
+								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-type-alias">
+									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+								</ul>
+								<ul class="tsd-descriptions">
+									<li class="tsd-description">
+										<h4 class="tsd-parameters-title">Parameters</h4>
+										<ul class="tsd-parameters">
+											<li>
+												<h5>index: <span class="tsd-signature-type">number</span></h5>
+											</li>
+										</ul>
+										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module">
+					<a name="checkelementspredicate" class="tsd-anchor"></a>
+					<h3>Check<wbr>Elements<wbr>Predicate</h3>
+					<div class="tsd-signature tsd-kind-icon">Check<wbr>Elements<wbr>Predicate<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/check_contents.ts#L15">src/webgpu/util/check_contents.ts:15</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Check whether the actual <code>value</code> at <code>index</code> is as expected.</p>
+						</div>
+					</div>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter-signature">
+								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-type-alias">
+									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+								</ul>
+								<ul class="tsd-descriptions">
+									<li class="tsd-description">
+										<h4 class="tsd-parameters-title">Parameters</h4>
+										<ul class="tsd-parameters">
+											<li>
+												<h5>index: <span class="tsd-signature-type">number</span></h5>
+											</li>
+											<li>
+												<h5>value: <span class="tsd-signature-type">number</span></h5>
+											</li>
+										</ul>
+										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module">
+					<a name="checkelementssupplementaltablerows" class="tsd-anchor"></a>
+					<h3>Check<wbr>Elements<wbr>Supplemental<wbr>Table<wbr>Rows</h3>
+					<div class="tsd-signature tsd-kind-icon">Check<wbr>Elements<wbr>Supplemental<wbr>Table<wbr>Rows<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>getValueForCell<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>leftHeader<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/check_contents.ts#L20">src/webgpu/util/check_contents.ts:20</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Provides a pretty-printing implementation for a particular CheckElementsPredicate.
+							This is an array; each element provides info to print an additional row in the error message.</p>
+						</div>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Functions</h2>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="checkelementsbetween" class="tsd-anchor"></a>
+					<h3>check<wbr>Elements<wbr>Between</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">check<wbr>Elements<wbr>Between<span class="tsd-signature-symbol">(</span>actual<span class="tsd-signature-symbol">: </span><a href="common_util_util.html#typedarraybufferview" class="tsd-signature-type" data-tsd-kind="Type alias">TypedArrayBufferView</a>, expected<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">readonly </span><span class="tsd-signature-symbol">[</span><a href="webgpu_util_check_contents.html#checkelementsgenerator" class="tsd-signature-type" data-tsd-kind="Type alias">CheckElementsGenerator</a><span class="tsd-signature-symbol">, </span><a href="webgpu_util_check_contents.html#checkelementsgenerator" class="tsd-signature-type" data-tsd-kind="Type alias">CheckElementsGenerator</a><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/common_util_util.errorwithextra.html" class="tsd-signature-type" data-tsd-kind="Class">ErrorWithExtra</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/check_contents.ts#L47">src/webgpu/util/check_contents.ts:47</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Check whether each value in a <code>TypedArray</code> is between the two corresponding &quot;expected&quot; values
+									(either <code>a(i) &lt;= actual[i] &lt;= b(i)</code> or <code>a(i) &gt;= actual[i] =&gt; b(i)</code>).</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>actual: <a href="common_util_util.html#typedarraybufferview" class="tsd-signature-type" data-tsd-kind="Type alias">TypedArrayBufferView</a></h5>
+								</li>
+								<li>
+									<h5>expected: <span class="tsd-signature-symbol">readonly </span><span class="tsd-signature-symbol">[</span><a href="webgpu_util_check_contents.html#checkelementsgenerator" class="tsd-signature-type" data-tsd-kind="Type alias">CheckElementsGenerator</a><span class="tsd-signature-symbol">, </span><a href="webgpu_util_check_contents.html#checkelementsgenerator" class="tsd-signature-type" data-tsd-kind="Type alias">CheckElementsGenerator</a><span class="tsd-signature-symbol">]</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../classes/common_util_util.errorwithextra.html" class="tsd-signature-type" data-tsd-kind="Class">ErrorWithExtra</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="checkelementsequal" class="tsd-anchor"></a>
+					<h3>check<wbr>Elements<wbr>Equal</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">check<wbr>Elements<wbr>Equal<span class="tsd-signature-symbol">(</span>actual<span class="tsd-signature-symbol">: </span><a href="common_util_util.html#typedarraybufferview" class="tsd-signature-type" data-tsd-kind="Type alias">TypedArrayBufferView</a>, expected<span class="tsd-signature-symbol">: </span><a href="common_util_util.html#typedarraybufferview" class="tsd-signature-type" data-tsd-kind="Type alias">TypedArrayBufferView</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/common_util_util.errorwithextra.html" class="tsd-signature-type" data-tsd-kind="Class">ErrorWithExtra</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/check_contents.ts#L34">src/webgpu/util/check_contents.ts:34</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Check whether two <code>TypedArray</code>s have equal contents.
+									Returns <code>undefined</code> if the check passes, or an <code>Error</code> if not.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>actual: <a href="common_util_util.html#typedarraybufferview" class="tsd-signature-type" data-tsd-kind="Type alias">TypedArrayBufferView</a></h5>
+								</li>
+								<li>
+									<h5>expected: <a href="common_util_util.html#typedarraybufferview" class="tsd-signature-type" data-tsd-kind="Type alias">TypedArrayBufferView</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../classes/common_util_util.errorwithextra.html" class="tsd-signature-type" data-tsd-kind="Class">ErrorWithExtra</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="checkelementsequaleither" class="tsd-anchor"></a>
+					<h3>check<wbr>Elements<wbr>Equal<wbr>Either</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">check<wbr>Elements<wbr>Equal<wbr>Either<span class="tsd-signature-symbol">(</span>actual<span class="tsd-signature-symbol">: </span><a href="common_util_util.html#typedarraybufferview" class="tsd-signature-type" data-tsd-kind="Type alias">TypedArrayBufferView</a>, expected<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">readonly </span><span class="tsd-signature-symbol">[</span><a href="common_util_util.html#typedarraybufferview" class="tsd-signature-type" data-tsd-kind="Type alias">TypedArrayBufferView</a><span class="tsd-signature-symbol">, </span><a href="common_util_util.html#typedarraybufferview" class="tsd-signature-type" data-tsd-kind="Type alias">TypedArrayBufferView</a><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/common_util_util.errorwithextra.html" class="tsd-signature-type" data-tsd-kind="Class">ErrorWithExtra</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/check_contents.ts#L107">src/webgpu/util/check_contents.ts:107</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Check whether each value in a <code>TypedArray</code> is equal to one of the two corresponding &quot;expected&quot;
+									values (either <code>actual[i] === a[i]</code> or <code>actual[i] === b[i]</code>)</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>actual: <a href="common_util_util.html#typedarraybufferview" class="tsd-signature-type" data-tsd-kind="Type alias">TypedArrayBufferView</a></h5>
+								</li>
+								<li>
+									<h5>expected: <span class="tsd-signature-symbol">readonly </span><span class="tsd-signature-symbol">[</span><a href="common_util_util.html#typedarraybufferview" class="tsd-signature-type" data-tsd-kind="Type alias">TypedArrayBufferView</a><span class="tsd-signature-symbol">, </span><a href="common_util_util.html#typedarraybufferview" class="tsd-signature-type" data-tsd-kind="Type alias">TypedArrayBufferView</a><span class="tsd-signature-symbol">]</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../classes/common_util_util.errorwithextra.html" class="tsd-signature-type" data-tsd-kind="Class">ErrorWithExtra</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="checkelementsequalgenerated" class="tsd-anchor"></a>
+					<h3>check<wbr>Elements<wbr>Equal<wbr>Generated</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">check<wbr>Elements<wbr>Equal<wbr>Generated<span class="tsd-signature-symbol">(</span>actual<span class="tsd-signature-symbol">: </span><a href="common_util_util.html#typedarraybufferview" class="tsd-signature-type" data-tsd-kind="Type alias">TypedArrayBufferView</a>, generator<span class="tsd-signature-symbol">: </span><a href="webgpu_util_check_contents.html#checkelementsgenerator" class="tsd-signature-type" data-tsd-kind="Type alias">CheckElementsGenerator</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/common_util_util.errorwithextra.html" class="tsd-signature-type" data-tsd-kind="Class">ErrorWithExtra</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/check_contents.ts#L145">src/webgpu/util/check_contents.ts:145</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Check whether a <code>TypedArray</code>&#39;s contents equal the values produced by a generator function.
+									Returns <code>undefined</code> if the check passes, or an <code>Error</code> if not.</p>
+								</div>
+								<pre><code class="language-text">Array had unexpected contents at indices 2 through 19.
+ Starting at index 1:
+   actual == 0x: 00 fe ff 00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f 00
+   failed -&gt;        xx xx    xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx
+ expected ==     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+</code></pre>
+								<pre><code class="language-text">Array had unexpected contents at indices 2 through 29.
+ Starting at index 1:
+   actual ==  0.000 -2.000e+100 -1.000e+100 0.000 1.000e+100 2.000e+100 3.000e+100 4.000e+100 5.000e+100 6.000e+100 7.000e+100 ...
+   failed -&gt;                 xx          xx               xx         xx         xx         xx         xx         xx         xx ...
+ expected ==  0.000       0.000       0.000 0.000      0.000      0.000      0.000      0.000      0.000      0.000      0.000 ...
+</code></pre>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>actual: <a href="common_util_util.html#typedarraybufferview" class="tsd-signature-type" data-tsd-kind="Type alias">TypedArrayBufferView</a></h5>
+								</li>
+								<li>
+									<h5>generator: <a href="webgpu_util_check_contents.html#checkelementsgenerator" class="tsd-signature-type" data-tsd-kind="Type alias">CheckElementsGenerator</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../classes/common_util_util.errorwithextra.html" class="tsd-signature-type" data-tsd-kind="Class">ErrorWithExtra</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="checkelementsfloat16between" class="tsd-anchor"></a>
+					<h3>check<wbr>Elements<wbr>Float16<wbr>Between</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">check<wbr>Elements<wbr>Float16<wbr>Between<span class="tsd-signature-symbol">(</span>actual<span class="tsd-signature-symbol">: </span><a href="common_util_util.html#typedarraybufferview" class="tsd-signature-type" data-tsd-kind="Type alias">TypedArrayBufferView</a>, expected<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">readonly </span><span class="tsd-signature-symbol">[</span><a href="common_util_util.html#typedarraybufferview" class="tsd-signature-type" data-tsd-kind="Type alias">TypedArrayBufferView</a><span class="tsd-signature-symbol">, </span><a href="common_util_util.html#typedarraybufferview" class="tsd-signature-type" data-tsd-kind="Type alias">TypedArrayBufferView</a><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/common_util_util.errorwithextra.html" class="tsd-signature-type" data-tsd-kind="Class">ErrorWithExtra</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/check_contents.ts#L70">src/webgpu/util/check_contents.ts:70</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Equivalent to <a href="webgpu_util_check_contents.html#checkelementsbetween">checkElementsBetween</a> but interpret values as float16 and convert to JS number before comparison.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>actual: <a href="common_util_util.html#typedarraybufferview" class="tsd-signature-type" data-tsd-kind="Type alias">TypedArrayBufferView</a></h5>
+								</li>
+								<li>
+									<h5>expected: <span class="tsd-signature-symbol">readonly </span><span class="tsd-signature-symbol">[</span><a href="common_util_util.html#typedarraybufferview" class="tsd-signature-type" data-tsd-kind="Type alias">TypedArrayBufferView</a><span class="tsd-signature-symbol">, </span><a href="common_util_util.html#typedarraybufferview" class="tsd-signature-type" data-tsd-kind="Type alias">TypedArrayBufferView</a><span class="tsd-signature-symbol">]</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../classes/common_util_util.errorwithextra.html" class="tsd-signature-type" data-tsd-kind="Class">ErrorWithExtra</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="checkelementspasspredicate" class="tsd-anchor"></a>
+					<h3>check<wbr>Elements<wbr>Pass<wbr>Predicate</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">check<wbr>Elements<wbr>Pass<wbr>Predicate<span class="tsd-signature-symbol">(</span>actual<span class="tsd-signature-symbol">: </span><a href="common_util_util.html#typedarraybufferview" class="tsd-signature-type" data-tsd-kind="Type alias">TypedArrayBufferView</a>, predicate<span class="tsd-signature-symbol">: </span><a href="webgpu_util_check_contents.html#checkelementspredicate" class="tsd-signature-type" data-tsd-kind="Type alias">CheckElementsPredicate</a>, __namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>predicatePrinter<span class="tsd-signature-symbol">?: </span><a href="webgpu_util_check_contents.html#checkelementssupplementaltablerows" class="tsd-signature-type" data-tsd-kind="Type alias">CheckElementsSupplementalTableRows</a><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/common_util_util.errorwithextra.html" class="tsd-signature-type" data-tsd-kind="Class">ErrorWithExtra</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/check_contents.ts#L160">src/webgpu/util/check_contents.ts:160</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Check whether a <code>TypedArray</code>&#39;s values pass the provided predicate function.
+									Returns <code>undefined</code> if the check passes, or an <code>Error</code> if not.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>actual: <a href="common_util_util.html#typedarraybufferview" class="tsd-signature-type" data-tsd-kind="Type alias">TypedArrayBufferView</a></h5>
+								</li>
+								<li>
+									<h5>predicate: <a href="webgpu_util_check_contents.html#checkelementspredicate" class="tsd-signature-type" data-tsd-kind="Type alias">CheckElementsPredicate</a></h5>
+								</li>
+								<li>
+									<h5>__namedParameters: <span class="tsd-signature-symbol">{ </span>predicatePrinter<span class="tsd-signature-symbol">?: </span><a href="webgpu_util_check_contents.html#checkelementssupplementaltablerows" class="tsd-signature-type" data-tsd-kind="Type alias">CheckElementsSupplementalTableRows</a><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5><span class="tsd-flag ts-flagOptional">Optional</span> predicate<wbr>Printer<span class="tsd-signature-symbol">?: </span><a href="webgpu_util_check_contents.html#checkelementssupplementaltablerows" class="tsd-signature-type" data-tsd-kind="Type alias">CheckElementsSupplementalTableRows</a></h5>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../classes/common_util_util.errorwithextra.html" class="tsd-signature-type" data-tsd-kind="Class">ErrorWithExtra</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class=" ">
+						<a href="../modules.html">Modules</a>
+					</li>
+					<li class="current tsd-kind-module">
+						<a href="webgpu_util_check_contents.html">webgpu/util/check_<wbr>contents</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="webgpu_util_check_contents.html#checkelementsgenerator" class="tsd-kind-icon">Check<wbr>Elements<wbr>Generator</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="webgpu_util_check_contents.html#checkelementspredicate" class="tsd-kind-icon">Check<wbr>Elements<wbr>Predicate</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="webgpu_util_check_contents.html#checkelementssupplementaltablerows" class="tsd-kind-icon">Check<wbr>Elements<wbr>Supplemental<wbr>Table<wbr>Rows</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_check_contents.html#checkelementsbetween" class="tsd-kind-icon">check<wbr>Elements<wbr>Between</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_check_contents.html#checkelementsequal" class="tsd-kind-icon">check<wbr>Elements<wbr>Equal</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_check_contents.html#checkelementsequaleither" class="tsd-kind-icon">check<wbr>Elements<wbr>Equal<wbr>Either</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_check_contents.html#checkelementsequalgenerated" class="tsd-kind-icon">check<wbr>Elements<wbr>Equal<wbr>Generated</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_check_contents.html#checkelementsfloat16between" class="tsd-kind-icon">check<wbr>Elements<wbr>Float16<wbr>Between</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_check_contents.html#checkelementspasspredicate" class="tsd-kind-icon">check<wbr>Elements<wbr>Pass<wbr>Predicate</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-namespace"><span class="tsd-kind-icon">Namespace</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

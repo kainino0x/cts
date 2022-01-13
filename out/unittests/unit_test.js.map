@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../src/unittests/unit_test.ts"],"names":["Fixture","UnitTest"],"mappings":";AAAA;AACA,GADA,SAASA,OAAT,QAAwB,gCAAxB,CAEA,OAAO,MAAMC,QAAN,SAAuBD,OAAvB,CAA+B","sourcesContent":["import { Fixture } from '../common/framework/fixture.js';\n\nexport class UnitTest extends Fixture {}\n"],"file":"unit_test.js"}

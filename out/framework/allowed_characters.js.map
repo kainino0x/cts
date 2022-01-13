@@ -1,1 +1,0 @@
-{"version":3,"sources":["../../src/framework/allowed_characters.ts"],"names":["allowedTestNameCharacters"],"mappings":";;;;AAAA;AACA,OAAO,MAAMA,yBAAyB,GAAG,cAAlC","sourcesContent":["// It may be OK to add more allowed characters here.\nexport const allowedTestNameCharacters = 'a-zA-Z0-9/_ ';\n"],"file":"allowed_characters.js"}

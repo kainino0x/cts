@@ -1,68 +1,22 @@
-# WebGPU CTS
+# WebGPU Conformance Test Suite
 
-The WebGPU CTS is written in TypeScript, and builds into two directories:
+This is the conformance test suite for WebGPU.
+It tests the behaviors defined by the [WebGPU specification](https://gpuweb.github.io/gpuweb/).
 
-- `out/`: Built framework and test files, needed to run standalone or command line.
-- `out-wpt/`: Build directory for export into WPT. Contains WPT runner and a copy of just the needed files from `out/`.
+The contents of this test suite are considered **normative**; implementations must pass
+them to be WebGPU-conformant. Mismatches between the specification and tests are bugs.
 
-## Docs
+This test suite can be embedded inside [WPT](https://github.com/web-platform-tests/wpt) or run in standalone.
 
-- [Terminology used in the test framework](docs/terms.md)
+## [Launch the standalone CTS runner / test plan viewer](https://gpuweb.github.io/cts/standalone/)
 
-## Developing
+## Contributing
 
-### Setup
+Please read the [introductory guidelines](docs/intro/README.md) before contributing.
+Other documentation may be found in [`docs/`](docs/) and in the [helper index](https://gpuweb.github.io/cts/docs/tsdoc/) ([source](docs/helper_index.txt)).
 
-After checking out the repository and installing Yarn, run these commands to
-set up dependencies:
+Read [CONTRIBUTING.md](CONTRIBUTING.md) on licensing.
 
-```sh
-cd cts/
-yarn install
-
-npx grunt  # show available grunt commands
-```
-
-### Build
-
-To build and run all pre-submit checks (including type and lint checks and
-unittests), use:
-
-```sh
-npx grunt pre
-```
-
-To just build the project, use:
-
-```sh
-npx grunt build
-```
-
-### Run
-
-To test in a browser under the standalone harness, run `grunt serve`, then
-open:
-
-* http://localhost:8080/ (defaults to ?runnow=0&q=cts)
-* http://localhost:8080/?runnow=1&q=unittests:
-* http://localhost:8080/?runnow=1&q=unittests:basic:&q=unittests:params:
-
-### Making Changes
-
-To add new tests, simply imitate the pattern in neigboring tests or
-neighboring files. New test files must be named ending in `.spec.ts`.
-
-For an example, see `src/suites/cts/examples.spec.ts`.
-
-Since this project is written in TypeScript, it integrates best with Visual
-Studio Code. There are also some default settings (in `.vscode/settings.json`)
-which will be applied automatically.
-
-Before uploading, you should run pre-submit checks (`grunt pre`).
-
-Be sure to read [CONTRIBUTING.md](CONTRIBUTING.md).
-
-### Export to WPT
-
-Copy (or symlink) the `out-wpt/` directory as the `webgpu/` directory in your
-WPT checkout.
+For realtime communication about WebGPU spec and test, join the
+[#WebGPU:matrix.org room](https://app.element.io/#/room/#WebGPU:matrix.org)
+on Matrix.

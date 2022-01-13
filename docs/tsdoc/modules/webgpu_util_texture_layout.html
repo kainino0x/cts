@@ -1,0 +1,490 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>webgpu/util/texture/layout | @webgpu/cts</title>
+	<meta name="description" content="Documentation for @webgpu/cts">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+	<script async src="../assets/js/search.js" id="search-script"></script>
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">@webgpu/cts</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../modules.html">@webgpu/cts</a>
+				</li>
+				<li>
+					<a href="webgpu_util_texture_layout.html">webgpu/util/texture/layout</a>
+				</li>
+			</ul>
+			<h1>Module webgpu/util/texture/layout</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Interfaces</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/webgpu_util_texture_layout.layoutoptions.html" class="tsd-kind-icon">Layout<wbr>Options</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/webgpu_util_texture_layout.texturecopylayout.html" class="tsd-kind-icon">Texture<wbr>Copy<wbr>Layout</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Type aliases</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="webgpu_util_texture_layout.html#imagecopytype" class="tsd-kind-icon">Image<wbr>Copy<wbr>Type</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Variables</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-variable tsd-parent-kind-module"><a href="webgpu_util_texture_layout.html#kbuffercopyalignment" class="tsd-kind-icon">k<wbr>Buffer<wbr>Copy<wbr>Alignment</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-module"><a href="webgpu_util_texture_layout.html#kbytesperrowalignment" class="tsd-kind-icon">k<wbr>Bytes<wbr>Per<wbr>Row<wbr>Alignment</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-module"><a href="webgpu_util_texture_layout.html#kimagecopytypes" class="tsd-kind-icon">k<wbr>Image<wbr>Copy<wbr>Types</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Functions</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_texture_layout.html#bytesinacompleterow" class="tsd-kind-icon">bytes<wbr>InAComplete<wbr>Row</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_texture_layout.html#createtextureuploadbuffer" class="tsd-kind-icon">create<wbr>Texture<wbr>Upload<wbr>Buffer</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_texture_layout.html#databytesforcopyorfail" class="tsd-kind-icon">data<wbr>Bytes<wbr>For<wbr>Copy<wbr>OrFail</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_texture_layout.html#databytesforcopyoroverestimate" class="tsd-kind-icon">data<wbr>Bytes<wbr>For<wbr>Copy<wbr>OrOverestimate</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_texture_layout.html#filltexturedatawithtexelvalue" class="tsd-kind-icon">fill<wbr>Texture<wbr>Data<wbr>With<wbr>Texel<wbr>Value</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="webgpu_util_texture_layout.html#gettexturecopylayout" class="tsd-kind-icon">get<wbr>Texture<wbr>Copy<wbr>Layout</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Type aliases</h2>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module">
+					<a name="imagecopytype" class="tsd-anchor"></a>
+					<h3>Image<wbr>Copy<wbr>Type</h3>
+					<div class="tsd-signature tsd-kind-icon">Image<wbr>Copy<wbr>Type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;WriteTexture&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;CopyB2T&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;CopyT2B&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/texture/layout.ts#L184">src/webgpu/util/texture/layout.ts:184</a></li>
+						</ul>
+					</aside>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Variables</h2>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module">
+					<a name="kbuffercopyalignment" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> k<wbr>Buffer<wbr>Copy<wbr>Alignment</h3>
+					<div class="tsd-signature tsd-kind-icon">k<wbr>Buffer<wbr>Copy<wbr>Alignment<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">4</span><span class="tsd-signature-symbol"> = 4</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/texture/layout.ts#L15">src/webgpu/util/texture/layout.ts:15</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The minimum buffer copy alignment, per spec.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module">
+					<a name="kbytesperrowalignment" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> k<wbr>Bytes<wbr>Per<wbr>Row<wbr>Alignment</h3>
+					<div class="tsd-signature tsd-kind-icon">k<wbr>Bytes<wbr>Per<wbr>Row<wbr>Alignment<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">256</span><span class="tsd-signature-symbol"> = 256</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/texture/layout.ts#L13">src/webgpu/util/texture/layout.ts:13</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The minimum <code>bytesPerRow</code> alignment, per spec.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module">
+					<a name="kimagecopytypes" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> k<wbr>Image<wbr>Copy<wbr>Types</h3>
+					<div class="tsd-signature tsd-kind-icon">k<wbr>Image<wbr>Copy<wbr>Types<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">readonly </span><a href="webgpu_util_texture_layout.html#imagecopytype" class="tsd-signature-type" data-tsd-kind="Type alias">ImageCopyType</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = ...</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/texture/layout.ts#L185">src/webgpu/util/texture/layout.ts:185</a></li>
+						</ul>
+					</aside>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Functions</h2>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="bytesinacompleterow" class="tsd-anchor"></a>
+					<h3>bytes<wbr>InAComplete<wbr>Row</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">bytes<wbr>InAComplete<wbr>Row<span class="tsd-signature-symbol">(</span>copyWidth<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, format<span class="tsd-signature-symbol">: </span><a href="webgpu_capability_info.html#sizedtextureformat" class="tsd-signature-type" data-tsd-kind="Type alias">SizedTextureFormat</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/texture/layout.ts#L194">src/webgpu/util/texture/layout.ts:194</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Computes <code>bytesInACompleteRow</code> (as defined by the WebGPU spec) for image copies (B2T/T2B/writeTexture).</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>copyWidth: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>format: <a href="webgpu_capability_info.html#sizedtextureformat" class="tsd-signature-type" data-tsd-kind="Type alias">SizedTextureFormat</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="createtextureuploadbuffer" class="tsd-anchor"></a>
+					<h3>create<wbr>Texture<wbr>Upload<wbr>Buffer</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Texture<wbr>Upload<wbr>Buffer<span class="tsd-signature-symbol">(</span>texelValue<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBuffer</span>, device<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">GPUDevice</span>, format<span class="tsd-signature-symbol">: </span><a href="webgpu_capability_info.html#encodabletextureformat" class="tsd-signature-type" data-tsd-kind="Type alias">EncodableTextureFormat</a>, dimension<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">GPUTextureDimension</span>, size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span>, options<span class="tsd-signature-symbol">?: </span><a href="../interfaces/webgpu_util_texture_layout.layoutoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">LayoutOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>buffer<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">GPUBuffer</span><span class="tsd-signature-symbol">; </span>bytesPerRow<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>rowsPerImage<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/texture/layout.ts#L147">src/webgpu/util/texture/layout.ts:147</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Create a <code>COPY_SRC</code> GPUBuffer containing the linear-memory representation of a solid-color
+									texture where every texel has the byte value <code>texelValue</code>.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>texelValue: <span class="tsd-signature-type">ArrayBuffer</span></h5>
+								</li>
+								<li>
+									<h5>device: <span class="tsd-signature-type">GPUDevice</span></h5>
+								</li>
+								<li>
+									<h5>format: <a href="webgpu_capability_info.html#encodabletextureformat" class="tsd-signature-type" data-tsd-kind="Type alias">EncodableTextureFormat</a></h5>
+								</li>
+								<li>
+									<h5>dimension: <span class="tsd-signature-type">GPUTextureDimension</span></h5>
+								</li>
+								<li>
+									<h5>size: <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span></h5>
+								</li>
+								<li>
+									<h5>options: <a href="../interfaces/webgpu_util_texture_layout.layoutoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">LayoutOptions</a><span class="tsd-signature-symbol"> = ...</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-symbol">{ </span>buffer<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">GPUBuffer</span><span class="tsd-signature-symbol">; </span>bytesPerRow<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>rowsPerImage<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span></h4>
+							<ul class="tsd-parameters">
+								<li class="tsd-parameter">
+									<h5>buffer<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">GPUBuffer</span></h5>
+								</li>
+								<li class="tsd-parameter">
+									<h5>bytes<wbr>Per<wbr>Row<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li class="tsd-parameter">
+									<h5>rows<wbr>Per<wbr>Image<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="databytesforcopyorfail" class="tsd-anchor"></a>
+					<h3>data<wbr>Bytes<wbr>For<wbr>Copy<wbr>OrFail</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">data<wbr>Bytes<wbr>For<wbr>Copy<wbr>OrFail<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">DataBytesForCopyArgs</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/texture/layout.ts#L252">src/webgpu/util/texture/layout.ts:252</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Validate a copy and compute the number of bytes it needs. Throws if the copy is invalid.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>args: <span class="tsd-signature-type">DataBytesForCopyArgs</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="databytesforcopyoroverestimate" class="tsd-anchor"></a>
+					<h3>data<wbr>Bytes<wbr>For<wbr>Copy<wbr>OrOverestimate</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">data<wbr>Bytes<wbr>For<wbr>Copy<wbr>OrOverestimate<span class="tsd-signature-symbol">(</span>__namedParameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">DataBytesForCopyArgs</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>copyValid<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>minDataSizeOrOverestimate<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/texture/layout.ts#L264">src/webgpu/util/texture/layout.ts:264</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Validate a copy and compute the number of bytes it needs. If the copy is invalid, attempts to
+										&quot;conservatively guess&quot; (overestimate) the number of bytes that could be needed for a copy, even
+										if the copy parameters turn out to be invalid. This hopes to avoid &quot;buffer too small&quot; validation
+									errors when attempting to test other validation errors.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>__namedParameters: <span class="tsd-signature-type">DataBytesForCopyArgs</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-symbol">{ </span>copyValid<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>minDataSizeOrOverestimate<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span></h4>
+							<ul class="tsd-parameters">
+								<li class="tsd-parameter">
+									<h5>copy<wbr>Valid<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
+								</li>
+								<li class="tsd-parameter">
+									<h5>min<wbr>Data<wbr>Size<wbr>OrOverestimate<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="filltexturedatawithtexelvalue" class="tsd-anchor"></a>
+					<h3>fill<wbr>Texture<wbr>Data<wbr>With<wbr>Texel<wbr>Value</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">fill<wbr>Texture<wbr>Data<wbr>With<wbr>Texel<wbr>Value<span class="tsd-signature-symbol">(</span>texelValue<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBuffer</span>, format<span class="tsd-signature-symbol">: </span><a href="webgpu_capability_info.html#encodabletextureformat" class="tsd-signature-type" data-tsd-kind="Type alias">EncodableTextureFormat</a>, dimension<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">GPUTextureDimension</span>, outputBuffer<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBuffer</span>, size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span>, options<span class="tsd-signature-symbol">?: </span><a href="../interfaces/webgpu_util_texture_layout.layoutoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">LayoutOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/texture/layout.ts#L105">src/webgpu/util/texture/layout.ts:105</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Fill an ArrayBuffer with the linear-memory representation of a solid-color
+										texture where every texel has the byte value <code>texelValue</code>.
+									Preserves the contents of <code>outputBuffer</code> which are in &quot;padding&quot; space between image rows.</p>
+								</div>
+								<p>Effectively emulates a copyTextureToBuffer from a solid-color texture to a buffer.</p>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>texelValue: <span class="tsd-signature-type">ArrayBuffer</span></h5>
+								</li>
+								<li>
+									<h5>format: <a href="webgpu_capability_info.html#encodabletextureformat" class="tsd-signature-type" data-tsd-kind="Type alias">EncodableTextureFormat</a></h5>
+								</li>
+								<li>
+									<h5>dimension: <span class="tsd-signature-type">GPUTextureDimension</span></h5>
+								</li>
+								<li>
+									<h5>outputBuffer: <span class="tsd-signature-type">ArrayBuffer</span></h5>
+								</li>
+								<li>
+									<h5>size: <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span></h5>
+								</li>
+								<li>
+									<h5>options: <a href="../interfaces/webgpu_util_texture_layout.layoutoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">LayoutOptions</a><span class="tsd-signature-symbol"> = ...</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="gettexturecopylayout" class="tsd-anchor"></a>
+					<h3>get<wbr>Texture<wbr>Copy<wbr>Layout</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Texture<wbr>Copy<wbr>Layout<span class="tsd-signature-symbol">(</span>format<span class="tsd-signature-symbol">: </span><a href="webgpu_capability_info.html#sizedtextureformat" class="tsd-signature-type" data-tsd-kind="Type alias">SizedTextureFormat</a>, dimension<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">GPUTextureDimension</span>, size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">readonly </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span>, options<span class="tsd-signature-symbol">?: </span><a href="../interfaces/webgpu_util_texture_layout.layoutoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">LayoutOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/webgpu_util_texture_layout.texturecopylayout.html" class="tsd-signature-type" data-tsd-kind="Interface">TextureCopyLayout</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kainino0x/cts/blob/cd01534/src/webgpu/util/texture/layout.ts#L51">src/webgpu/util/texture/layout.ts:51</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Computes layout information for a copy of size <code>size</code> to/from a GPUTexture with the provided
+									<code>format</code> and <code>dimension</code>.</p>
+								</div>
+								<p>Computes default values for <code>bytesPerRow</code> and <code>rowsPerImage</code> if not specified.</p>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>format: <a href="webgpu_capability_info.html#sizedtextureformat" class="tsd-signature-type" data-tsd-kind="Type alias">SizedTextureFormat</a></h5>
+								</li>
+								<li>
+									<h5>dimension: <span class="tsd-signature-type">GPUTextureDimension</span></h5>
+								</li>
+								<li>
+									<h5>size: <span class="tsd-signature-symbol">readonly </span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">]</span></h5>
+								</li>
+								<li>
+									<h5>options: <a href="../interfaces/webgpu_util_texture_layout.layoutoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">LayoutOptions</a><span class="tsd-signature-symbol"> = ...</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/webgpu_util_texture_layout.texturecopylayout.html" class="tsd-signature-type" data-tsd-kind="Interface">TextureCopyLayout</a></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class=" ">
+						<a href="../modules.html">Modules</a>
+					</li>
+					<li class="current tsd-kind-module">
+						<a href="webgpu_util_texture_layout.html">webgpu/util/texture/layout</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/webgpu_util_texture_layout.layoutoptions.html" class="tsd-kind-icon">Layout<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/webgpu_util_texture_layout.texturecopylayout.html" class="tsd-kind-icon">Texture<wbr>Copy<wbr>Layout</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="webgpu_util_texture_layout.html#imagecopytype" class="tsd-kind-icon">Image<wbr>Copy<wbr>Type</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module">
+						<a href="webgpu_util_texture_layout.html#kbuffercopyalignment" class="tsd-kind-icon">k<wbr>Buffer<wbr>Copy<wbr>Alignment</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module">
+						<a href="webgpu_util_texture_layout.html#kbytesperrowalignment" class="tsd-kind-icon">k<wbr>Bytes<wbr>Per<wbr>Row<wbr>Alignment</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module">
+						<a href="webgpu_util_texture_layout.html#kimagecopytypes" class="tsd-kind-icon">k<wbr>Image<wbr>Copy<wbr>Types</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_texture_layout.html#bytesinacompleterow" class="tsd-kind-icon">bytes<wbr>InAComplete<wbr>Row</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_texture_layout.html#createtextureuploadbuffer" class="tsd-kind-icon">create<wbr>Texture<wbr>Upload<wbr>Buffer</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_texture_layout.html#databytesforcopyorfail" class="tsd-kind-icon">data<wbr>Bytes<wbr>For<wbr>Copy<wbr>OrFail</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_texture_layout.html#databytesforcopyoroverestimate" class="tsd-kind-icon">data<wbr>Bytes<wbr>For<wbr>Copy<wbr>OrOverestimate</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_texture_layout.html#filltexturedatawithtexelvalue" class="tsd-kind-icon">fill<wbr>Texture<wbr>Data<wbr>With<wbr>Texel<wbr>Value</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="webgpu_util_texture_layout.html#gettexturecopylayout" class="tsd-kind-icon">get<wbr>Texture<wbr>Copy<wbr>Layout</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-namespace"><span class="tsd-kind-icon">Namespace</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
