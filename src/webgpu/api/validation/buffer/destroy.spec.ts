@@ -58,7 +58,9 @@ g.test('while_mapped')
   .desc(
     `Test destroying buffers while mapped or after being unmapped.
       - Tests {mappable, unmappable mapAtCreation, mappable mapAtCreation}
-      - Tests while {mapped, mapped at creation, unmapped}`
+      - Tests while {mapped, mapped at creation, unmapped}
+
+TODO(#929): also test destroy while map pending`
   )
   .paramsSubcasesOnly(u =>
     u //

@@ -55,7 +55,7 @@ g.test('visibility')
   .desc(
     `
     Test that only the appropriate combinations of visibilities are allowed for each resource type.
-    - Test each possible combination of shader stage visibilities.
+    - Test each possible combination of shader stage visibilities (including none).
     - Test each type of bind group resource.`
   )
   .params(u =>

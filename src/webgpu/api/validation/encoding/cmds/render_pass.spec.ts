@@ -1,6 +1,7 @@
 export const description = `
 Validation tests for render pass encoding.
-Does **not** test usage scopes (resource_usages/), GPUProgrammablePassEncoder (programmable_pass),
+Does **not** test render pass creation (beginRenderPass.spec.ts), usage scopes (resource_usages/),
+GPUProgrammablePassEncoder (programmable_pass),
 dynamic state (dynamic_render_state.spec.ts), or GPURenderEncoderBase (render.spec.ts).
 
 TODO:

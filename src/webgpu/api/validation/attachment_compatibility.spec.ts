@@ -1,7 +1,9 @@
 export const description = `
 Validation for attachment compatibility between render passes, bundles, and pipelines
 
-TODO: Add sparse color attachment compatibility test when defined by specification
+TODO(#927): Test pass/bundle/pipeline compatibility of depthReadOnly/stencilReadOnly
+TODO(#928): shader doesn't have to write an attachment if its writeMask is 0
+TODO(#901): Add sparse color attachment compatibility test when defined by specification
 `;
 
 import { makeTestGroup } from '../../../common/framework/test_group.js';

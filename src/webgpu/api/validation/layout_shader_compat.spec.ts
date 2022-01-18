@@ -1,10 +1,13 @@
 export const description = `
 TODO:
-- interface matching between pipeline layout and shader
-    - x= {compute, vertex, fragment, vertex+fragment}, visibilities
-    - x= bind group index values, binding index values, multiple bindings
-    - x= types of bindings
-    - x= {equal, superset, subset}
+- x= {compute, vertex, fragment, vertex+fragment}, visibilities
+- shader defines a superset, subset, or equal set of bindings
+- binding variable types with all types of bindings
+- storage buffer/texture access modes must match exactly
+- required sizes of uniform and storage buffer bindings are computed correctly and validated
+  against minBindingSize
+
+See also pipeline_bind_group_compat for similar validation.
 `;
 
 import { makeTestGroup } from '../../../common/framework/test_group.js';

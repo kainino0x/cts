@@ -21,7 +21,7 @@ export const g = makeTestGroup(ValidationTest);
 
 g.test('zero_size')
   .desc(
-    `Test texture creation with zero or nonzero size of
+    `Test texture creation with zero size in any dimension is invalid (but otherwise valid):
     width, height, depthOrArrayLayers and mipLevelCount for every dimension, and representative formats.`
   )
   .params(u =>
@@ -663,7 +663,9 @@ g.test('texture_size,3d_texture,compressed_format')
 
 g.test('texture_usage')
   .desc(
-    `Test texture usage (single usage or combined usages) for every texture format and every dimension type`
+    `Test texture usage (single usage or combined usages) for every texture format and every dimension type
+
+    TODO: also test no usages (invalid)`
   )
   .params(u =>
     u
