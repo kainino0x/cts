@@ -13,36 +13,29 @@ class FeaturesNotSupported extends Error {}
 export class TestOOMedShouldAttemptGC extends Error {}
 
 export class DevicePool {
-  /** Device with no descriptor. */
-  private defaultHolder: DeviceHolder | 'uninitialized' | 'failed' = 'uninitialized';
-  /** Devices with descriptors. */
-  private nonDefaultHolders = new DescriptorToHolderMap();
+  private holders: 'uninitialized' | 'failed' | DescriptorToHolderMap = 'uninitialized';
 
   /** Request a device from the pool. */
   async reserve(descriptor?: UncanonicalizedDeviceDescriptor): Promise<DeviceProvider> {
-    // Always attempt to initialize default device, to see if it succeeds.
     let errorMessage = '';
-    if (this.defaultHolder === 'uninitialized') {
+    if (this.holders === 'uninitialized') {
+      this.holders = new DescriptorToHolderMap();
       try {
-        this.defaultHolder = await DeviceHolder.create(undefined);
+        await this.holders.getOrCreate(undefined);
       } catch (ex) {
-        this.defaultHolder = 'failed';
+        this.holders = 'failed';
         if (ex instanceof Error) {
           errorMessage = ` with ${ex.name} "${ex.message}"`;
         }
       }
     }
+
     assert(
-      this.defaultHolder !== 'failed',
+      this.holders !== 'failed',
       `WebGPU device failed to initialize${errorMessage}; not retrying`
     );
 
-    let holder;
-    if (descriptor === undefined) {
-      holder = this.defaultHolder;
-    } else {
-      holder = await this.nonDefaultHolders.getOrCreate(descriptor);
-    }
+    const holder = await this.holders.getOrCreate(descriptor);
 
     assert(holder.state === 'free', 'Device was in use on DevicePool.acquire');
     holder.state = 'reserved';
@@ -52,8 +45,8 @@ export class DevicePool {
   // When a test is done using a device, it's released back into the pool.
   // This waits for error scopes, checks their results, and checks for various error conditions.
   async release(holder: DeviceProvider): Promise<void> {
-    assert(this.defaultHolder instanceof DeviceHolder);
-    assert(holder instanceof DeviceHolder);
+    assert(this.holders instanceof DescriptorToHolderMap, 'DevicePool got into a bad state');
+    assert(holder instanceof DeviceHolder, 'DeviceProvider should always be a DeviceHolder');
 
     assert(holder.state !== 'free', 'trying to release a device while already released');
 
@@ -71,11 +64,7 @@ export class DevicePool {
       // Any error that isn't explicitly TestFailedButDeviceReusable forces a new device to be
       // created for the next test.
       if (!(ex instanceof TestFailedButDeviceReusable)) {
-        if (holder === this.defaultHolder) {
-          this.defaultHolder = 'uninitialized';
-        } else {
-          this.nonDefaultHolders.deleteByDevice(holder.device);
-        }
+        this.holders.deleteByDevice(holder.device);
         if ('destroy' in holder.device) {
           holder.device.destroy();
         }
@@ -103,6 +92,7 @@ export class DevicePool {
  * Map from GPUDeviceDescriptor to DeviceHolder.
  */
 class DescriptorToHolderMap {
+  /** Map keys that are known to be unsupported and can be rejected quickly. */
   private unsupported: Set<string> = new Set();
   private holders: Map<string, DeviceHolder> = new Map();
 
@@ -120,13 +110,16 @@ class DescriptorToHolderMap {
    * Gets a DeviceHolder from the map if it exists; otherwise, calls create() to create one,
    * inserts it, and returns it.
    *
+   * If an `uncanonicalizedDescriptor` is provided, it is canonicalized and used as the map key.
+   * If one is not provided, the map key is `""` (empty string).
+   *
    * Throws SkipTestCase if devices with this descriptor are unsupported.
    */
   async getOrCreate(
-    uncanonicalizedDescriptor: UncanonicalizedDeviceDescriptor
+    uncanonicalizedDescriptor: UncanonicalizedDeviceDescriptor | undefined
   ): Promise<DeviceHolder> {
     const [descriptor, key] = canonicalizeDescriptor(uncanonicalizedDescriptor);
-    // Never retry unsupported configurations.
+    // Quick-reject descriptors that are known to be unsupported already.
     if (this.unsupported.has(key)) {
       throw new SkipTestCase(
         `GPUDeviceDescriptor previously failed: ${JSON.stringify(descriptor)}`
@@ -197,10 +190,18 @@ type CanonicalDeviceDescriptor = Omit<
  * Make a stringified map-key from a GPUDeviceDescriptor.
  * Tries to make sure all defaults are resolved, first - but it's okay if some are missed
  * (it just means some GPUDevice objects won't get deduplicated).
+ *
+ * This does **not** canonicalize `undefined` (the "default" descriptor) into a fully-qualified
+ * GPUDeviceDescriptor. This is just because `undefined` is a common case and we want to use it
+ * as a sanity check that WebGPU is working.
  */
 function canonicalizeDescriptor(
-  desc: UncanonicalizedDeviceDescriptor
-): [CanonicalDeviceDescriptor, string] {
+  desc: UncanonicalizedDeviceDescriptor | undefined
+): [CanonicalDeviceDescriptor | undefined, string] {
+  if (desc === undefined) {
+    return [undefined, ''];
+  }
+
   const featuresCanonicalized = desc.requiredFeatures
     ? Array.from(new Set(desc.requiredFeatures)).sort()
     : [];
