@@ -13,13 +13,13 @@ class FeaturesNotSupported extends Error {}
 export class TestOOMedShouldAttemptGC extends Error {}
 
 export class DevicePool {
-  private holders: 'uninitialized' | 'failed' | DescriptorToHolderMap = 'uninitialized';
+  private holders: 'uninitialized' | 'failed' | DeviceHolderPool = 'uninitialized';
 
   /** Request a device from the pool. */
   async reserve(descriptor?: UncanonicalizedDeviceDescriptor): Promise<DeviceProvider> {
     let errorMessage = '';
     if (this.holders === 'uninitialized') {
-      this.holders = new DescriptorToHolderMap();
+      this.holders = new DeviceHolderPool();
       try {
         await this.holders.getOrCreate(undefined);
       } catch (ex) {
@@ -45,7 +45,7 @@ export class DevicePool {
   // When a test is done using a device, it's released back into the pool.
   // This waits for error scopes, checks their results, and checks for various error conditions.
   async release(holder: DeviceProvider): Promise<void> {
-    assert(this.holders instanceof DescriptorToHolderMap, 'DevicePool got into a bad state');
+    assert(this.holders instanceof DeviceHolderPool, 'DevicePool got into a bad state');
     assert(holder instanceof DeviceHolder, 'DeviceProvider should always be a DeviceHolder');
 
     assert(holder.state !== 'free', 'trying to release a device while already released');
@@ -89,18 +89,19 @@ export class DevicePool {
 }
 
 /**
- * Map from GPUDeviceDescriptor to DeviceHolder.
+ * Pool of DeviceHolders that can be accessed by descriptor.
+ * There can be more than one holder for a given descriptor, for concurrent test execution.
  */
-class DescriptorToHolderMap {
-  /** Map keys that are known to be unsupported and can be rejected quickly. */
+class DeviceHolderPool {
+  /** Keys that are known to be unsupported and can be rejected quickly. */
   private unsupported: Set<string> = new Set();
-  private holders: Map<string, DeviceHolder> = new Map();
+  private holders: { readonly key: string; readonly holder: DeviceHolder }[] = [];
 
   /** Deletes an item from the map by GPUDevice value. */
   deleteByDevice(device: GPUDevice): void {
-    for (const [k, v] of this.holders) {
-      if (v.device === device) {
-        this.holders.delete(k);
+    for (const [i, { holder }] of this.holders.entries()) {
+      if (holder.device === device) {
+        this.holders.splice(i, 1);
         return;
       }
     }
@@ -110,8 +111,8 @@ class DescriptorToHolderMap {
    * Gets a DeviceHolder from the map if it exists; otherwise, calls create() to create one,
    * inserts it, and returns it.
    *
-   * If an `uncanonicalizedDescriptor` is provided, it is canonicalized and used as the map key.
-   * If one is not provided, the map key is `""` (empty string).
+   * The provided `uncanonicalizedDescriptor` is canonicalized and used as the map key.
+   * (Note `undefined` is canonicalized as `undefined`, not filled out with the default values.)
    *
    * Throws SkipTestCase if devices with this descriptor are unsupported.
    */
@@ -126,14 +127,13 @@ class DescriptorToHolderMap {
       );
     }
 
-    // Search for an existing device with the same descriptor.
-    {
-      const value = this.holders.get(key);
-      if (value) {
+    // Search for an existing, currently-free device with the same descriptor.
+    for (const [i, { key, holder }] of this.holders.entries()) {
+      if (holder.state === 'free') {
         // Move it to the end of the Map (most-recently-used).
-        this.holders.delete(key);
-        this.holders.set(key, value);
-        return value;
+        this.holders.splice(i, 1);
+        this.holders.push({ key, holder });
+        return holder;
       }
     }
 
@@ -155,17 +155,14 @@ class DescriptorToHolderMap {
     return value;
   }
 
-  /** Insert an entry, then remove the least-recently-used items if there are too many. */
-  private insertAndCleanUp(key: string, value: DeviceHolder) {
-    this.holders.set(key, value);
+  /** Insert an entry, and remove the least-recently-used item if there are too many. */
+  private insertAndCleanUp(key: string, holder: DeviceHolder) {
+    this.holders.push({ key, holder });
 
-    const kMaxEntries = 5;
-    if (this.holders.size > kMaxEntries) {
-      // Delete the first (least recently used) item in the set.
-      for (const [key] of this.holders) {
-        this.holders.delete(key);
-        return;
-      }
+    const kMaxEntries = 20;
+    if (this.holders.length > kMaxEntries) {
+      // Delete the first (least recently used) item in the list.
+      this.holders.shift();
     }
   }
 }
