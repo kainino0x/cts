@@ -12,6 +12,8 @@ class TestFailedButDeviceReusable extends Error {}
 class FeaturesNotSupported extends Error {}
 export class TestOOMedShouldAttemptGC extends Error {}
 
+const kDevicePoolSize = 20;
+
 export class DevicePool {
   private holders: 'uninitialized' | 'failed' | DeviceHolderPool = 'uninitialized';
 
@@ -19,7 +21,7 @@ export class DevicePool {
   async reserve(descriptor?: UncanonicalizedDeviceDescriptor): Promise<DeviceProvider> {
     let errorMessage = '';
     if (this.holders === 'uninitialized') {
-      this.holders = new DeviceHolderPool();
+      this.holders = new DeviceHolderPool(kDevicePoolSize);
       try {
         await this.holders.getOrCreate(undefined);
       } catch (ex) {
@@ -94,8 +96,13 @@ export class DevicePool {
  */
 class DeviceHolderPool {
   /** Keys that are known to be unsupported and can be rejected quickly. */
+  private readonly poolSize: number
   private unsupported: Set<string> = new Set();
   private holders: { readonly key: string; readonly holder: DeviceHolder }[] = [];
+
+  constructor(poolSize: number) {
+    this.poolSize = poolSize;
+  }
 
   /** Deletes an item from the map by GPUDevice value. */
   deleteByDevice(device: GPUDevice): void {
@@ -159,8 +166,9 @@ class DeviceHolderPool {
   private insertAndCleanUp(key: string, holder: DeviceHolder) {
     this.holders.push({ key, holder });
 
-    const kMaxEntries = 20;
-    if (this.holders.length > kMaxEntries) {
+    // TODO: Extras should be cleaned up on release() instead of here. That way we don't evict
+    // things that are in use.
+    if (this.holders.length > this.poolSize) {
       // Delete the first (least recently used) item in the list.
       this.holders.shift();
     }
