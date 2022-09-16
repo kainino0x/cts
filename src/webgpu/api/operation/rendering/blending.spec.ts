@@ -9,7 +9,12 @@ TODO:
 
 import { makeTestGroup } from '../../../../common/framework/test_group.js';
 import { assert, unreachable } from '../../../../common/util/util.js';
-import { kBlendFactors, kBlendOperations } from '../../../capability_info.js';
+import {
+  kAllTextureFormats,
+  kBlendFactors,
+  kBlendOperations,
+  kTextureFormatInfo,
+} from '../../../capability_info.js';
 import { GPUTest } from '../../../gpu_test.js';
 import { float32ToFloat16Bits } from '../../../util/conversion.js';
 import { TexelView } from '../../../util/texture/texel_view.js';
@@ -276,6 +281,10 @@ struct Uniform {
     );
   });
 
+const kBlendableFormats = kAllTextureFormats.filter(f => {
+  const info = kTextureFormatInfo[f];
+  return info.renderable && info.sampleType === 'float';
+});
 g.test('formats')
   .desc(
     `Test blending results works for all formats that support it, and that blending is not applied
@@ -283,15 +292,7 @@ g.test('formats')
   )
   .params(u =>
     u //
-      .combine('format', [
-        'r16float',
-        'bgra8unorm-srgb',
-        'r8unorm',
-        'rg16float',
-        'rgb10a2unorm',
-        'rgba16float',
-        'rgba8unorm',
-      ] as const)
+      .combine('format', kBlendableFormats)
   )
   .fn(async t => {
     const { format } = t.params;
