@@ -304,19 +304,14 @@ g.test('formats')
             format,
             blend: {
               color: { srcFactor: 'one', dstFactor: 'one', operation: 'add' },
-              alpha: {},
+              alpha: { srcFactor: 'one', dstFactor: 'one', operation: 'add' },
             },
           },
         ],
         module: t.device.createShaderModule({
           code: `
-struct Uniform {
-  color: vec4<f32>
-};
-@group(0) @binding(0) var<uniform> u : Uniform;
-
 @fragment fn main() -> @location(0) vec4<f32> {
-  return u.color;
+  return vec4<f32>(0.4, 0.4, 0.4, 0.4);
 }
           `,
         }),
@@ -355,6 +350,9 @@ struct Uniform {
       ],
     });
     renderPass.setPipeline(pipeline);
+    renderPass.draw(1);
+    renderPass.end();
+    t.device.queue.submit([commandEncoder.finish()]);
 
     const expColor = { R: 0.6, G: 0.6, B: 0.6, A: 0.6 };
     const expTexelView = TexelView.fromTexelsAsColors(format, coords => expColor);
@@ -365,8 +363,8 @@ struct Uniform {
       [1, 1, 1],
       { expTexelView },
       {
-        maxDiffULPsForNormFormat: 614,
-        maxDiffULPsForFloatFormat: 13517,
+        maxDiffULPsForNormFormat: 1,
+        maxDiffULPsForFloatFormat: 1,
       }
     );
     t.expectOK(result);
