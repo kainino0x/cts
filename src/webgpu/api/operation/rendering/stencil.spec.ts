@@ -57,7 +57,7 @@ class StencilTest extends GPUTest {
     baseState: GPUDepthStencilState,
     state: GPUDepthStencilState,
     stencilRefValue: number,
-    stencilColor: number[]
+    expectedColor: number[]
   ) {
     const renderTargetFormat = 'rgba8unorm';
     const renderTarget = this.device.createTexture({
@@ -121,7 +121,7 @@ class StencilTest extends GPUTest {
         0,
         this.createBindGroupForTest(
           testPipeline.getBindGroupLayout(0),
-          new Float32Array(stencilColor)
+          new Float32Array(kStencilColor)
         )
       );
       pass.draw(1);
@@ -134,7 +134,7 @@ class StencilTest extends GPUTest {
       renderTarget,
       renderTargetFormat,
       { x: 0, y: 0 },
-      { exp: new Uint8Array(stencilColor) }
+      { exp: new Uint8Array(expectedColor) }
     );
   }
 
