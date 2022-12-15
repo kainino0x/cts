@@ -5,6 +5,7 @@ Tests render results with different depth bias values like 'positive', 'negative
 
 import { makeTestGroup } from '../../../../common/framework/test_group.js';
 import { unreachable } from '../../../../common/util/util.js';
+import { DepthStencilFormat, EncodableTextureFormat } from '../../../capability_info.js';
 import { GPUTest } from '../../../gpu_test.js';
 import { TexelView } from '../../../util/texture/texel_view.js';
 import { textureContentIsOKByT2B } from '../../../util/texture/texture_ok.js';
@@ -18,12 +19,20 @@ const kPointTwoFiveBiasForPointTwoFiveZOnFloat = 8388608;
 
 class DepthBiasTest extends GPUTest {
   runDepthBiasTest(
-    depthFormat: GPUTextureFormat,
-    depthClear: number,
-    quadAngle: QuadAngle,
-    bias: number,
-    biasSlopeScale: number,
-    biasClamp: number
+    depthFormat: EncodableTextureFormat & DepthStencilFormat,
+    {
+      quadAngle,
+      bias,
+      biasSlopeScale,
+      biasClamp,
+      expectedDepth,
+    }: {
+      quadAngle: QuadAngle;
+      bias: number;
+      biasSlopeScale: number;
+      biasClamp: number;
+      expectedDepth: number;
+    }
   ) {
     const renderTargetFormat = 'rgba8unorm';
     let vertexShaderCode: string;
@@ -74,7 +83,7 @@ class DepthBiasTest extends GPUTest {
       format: depthFormat,
       sampleCount: 1,
       mipLevelCount: 1,
-      usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.COPY_DST,
+      usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.COPY_SRC,
     });
 
     const depthStencilAttachment: GPURenderPassDepthStencilAttachment = {
@@ -118,20 +127,15 @@ class DepthBiasTest extends GPUTest {
     pass.end();
     this.device.queue.submit([encoder.finish()]);
 
-    const expColor = {
-      R: 1,
-      G: 0,
-      B: 0,
-      A: 1,
-    };
-    const expTexelView = TexelView.fromTexelsAsColors(renderTargetFormat, coords => expColor);
+    const expColor = { Depth: expectedDepth };
+    const expTexelView = TexelView.fromTexelsAsColors(depthFormat, coords => expColor);
 
     const result = textureContentIsOKByT2B(
       this,
-      { texture: renderTarget },
+      { texture: depthTexture },
       [1, 1],
       { expTexelView },
-      { maxDiffULPsForNormFormat: 1 }
+      { maxDiffULPsForFloatFormat: 1 }
     );
     this.eventualExpectOK(result);
     this.trackForCleanup(renderTarget);
@@ -170,12 +174,11 @@ export const g = makeTestGroup(DepthBiasTest);
 g.test('positive_bias_on_float')
   .desc('Test adding positive bias to output')
   .fn(async t => {
-    t.runDepthBiasTest(
-      'depth32float',
-      0,
-      QuadAngle.Flat,
-      kPointTwoFiveBiasForPointTwoFiveZOnFloat,
-      0,
-      0
-    );
+    t.runDepthBiasTest('depth32float', {
+      quadAngle: QuadAngle.Flat,
+      bias: kPointTwoFiveBiasForPointTwoFiveZOnFloat,
+      biasSlopeScale: 0,
+      biasClamp: 0,
+      expectedDepth: 0.5,
+    });
   });
