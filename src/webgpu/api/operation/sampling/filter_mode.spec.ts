@@ -14,7 +14,7 @@ import { GPUTest } from '../../../gpu_test.js';
 
 const kRTSize = 16;
 const xMiddle = kRTSize / 2; // we check the pixel value in the middle of the render target
-const kColorAttachmentFormat = 'rgba8unorm';
+const kColorAttachmentFormat = 'bgra8unorm';
 const colors = [
   new Uint8Array([0xff, 0x00, 0x00, 0xff]), // miplevel = 0
   new Uint8Array([0x00, 0xff, 0x00, 0xff]), // miplevel = 1
@@ -84,7 +84,7 @@ class SamplerFilterModeSlantedPlaneTest extends GPUTest {
             `,
         }),
         entryPoint: 'main',
-        targets: [{ format: 'rgba8unorm' }],
+        targets: [{ format: kColorAttachmentFormat }],
       },
       primitive: { topology: 'triangle-list' },
     });
@@ -103,11 +103,29 @@ class SamplerFilterModeSlantedPlaneTest extends GPUTest {
       layout: this.pipeline.getBindGroupLayout(0),
     });
 
-    const colorAttachment = this.device.createTexture({
+    const canvas = document.createElement('canvas');
+    canvas.style.position = 'absolute';
+    canvas.style.bottom = '0px';
+    canvas.style.right = '0px';
+    canvas.style.width = '160px';
+    canvas.style.height = '160px';
+    canvas.style.border = '1px solid red';
+    canvas.width = kRTSize;
+    canvas.height = kRTSize;
+    document.body.appendChild(canvas);
+    const ctx = canvas.getContext('webgpu')!;
+    ctx.configure({
+      device: this.device,
       format: kColorAttachmentFormat,
-      size: { width: kRTSize, height: kRTSize, depthOrArrayLayers: 1 },
       usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.RENDER_ATTACHMENT,
+      alphaMode: 'opaque',
     });
+    const colorAttachment = ctx.getCurrentTexture();
+    //const colorAttachment = this.device.createTexture({
+    //  format: kColorAttachmentFormat,
+    //  size: { width: kRTSize, height: kRTSize, depthOrArrayLayers: 1 },
+    //  usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.RENDER_ATTACHMENT,
+    //});
     const colorAttachmentView = colorAttachment.createView();
 
     const encoder = this.device.createCommandEncoder();
@@ -140,7 +158,7 @@ g.test('mipmapFilter')
       .combine('mipmapFilter', ['linear', 'nearest'] as const)
       .combineWithParams([
         {
-          results: [
+          _results: [
             { coord: { x: xMiddle, y: 2 }, expected: colors[2] },
             { coord: { x: xMiddle, y: 6 }, expected: [colors[0], colors[1]] },
           ],
@@ -159,7 +177,7 @@ g.test('mipmapFilter')
 
     const colorAttachment = t.drawSlantedPlane(textureView, sampler);
 
-    for (const entry of t.params.results) {
+    for (const entry of t.params._results) {
       if (entry.expected instanceof Uint8Array) {
         // equal exactly one color
         t.expectSinglePixelIn2DTexture(colorAttachment, kColorAttachmentFormat, entry.coord, {
