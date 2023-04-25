@@ -1,10 +1,10 @@
 import { assert, memcpy } from '../../../common/util/util.js';
 import {
   EncodableTextureFormat,
-  kTextureFormatInfo,
   resolvePerAspectFormat,
   SizedTextureFormat,
-} from '../../capability_info.js';
+  kTextureFormatInfo,
+} from '../../format_info.js';
 import { align } from '../math.js';
 import { reifyExtent3D } from '../unions.js';
 

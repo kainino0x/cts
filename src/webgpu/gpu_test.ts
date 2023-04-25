@@ -14,14 +14,14 @@ import {
   unreachable,
 } from '../common/util/util.js';
 
+import { kQueryTypeInfo } from './capability_info.js';
 import {
   EncodableTextureFormat,
   SizedTextureFormat,
-  kTextureFormatInfo,
-  kQueryTypeInfo,
   resolvePerAspectFormat,
   kEncodableTextureFormats,
-} from './capability_info.js';
+  kTextureFormatInfo,
+} from './format_info.js';
 import { makeBufferWithContents } from './util/buffer.js';
 import { checkElementsEqual, checkElementsBetween } from './util/check_contents.js';
 import { CommandBufferMaker, EncoderType } from './util/command_buffer_maker.js';

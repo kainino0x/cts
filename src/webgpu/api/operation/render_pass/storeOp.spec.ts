@@ -29,10 +29,10 @@ export const description = `API Operation Tests for RenderPass StoreOp.
 
 import { makeTestGroup } from '../../../../common/framework/test_group.js';
 import {
-  kTextureFormatInfo,
   kEncodableTextureFormats,
   kSizedDepthStencilFormats,
-} from '../../../capability_info.js';
+  kTextureFormatInfo,
+} from '../../../format_info.js';
 import { GPUTest } from '../../../gpu_test.js';
 import { PerTexelComponent } from '../../../util/texture/texel_data.js';
 
@@ -144,10 +144,7 @@ g.test('render_pass_store_op,color_attachment_only')
     u
       .combine('colorFormat', kEncodableTextureFormats)
       // Filter out any non-renderable formats
-      .filter(({ colorFormat }) => {
-        const info = kTextureFormatInfo[colorFormat];
-        return info.color && info.renderable;
-      })
+      .filter(({ colorFormat }) => !!kTextureFormatInfo[colorFormat].colorRender)
       .combine('storeOperation', kStoreOps)
       .beginSubcases()
       .combine('mipLevel', kMipLevel)

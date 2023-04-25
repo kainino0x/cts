@@ -1,5 +1,5 @@
 import { assert, unreachable } from '../../../common/util/util.js';
-import { EncodableTextureFormat, UncompressedTextureFormat } from '../../capability_info.js';
+import { EncodableTextureFormat, UncompressedTextureFormat } from '../../format_info.js';
 import {
   assertInIntegerRange,
   float32ToFloatBits,

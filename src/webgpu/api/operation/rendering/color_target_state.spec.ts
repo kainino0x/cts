@@ -9,13 +9,9 @@ TODO:
 
 import { makeTestGroup } from '../../../../common/framework/test_group.js';
 import { assert, TypedArrayBufferView, unreachable } from '../../../../common/util/util.js';
-import {
-  kBlendFactors,
-  kBlendOperations,
-  kEncodableTextureFormats,
-  kTextureFormatInfo,
-} from '../../../capability_info.js';
+import { kBlendFactors, kBlendOperations } from '../../../capability_info.js';
 import { GPUConst } from '../../../constants.js';
+import { kEncodableTextureFormats, kTextureFormatInfo } from '../../../format_info.js';
 import { GPUTest, TextureTestMixin } from '../../../gpu_test.js';
 import { clamp } from '../../../util/math.js';
 import { TexelView } from '../../../util/texture/texel_view.js';

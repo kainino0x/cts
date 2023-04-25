@@ -13,17 +13,19 @@ import {
   kBufferUsageInfo,
   kBufferUsageCopy,
   kBufferUsageCopyInfo,
-  kCompressedTextureFormats,
   kQueryTypes,
   kTextureUsageType,
   kTextureUsageTypeInfo,
   kTextureUsageCopy,
   kTextureUsageCopyInfo,
+  kShaderStageKeys,
+} from '../../../../capability_info.js';
+import {
+  kCompressedTextureFormats,
   kRegularTextureFormats,
   kRenderableColorTextureFormats,
-  kShaderStageKeys,
   kTextureFormatInfo,
-} from '../../../../capability_info.js';
+} from '../../../../format_info.js';
 import { CommandBufferMaker, EncoderType } from '../../../../util/command_buffer_maker.js';
 import {
   createCanvas,
@@ -158,8 +160,8 @@ Tests creating 2d uncompressed textures on destroyed device. Tests valid combina
       .filter(({ format, usageType }) => {
         const info = kTextureFormatInfo[format];
         return !(
-          (!info.renderable && usageType === 'render') ||
-          (!info.storage && usageType === 'storage')
+          (!info.colorRender && usageType === 'render') ||
+          (!info.color.storage && usageType === 'storage')
         );
       })
   )
@@ -193,8 +195,8 @@ Tests creating 2d compressed textures on destroyed device. Tests valid combinati
       .filter(({ format, usageType }) => {
         const info = kTextureFormatInfo[format];
         return !(
-          (!info.renderable && usageType === 'render') ||
-          (!info.storage && usageType === 'storage')
+          (!info.colorRender && usageType === 'render') ||
+          (!info.color.storage && usageType === 'storage')
         );
       })
   )
@@ -232,8 +234,8 @@ Tests creating texture views on 2d uncompressed textures from destroyed device. 
       .filter(({ format, usageType }) => {
         const info = kTextureFormatInfo[format];
         return !(
-          (!info.renderable && usageType === 'render') ||
-          (!info.storage && usageType === 'storage')
+          (!info.colorRender && usageType === 'render') ||
+          (!info.color.storage && usageType === 'storage')
         );
       })
   )
@@ -268,8 +270,8 @@ Tests creating texture views on 2d compressed textures from destroyed device. Te
       .filter(({ format, usageType }) => {
         const info = kTextureFormatInfo[format];
         return !(
-          (!info.renderable && usageType === 'render') ||
-          (!info.storage && usageType === 'storage')
+          (!info.colorRender && usageType === 'render') ||
+          (!info.color.storage && usageType === 'storage')
         );
       })
   )
@@ -592,7 +594,11 @@ Tests copyBufferToTexture command on destroyed device.
   .fn(async t => {
     const { stage, awaitLost } = t.params;
     const format = 'rgba32uint';
-    const { bytesPerBlock, blockWidth, blockHeight } = kTextureFormatInfo[format];
+    const {
+      color: { bytes: bytesPerBlock },
+      blockWidth,
+      blockHeight,
+    } = kTextureFormatInfo[format];
     const src = {
       buffer: t.device.createBuffer({
         size: bytesPerBlock,
@@ -627,7 +633,11 @@ Tests copyTextureToBuffer command on destroyed device.
   .fn(async t => {
     const { stage, awaitLost } = t.params;
     const format = 'rgba32uint';
-    const { bytesPerBlock, blockWidth, blockHeight } = kTextureFormatInfo[format];
+    const {
+      color: { bytes: bytesPerBlock },
+      blockWidth,
+      blockHeight,
+    } = kTextureFormatInfo[format];
     const src = {
       texture: t.device.createTexture({
         size: { width: blockWidth, height: blockHeight },
@@ -890,7 +900,11 @@ Tests writeTexture on queue on destroyed device with uncompressed formats.
   )
   .fn(async t => {
     const { format, awaitLost } = t.params;
-    const { blockWidth, blockHeight, bytesPerBlock } = kTextureFormatInfo[format];
+    const {
+      blockWidth,
+      blockHeight,
+      color: { bytes: bytesPerBlock },
+    } = kTextureFormatInfo[format];
     const data = new Uint8Array(bytesPerBlock);
     const texture = t.device.createTexture({
       size: { width: blockWidth, height: blockHeight },
@@ -925,7 +939,11 @@ Tests writeTexture on queue on destroyed device with compressed formats.
   })
   .fn(async t => {
     const { format, awaitLost } = t.params;
-    const { blockWidth, blockHeight, bytesPerBlock } = kTextureFormatInfo[format];
+    const {
+      blockWidth,
+      blockHeight,
+      color: { bytes: bytesPerBlock },
+    } = kTextureFormatInfo[format];
     const data = new Uint8Array(bytesPerBlock);
     const texture = t.device.createTexture({
       size: { width: blockWidth, height: blockHeight },

@@ -1,5 +1,5 @@
 import { assert, memcpy } from '../../common/util/util.js';
-import { RegularTextureFormat } from '../capability_info.js';
+import { RegularTextureFormat } from '../format_info.js';
 import { GPUTest, TextureTestMixin } from '../gpu_test.js';
 import { reifyExtent3D, reifyOrigin3D } from '../util/unions.js';
 

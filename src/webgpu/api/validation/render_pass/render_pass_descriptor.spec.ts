@@ -6,14 +6,13 @@ TODO: review for completeness
 
 import { makeTestGroup } from '../../../../common/framework/test_group.js';
 import { range } from '../../../../common/util/util.js';
+import { kMaxColorAttachments, kQueryTypes } from '../../../capability_info.js';
+import { GPUConst } from '../../../constants.js';
 import {
   kDepthStencilFormats,
-  kMaxColorAttachments,
-  kQueryTypes,
   kRenderableColorTextureFormats,
   kTextureFormatInfo,
-} from '../../../capability_info.js';
-import { GPUConst } from '../../../constants.js';
+} from '../../../format_info.js';
 import { ValidationTest } from '../validation_test.js';
 
 class F extends ValidationTest {
@@ -202,8 +201,8 @@ g.test('color_attachments,limits,maxColorAttachmentBytesPerSample,aligned')
       colorAttachments.push(t.getColorAttachment(colorTexture));
     }
     const shouldError =
-      info.renderTargetPixelByteCost === undefined ||
-      info.renderTargetPixelByteCost * attachmentCount >
+      info.colorRender === undefined ||
+      info.colorRender.byteCost * attachmentCount >
         t.device.limits.maxColorAttachmentBytesPerSample;
 
     t.tryRenderPass(!shouldError, { colorAttachments });
@@ -959,13 +958,15 @@ g.test('resolveTarget,format_supports_resolve')
   )
   .fn(t => {
     const { format } = t.params;
+    const info = kTextureFormatInfo[format];
+
     const multisampledColorTexture = t.createTexture({ format, sampleCount: 4 });
     const resolveTarget = t.createTexture({ format });
 
     const colorAttachment = t.getColorAttachment(multisampledColorTexture);
     colorAttachment.resolveTarget = resolveTarget.createView();
 
-    t.tryRenderPass(kTextureFormatInfo[format].resolve, {
+    t.tryRenderPass(!!info.colorRender?.resolve, {
       colorAttachments: [colorAttachment],
     });
   });

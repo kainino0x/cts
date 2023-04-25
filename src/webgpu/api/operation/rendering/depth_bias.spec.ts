@@ -9,7 +9,7 @@ import {
   DepthStencilFormat,
   EncodableTextureFormat,
   kTextureFormatInfo,
-} from '../../../capability_info.js';
+} from '../../../format_info.js';
 import { GPUTest, TextureTestMixin } from '../../../gpu_test.js';
 import { TexelView } from '../../../util/texture/texel_view.js';
 

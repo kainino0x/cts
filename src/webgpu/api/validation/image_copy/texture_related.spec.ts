@@ -2,15 +2,15 @@ export const description = `Texture related validation tests for B2T copy and T2
 
 import { makeTestGroup } from '../../../../common/framework/test_group.js';
 import { assert } from '../../../../common/util/util.js';
+import { kTextureUsages } from '../../../capability_info.js';
+import { GPUConst } from '../../../constants.js';
 import {
+  kTextureFormatInfo,
   kColorTextureFormats,
   kSizedTextureFormats,
   kTextureDimensions,
-  kTextureFormatInfo,
-  kTextureUsages,
   textureDimensionAndFormatCompatible,
-} from '../../../capability_info.js';
-import { GPUConst } from '../../../constants.js';
+} from '../../../format_info.js';
 import { kResourceStates } from '../../../gpu_test.js';
 import { align } from '../../../util/math.js';
 import { virtualMipSize } from '../../../util/texture/base.js';

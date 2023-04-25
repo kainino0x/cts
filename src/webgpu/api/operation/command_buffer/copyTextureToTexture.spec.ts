@@ -3,18 +3,20 @@ export const description = `copyTextureToTexture operation tests`;
 import { makeTestGroup } from '../../../../common/framework/test_group.js';
 import { assert, memcpy, unreachable } from '../../../../common/util/util.js';
 import {
+  kBufferSizeAlignment,
+  kMinDynamicBufferOffsetAlignment,
+} from '../../../capability_info.js';
+import {
   kTextureFormatInfo,
+  kDepthStencilFormats,
+  kTextureDimensions,
+  textureDimensionAndFormatCompatible,
   kRegularTextureFormats,
-  SizedTextureFormat,
+  ColorTextureFormat,
   kCompressedTextureFormats,
   depthStencilFormatAspectSize,
   DepthStencilFormat,
-  kBufferSizeAlignment,
-  kDepthStencilFormats,
-  kMinDynamicBufferOffsetAlignment,
-  kTextureDimensions,
-  textureDimensionAndFormatCompatible,
-} from '../../../capability_info.js';
+} from '../../../format_info.js';
 import { GPUTest } from '../../../gpu_test.js';
 import { makeBufferWithContents } from '../../../util/buffer.js';
 import { checkElementsEqual, checkElementsEqualEither } from '../../../util/check_contents.js';
@@ -29,11 +31,11 @@ class F extends GPUTest {
   GetInitialDataPerMipLevel(
     dimension: GPUTextureDimension,
     textureSize: Required<GPUExtent3DDict>,
-    format: SizedTextureFormat,
+    format: ColorTextureFormat,
     mipLevel: number
   ): Uint8Array {
     const textureSizeAtLevel = physicalMipSize(textureSize, format, dimension, mipLevel);
-    const bytesPerBlock = kTextureFormatInfo[format].bytesPerBlock;
+    const bytesPerBlock = kTextureFormatInfo[format].color.bytes;
     const blockWidthInTexel = kTextureFormatInfo[format].blockWidth;
     const blockHeightInTexel = kTextureFormatInfo[format].blockHeight;
     const blocksPerSubresource =
@@ -63,8 +65,8 @@ class F extends GPUTest {
     dimension: GPUTextureDimension,
     srcTextureSize: Required<GPUExtent3DDict>,
     dstTextureSize: Required<GPUExtent3DDict>,
-    srcFormat: SizedTextureFormat,
-    dstFormat: SizedTextureFormat,
+    srcFormat: ColorTextureFormat,
+    dstFormat: ColorTextureFormat,
     copyBoxOffsets: {
       srcOffset: { x: number; y: number; z: number };
       dstOffset: { x: number; y: number; z: number };
@@ -108,7 +110,7 @@ class F extends GPUTest {
       dimension,
       srcCopyLevel
     );
-    const bytesPerBlock = kTextureFormatInfo[srcFormat].bytesPerBlock;
+    const bytesPerBlock = kTextureFormatInfo[srcFormat].color.bytes;
     const blockWidth = kTextureFormatInfo[srcFormat].blockWidth;
     const blockHeight = kTextureFormatInfo[srcFormat].blockHeight;
     const srcBlocksPerRow = srcTextureSizeAtLevel.width / blockWidth;

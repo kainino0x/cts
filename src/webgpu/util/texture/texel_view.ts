@@ -1,5 +1,5 @@
 import { assert, memcpy } from '../../../common/util/util.js';
-import { EncodableTextureFormat, kTextureFormatInfo } from '../../capability_info.js';
+import { EncodableTextureFormat, kTextureFormatInfo } from '../../format_info.js';
 import { reifyExtent3D, reifyOrigin3D } from '../unions.js';
 
 import { kTexelRepresentationInfo, makeClampToRange, PerTexelComponent } from './texel_data.js';

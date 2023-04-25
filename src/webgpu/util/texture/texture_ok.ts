@@ -1,5 +1,5 @@
 import { assert, ErrorWithExtra, unreachable } from '../../../common/util/util.js';
-import { EncodableTextureFormat, kTextureFormatInfo } from '../../capability_info.js';
+import { EncodableTextureFormat, kTextureFormatInfo } from '../../format_info.js';
 import { GPUTest } from '../../gpu_test.js';
 import { generatePrettyTable } from '../pretty_diff_tables.js';
 import { reifyExtent3D, reifyOrigin3D } from '../unions.js';
