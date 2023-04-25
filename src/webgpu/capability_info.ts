@@ -319,6 +319,8 @@ export type TextureFormatInfo = {
   copySrc: boolean;
   /** Whether the format can be used as `COPY_DST`. */
   copyDst: boolean;
+  /** Sample type of the color or depth aspect. */
+  sampleType: GPUTextureSampleType;
   /** Byte size of one texel block, or `undefined` if the format is unsized. */
   bytesPerBlock: number | undefined;
   /** Width, in texels, of one texel block. */
@@ -334,8 +336,8 @@ export type TextureFormatInfo = {
   feature: GPUFeatureName | undefined;
   // Add fields as needed
 };
-/** Per-GPUTextureFormat info. */
-export const kTextureFormatInfo: {
+/** Per-GPUTextureFormat info. FIXME: Remove. */
+const kTextureFormatInfo: {
   readonly [k in GPUTextureFormat]: TextureFormatInfo &
     // TextureFormatInfo exists just for documentation (and verification of the table data types).
     // The next line constrains the types so that accessing kTextureFormatInfo with
