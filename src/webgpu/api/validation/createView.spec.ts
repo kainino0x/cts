@@ -6,13 +6,13 @@ import { unreachable } from '../../../common/util/util.js';
 import {
   kTextureAspects,
   kTextureDimensions,
-  kTextureFormatInfo,
   kTextureFormats,
   kTextureViewDimensions,
   kFeaturesForFormats,
   viewCompatible,
   filterFormatsByFeature,
 } from '../../capability_info.js';
+import { kTextureFormatInfo } from '../../format_info.js';
 import { kResourceStates } from '../../gpu_test.js';
 import {
   getTextureDimensionFromView,

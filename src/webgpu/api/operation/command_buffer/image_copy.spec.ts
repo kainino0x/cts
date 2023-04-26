@@ -41,8 +41,7 @@ TODO: Fix this test for the various skipped formats [2]:
 import { makeTestGroup } from '../../../../common/framework/test_group.js';
 import { assert, memcpy, TypedArrayBufferView, unreachable } from '../../../../common/util/util.js';
 import {
-  kTextureFormatInfo,
-  SizedTextureFormat,
+  ColorTextureFormat,
   kDepthStencilFormats,
   kMinDynamicBufferOffsetAlignment,
   kBufferSizeAlignment,
@@ -53,6 +52,7 @@ import {
   textureDimensionAndFormatCompatible,
   kColorTextureFormats,
 } from '../../../capability_info.js';
+import { kTextureFormatInfo } from '../../../format_info.js';
 import { GPUTest } from '../../../gpu_test.js';
 import { makeBufferWithContents } from '../../../util/buffer.js';
 import { align } from '../../../util/math.js';
@@ -109,7 +109,7 @@ const kMethodsToTest = [
 ] as const;
 
 // [2]: Fix things so this list can be reduced to zero (see file description)
-const kExcludedFormats: Set<SizedTextureFormat> = new Set([
+const kExcludedFormats: Set<ColorTextureFormat> = new Set([
   'r8snorm',
   'rg8snorm',
   'rgba8snorm',
@@ -129,7 +129,7 @@ class ImageCopyTest extends GPUTest {
   /** Offset for a particular texel in the linear texture data */
   getTexelOffsetInBytes(
     textureDataLayout: Required<GPUImageDataLayout>,
-    format: SizedTextureFormat,
+    format: ColorTextureFormat,
     texel: Required<GPUOrigin3DDict>,
     origin: Required<GPUOrigin3DDict> = { x: 0, y: 0, z: 0 }
   ): number {
@@ -148,14 +148,14 @@ class ImageCopyTest extends GPUTest {
       offset +
       (texel.z - origin.z) * bytesPerImage +
       ((texel.y - origin.y) / info.blockHeight) * bytesPerRow +
-      ((texel.x - origin.x) / info.blockWidth) * info.bytesPerBlock
+      ((texel.x - origin.x) / info.blockWidth) * info.color.bytes
     );
   }
 
   *iterateBlockRows(
     size: Required<GPUExtent3DDict>,
     origin: Required<GPUOrigin3DDict>,
-    format: SizedTextureFormat
+    format: ColorTextureFormat
   ): Generator<Required<GPUOrigin3DDict>> {
     if (size.width === 0 || size.height === 0 || size.depthOrArrayLayers === 0) {
       // do not iterate anything for an empty region
@@ -374,7 +374,7 @@ class ImageCopyTest extends GPUTest {
   copyPartialTextureToBufferAndCheckContents(
     { texture, mipLevel, origin }: TextureCopyViewWithRequiredOrigin,
     checkSize: Required<GPUExtent3DDict>,
-    format: SizedTextureFormat,
+    format: ColorTextureFormat,
     expected: Uint8Array,
     expectedDataLayout: Required<GPUImageDataLayout>,
     changeBeforePass: ChangeBeforePass = 'none'
@@ -448,7 +448,7 @@ class ImageCopyTest extends GPUTest {
     copySize: Required<GPUExtent3DDict>,
     destinationOrigin: Required<GPUOrigin3DDict>,
     sourceOrigin: Required<GPUOrigin3DDict>,
-    format: SizedTextureFormat,
+    format: ColorTextureFormat,
     destination: Uint8Array,
     source: Uint8Array
   ): void {
@@ -485,7 +485,7 @@ class ImageCopyTest extends GPUTest {
     fullTextureCopyLayout: TextureCopyLayout,
     texturePartialDataLayout: Required<GPUImageDataLayout>,
     copySize: Required<GPUExtent3DDict>,
-    format: SizedTextureFormat,
+    format: ColorTextureFormat,
     fullData: GPUBuffer,
     partialData: Uint8Array
   ): void {
@@ -546,7 +546,7 @@ class ImageCopyTest extends GPUTest {
     mipLevel?: number;
     origin?: Required<GPUOrigin3DDict>;
     textureSize: readonly [number, number, number];
-    format: SizedTextureFormat;
+    format: ColorTextureFormat;
     dimension: GPUTextureDimension;
     initMethod: InitMethod;
     checkMethod: CheckMethod;
@@ -998,7 +998,7 @@ class ImageCopyTest extends GPUTest {
     copyMipLevel: number,
     initialData: Float32Array
   ): void {
-    assert(kTextureFormatInfo[depthFormat].depth);
+    assert(!!kTextureFormatInfo[depthFormat].depth);
 
     const inputTexture = this.device.createTexture({
       size: copySize,
@@ -1215,8 +1215,8 @@ class ImageCopyTest extends GPUTest {
  *
  * [3]: Modify this after introducing tests with rendering.
  */
-function formatCanBeTested({ format }: { format: SizedTextureFormat }): boolean {
-  return kTextureFormatInfo[format].copyDst && kTextureFormatInfo[format].copySrc;
+function formatCanBeTested({ format }: { format: ColorTextureFormat }): boolean {
+  return kTextureFormatInfo[format].color.copyDst && kTextureFormatInfo[format].color.copySrc;
 }
 
 export const g = makeTestGroup(ImageCopyTest);
@@ -1406,7 +1406,7 @@ works for every format with 2d and 2d-array textures.
     } = t.params;
     const info = kTextureFormatInfo[format];
 
-    const offset = offsetInBlocks * info.bytesPerBlock;
+    const offset = offsetInBlocks * info.color.bytes;
     const copySize = {
       width: 3 * info.blockWidth,
       height: 3 * info.blockHeight,
@@ -1519,7 +1519,7 @@ for all formats. We pass origin and copyExtent as [number, number, number].`
     ] as const;
 
     const rowsPerImage = copySizeBlocks[1];
-    const bytesPerRow = align(copySizeBlocks[0] * info.bytesPerBlock, 256);
+    const bytesPerRow = align(copySizeBlocks[0] * info.color.bytes, 256);
 
     const dataSize = dataBytesForCopyOrFail({
       layout: { offset: 0, bytesPerRow, rowsPerImage },
@@ -1555,7 +1555,7 @@ function* generateTestTextureSizes({
   mipLevel,
   _mipSizeInBlocks,
 }: {
-  format: SizedTextureFormat;
+  format: ColorTextureFormat;
   dimension: GPUTextureDimension;
   mipLevel: number;
   _mipSizeInBlocks: Required<GPUExtent3DDict>;
@@ -1798,9 +1798,9 @@ function CopyMethodSupportedWithDepthStencilFormat(
 ): boolean {
   {
     return (
-      (aspect === 'stencil-only' && kTextureFormatInfo[format].stencil) ||
+      (aspect === 'stencil-only' && !!kTextureFormatInfo[format].stencil) ||
       (aspect === 'depth-only' &&
-        kTextureFormatInfo[format].depth &&
+        !!kTextureFormatInfo[format].depth &&
         copyMethod === 'CopyT2B' &&
         depthStencilBufferTextureCopySupported('CopyT2B', format, aspect))
     );

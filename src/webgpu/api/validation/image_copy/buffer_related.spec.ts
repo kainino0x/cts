@@ -4,10 +4,10 @@ import { makeTestGroup } from '../../../../common/framework/test_group.js';
 import {
   kSizedTextureFormats,
   kTextureDimensions,
-  kTextureFormatInfo,
   textureDimensionAndFormatCompatible,
 } from '../../../capability_info.js';
 import { GPUConst } from '../../../constants.js';
+import { kTextureFormatInfo } from '../../../format_info.js';
 import { kResourceStates } from '../../../gpu_test.js';
 import { kImageCopyTypes } from '../../../util/texture/layout.js';
 
@@ -157,6 +157,8 @@ Test that bytesPerRow must be a multiple of 256 for CopyB2T and CopyT2B if it is
     u //
       .combine('method', kImageCopyTypes)
       .combine('format', kSizedTextureFormats)
+      .combine('aspect', ['color', 'depth', 'stencil'] as const)
+      .filter(({ format, aspect }) => !!kTextureFormatInfo[format][aspect])
       .filter(formatCopyableWithMethod)
       .combine('dimension', kTextureDimensions)
       .filter(({ dimension, format }) => textureDimensionAndFormatCompatible(dimension, format))
@@ -170,14 +172,14 @@ Test that bytesPerRow must be a multiple of 256 for CopyB2T and CopyT2B if it is
       // Depth/stencil format copies must copy the whole subresource.
       .unless(p => {
         const info = kTextureFormatInfo[p.format];
-        return (info.depth || info.stencil) && p.copyHeightInBlocks !== p._textureHeightInBlocks;
+        return !!(info.depth || info.stencil) && p.copyHeightInBlocks !== p._textureHeightInBlocks;
       })
       // bytesPerRow must be specified and it must be equal or greater than the bytes size of each row if we are copying multiple rows.
       // Note that we are copying one single block on each row in this test.
       .filter(
-        ({ format, bytesPerRow, copyHeightInBlocks }) =>
+        ({ format, aspect, bytesPerRow, copyHeightInBlocks }) =>
           (bytesPerRow === undefined && copyHeightInBlocks <= 1) ||
-          (bytesPerRow !== undefined && bytesPerRow >= kTextureFormatInfo[format].bytesPerBlock)
+          (bytesPerRow !== undefined && bytesPerRow >= kTextureFormatInfo[format][aspect]!.bytes)
       )
   )
   .beforeAllSubcases(t => {

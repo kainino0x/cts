@@ -3,7 +3,8 @@ Destroying a texture more than once is allowed.
 `;
 
 import { makeTestGroup } from '../../../../common/framework/test_group.js';
-import { kTextureAspects, kTextureFormatInfo } from '../../../capability_info.js';
+import { kTextureAspects } from '../../../capability_info.js';
+import { kTextureFormatInfo } from '../../../format_info.js';
 import { ValidationTest } from '../validation_test.js';
 
 export const g = makeTestGroup(ValidationTest);

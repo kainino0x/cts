@@ -6,11 +6,11 @@ import {
   kColorTextureFormats,
   kSizedTextureFormats,
   kTextureDimensions,
-  kTextureFormatInfo,
   kTextureUsages,
   textureDimensionAndFormatCompatible,
 } from '../../../capability_info.js';
 import { GPUConst } from '../../../constants.js';
+import { aspectsForFormat, kTextureFormatInfo } from '../../../format_info.js';
 import { kResourceStates } from '../../../gpu_test.js';
 import { align } from '../../../util/math.js';
 import { virtualMipSize } from '../../../util/texture/base.js';
@@ -252,6 +252,7 @@ Test the copy must be a full subresource if the texture's format is depth/stenci
       ] as const)
       .combine('format', kSizedTextureFormats)
       .filter(({ dimension, format }) => textureDimensionAndFormatCompatible(dimension, format))
+      .expandWithParams(aspectsForFormat)
       .filter(formatCopyableWithMethod)
       .beginSubcases()
       .combine('mipLevel', [0, 2])
@@ -275,6 +276,7 @@ Test the copy must be a full subresource if the texture's format is depth/stenci
       depthOrArrayLayers,
       dimension,
       format,
+      aspect,
       mipLevel,
       copyWidthModifier,
       copyHeightModifier,
@@ -316,7 +318,7 @@ Test the copy must be a full subresource if the texture's format is depth/stenci
     ];
 
     t.testRun(
-      { texture, mipLevel, aspect: getACopyableAspectWithMethod({ format, method }) },
+      { texture, mipLevel, aspect: getACopyableAspectWithMethod({ format, aspect, method }) },
       { bytesPerRow: 512, rowsPerImage: 32 },
       copySize,
       {
@@ -342,6 +344,7 @@ Test that the texture copy origin must be aligned to the format's block size.
       .combine('method', kImageCopyTypes)
       // No need to test depth/stencil formats because its copy origin must be [0, 0, 0], which is already aligned with block size.
       .combine('format', kColorTextureFormats)
+      .expandWithParams(aspectsForFormat)
       .filter(formatCopyableWithMethod)
       .combineWithParams([
         { depthOrArrayLayers: 1, dimension: '1d' },
@@ -364,6 +367,7 @@ Test that the texture copy origin must be aligned to the format's block size.
       valueToCoordinate,
       coordinateToTest,
       format,
+      _viewAspect,
       method,
       depthOrArrayLayers,
       dimension,
@@ -387,7 +391,7 @@ Test that the texture copy origin must be aligned to the format's block size.
 
     const texture = t.createAlignedTexture(format, size, origin, dimension);
 
-    t.testRun({ texture, origin }, { bytesPerRow: 0, rowsPerImage: 0 }, size, {
+    t.testRun({ texture, aspect: _viewAspect, origin }, { bytesPerRow: 0, rowsPerImage: 0 }, size, {
       dataSize: 1,
       method,
       success,
@@ -410,6 +414,7 @@ Test that the copy size must be aligned to the texture's format's block size.
       .combine('method', kImageCopyTypes)
       // No need to test depth/stencil formats because its copy size must be subresource's size, which is already aligned with block size.
       .combine('format', kColorTextureFormats)
+      .expandWithParams(aspectsForFormat)
       .filter(formatCopyableWithMethod)
       .combine('dimension', kTextureDimensions)
       .filter(({ dimension, format }) => textureDimensionAndFormatCompatible(dimension, format))
@@ -423,7 +428,7 @@ Test that the copy size must be aligned to the texture's format's block size.
     t.selectDeviceOrSkipTestCase(info.feature);
   })
   .fn(t => {
-    const { valueToCoordinate, coordinateToTest, dimension, format, method } = t.params;
+    const { valueToCoordinate, coordinateToTest, dimension, format, aspect, method } = t.params;
     const info = kTextureFormatInfo[format];
     const size = { width: 0, height: 0, depthOrArrayLayers: 0 };
     const origin = { x: 0, y: 0, z: 0 };
@@ -444,7 +449,7 @@ Test that the copy size must be aligned to the texture's format's block size.
     const texture = t.createAlignedTexture(format, size, origin, dimension);
 
     const bytesPerRow = align(
-      Math.max(1, Math.ceil(size.width / info.blockWidth)) * info.bytesPerBlock,
+      Math.max(1, Math.ceil(size.width / info.blockWidth)) * info[aspect]!.bytes,
       256
     );
     const rowsPerImage = Math.ceil(size.height / info.blockHeight);

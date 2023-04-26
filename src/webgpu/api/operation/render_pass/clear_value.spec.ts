@@ -4,11 +4,8 @@ Tests for render pass clear values.
 
 import { makeTestGroup } from '../../../../common/framework/test_group.js';
 import { assert } from '../../../../common/util/util.js';
-import {
-  kTextureFormatInfo,
-  kDepthStencilFormats,
-  depthStencilFormatAspectSize,
-} from '../../../capability_info.js';
+import { kDepthStencilFormats, depthStencilFormatAspectSize } from '../../../capability_info.js';
+import { kTextureFormatInfo } from '../../../format_info.js';
 import { GPUTest } from '../../../gpu_test.js';
 
 export const g = makeTestGroup(GPUTest);
@@ -51,7 +48,7 @@ g.test('stencil_clear_value')
       .combine('stencilFormat', kDepthStencilFormats)
       .combine('stencilClearValue', [0, 1, 0xff, 0x100 + 2, 0x10000 + 3])
       .combine('applyStencilClearValueAsStencilReferenceValue', [true, false])
-      .filter(t => kTextureFormatInfo[t.stencilFormat].stencil)
+      .filter(t => !!kTextureFormatInfo[t.stencilFormat].stencil)
   )
   .beforeAllSubcases(t => {
     const { stencilFormat } = t.params;

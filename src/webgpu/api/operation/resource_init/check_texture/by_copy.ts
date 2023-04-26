@@ -1,5 +1,6 @@
 import { assert } from '../../../../../common/util/util.js';
-import { EncodableTextureFormat, kTextureFormatInfo } from '../../../../capability_info.js';
+import { EncodableTextureFormat } from '../../../../capability_info.js';
+import { kTextureFormatInfo } from '../../../../format_info.js';
 import { virtualMipSize } from '../../../../util/texture/base.js';
 import { CheckContents } from '../texture_zero.spec.js';
 

@@ -1,4 +1,4 @@
-import { kTextureFormatInfo } from '../../../capability_info.js';
+import { kTextureFormatInfo } from '../../../format_info.js';
 import {
   getFragmentShaderCodeWithOutput,
   getPlainTypeInfo,
@@ -28,9 +28,7 @@ export class CreateRenderPipelineValidationTest extends ValidationTest {
       fragmentShaderCode = getFragmentShaderCodeWithOutput([
         {
           values,
-          plainType: getPlainTypeInfo(
-            kTextureFormatInfo[targets[0] ? targets[0].format : 'rgba8unorm'].sampleType
-          ),
+          plainType: getPlainTypeInfo(kTextureFormatInfo[targets[0].format].color!.type),
           componentCount: 4,
         },
       ]),

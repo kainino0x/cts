@@ -10,10 +10,10 @@ import {
   kUnsizedDepthStencilFormats,
   kTextureSampleCounts,
   kMaxColorAttachments,
-  kTextureFormatInfo,
   getFeaturesForFormats,
   filterFormatsByFeature,
 } from '../../../capability_info.js';
+import { kTextureFormatInfo } from '../../../format_info.js';
 import { ValidationTest } from '../validation_test.js';
 
 const kColorAttachmentCounts = range(kMaxColorAttachments, i => i + 1);
@@ -166,7 +166,7 @@ export const g = makeTestGroup(F);
 
 const kColorAttachmentFormats = kRegularTextureFormats.filter(format => {
   const info = kTextureFormatInfo[format];
-  return info.color && info.renderable;
+  return !!info.color && !!info.colorRender;
 });
 
 g.test('render_pass_and_bundle,color_format')

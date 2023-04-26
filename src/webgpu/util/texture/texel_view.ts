@@ -1,5 +1,10 @@
 import { assert, memcpy } from '../../../common/util/util.js';
-import { EncodableTextureFormat, kTextureFormatInfo } from '../../capability_info.js';
+import { EncodableTextureFormat } from '../../capability_info.js';
+import {
+  guessAspectForFormat,
+  kTextureFormatInfo,
+  TextureSingleAspect,
+} from '../../format_info.js';
 import { reifyExtent3D, reifyOrigin3D } from '../unions.js';
 
 import { kTexelRepresentationInfo, makeClampToRange, PerTexelComponent } from './texel_data.js';
@@ -18,6 +23,8 @@ export type PerPixelAtLevel<T> = (coords: Required<GPUOrigin3DDict>) => Readonly
 export class TexelView {
   /** The GPUTextureFormat of the TexelView. */
   readonly format: EncodableTextureFormat;
+  /** The texture aspect of the TexelView (just one of color/depth/stencil). */
+  readonly aspect: TextureSingleAspect;
   /** Generates the bytes for the texel at the given coordinates. */
   readonly bytes: PerPixelAtLevel<Uint8Array>;
   /** Generates the ULPs-from-zero for the texel at the given coordinates. */
@@ -28,16 +35,19 @@ export class TexelView {
   private constructor(
     format: EncodableTextureFormat,
     {
+      aspect,
       bytes,
       ulpFromZero,
       color,
     }: {
+      aspect?: TextureSingleAspect;
       bytes: PerPixelAtLevel<Uint8Array>;
       ulpFromZero: PerPixelAtLevel<PerTexelComponent<number>>;
       color: PerPixelAtLevel<PerTexelComponent<number>>;
     }
   ) {
     this.format = format;
+    this.aspect = guessAspectForFormat(format, aspect);
     this.bytes = bytes;
     this.ulpFromZero = ulpFromZero;
     this.color = color;
@@ -81,10 +91,11 @@ export class TexelView {
 
       const imageOffsetInRows = (coords.z - origin.z) * rowsPerImage;
       const rowOffset = (imageOffsetInRows + (coords.y - origin.y)) * bytesPerRow;
-      const offset = rowOffset + (coords.x - origin.x) * info.bytesPerBlock;
+      const bytesPerBlock = (info.color ?? info.depth ?? info.stencil).bytes;
+      const offset = rowOffset + (coords.x - origin.x) * bytesPerBlock;
 
       // MAINTENANCE_TODO: To support block formats, decode the block and then index into the result.
-      return subrectData.subarray(offset, offset + info.bytesPerBlock) as Uint8Array;
+      return subrectData.subarray(offset, offset + bytesPerBlock) as Uint8Array;
     });
   }
 
@@ -147,11 +158,12 @@ export class TexelView {
 
     const info = kTextureFormatInfo[this.format];
     assert(info.blockWidth === 1 && info.blockHeight === 1, 'unimplemented for block formats');
+    const bytesPerBlock = info[this.aspect]!.bytes;
 
     for (let z = subrectOrigin.z; z < subrectOrigin.z + subrectSize.depthOrArrayLayers; ++z) {
       for (let y = subrectOrigin.y; y < subrectOrigin.y + subrectSize.height; ++y) {
         for (let x = subrectOrigin.x; x < subrectOrigin.x + subrectSize.width; ++x) {
-          const start = (z * rowsPerImage + y) * bytesPerRow + x * info.bytesPerBlock;
+          const start = (z * rowsPerImage + y) * bytesPerRow + x * bytesPerBlock;
           memcpy({ src: this.bytes({ x, y, z }) }, { dst: subrectData, start });
         }
       }

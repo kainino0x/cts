@@ -4,7 +4,8 @@ depth ranges as well.
 `;
 
 import { makeTestGroup } from '../../../../common/framework/test_group.js';
-import { kDepthStencilFormats, kTextureFormatInfo } from '../../../capability_info.js';
+import { kDepthStencilFormats } from '../../../capability_info.js';
+import { kTextureFormatInfo } from '../../../format_info.js';
 import { GPUTest } from '../../../gpu_test.js';
 import {
   checkElementsBetween,
@@ -36,7 +37,7 @@ have unexpected values then get drawn to the color buffer, which is later checke
   .params(u =>
     u //
       .combine('format', kDepthStencilFormats)
-      .filter(p => kTextureFormatInfo[p.format].depth)
+      .filter(p => !!kTextureFormatInfo[p.format].depth)
       .combine('unclippedDepth', [undefined, false, true])
       .combine('writeDepth', [false, true])
       .combine('multisampled', [false, true])
@@ -222,16 +223,16 @@ have unexpected values then get drawn to the color buffer, which is later checke
       : undefined;
 
     const dsActual =
-      !multisampled && info.bytesPerBlock
+      !multisampled && info.depth!.bytes
         ? t.device.createBuffer({
-            size: kNumTestPoints * info.bytesPerBlock,
+            size: kNumTestPoints * info.depth!.bytes,
             usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
           })
         : undefined;
     const dsExpected =
-      !multisampled && info.bytesPerBlock
+      !multisampled && info.depth!.bytes
         ? t.device.createBuffer({
-            size: kNumTestPoints * info.bytesPerBlock,
+            size: kNumTestPoints * info.depth!.bytes,
             usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
           })
         : undefined;
@@ -352,7 +353,7 @@ to be empty.`
   .params(u =>
     u //
       .combine('format', kDepthStencilFormats)
-      .filter(p => kTextureFormatInfo[p.format].depth)
+      .filter(p => !!kTextureFormatInfo[p.format].depth)
       .combine('unclippedDepth', [false, true])
       .combine('multisampled', [false, true])
   )

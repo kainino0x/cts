@@ -6,10 +6,10 @@ import { makeTestGroup } from '../../../common/framework/test_group.js';
 import { skipTestCase } from '../../../common/util/util.js';
 import {
   kCanvasAlphaModes,
-  kTextureFormatInfo,
   kValidTextureFormatsForCopyE2T,
   RegularTextureFormat,
 } from '../../capability_info.js';
+import { kTextureFormatInfo } from '../../format_info.js';
 import { CopyToTextureUtils } from '../../util/copy_to_texture.js';
 import { CanvasType, kAllCanvasTypes, createCanvas } from '../../util/create_elements.js';
 import { TexelCompareOptions } from '../../util/texture/texture_ok.js';

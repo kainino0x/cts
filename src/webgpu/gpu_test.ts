@@ -17,11 +17,11 @@ import {
 import {
   EncodableTextureFormat,
   SizedTextureFormat,
-  kTextureFormatInfo,
   kQueryTypeInfo,
   resolvePerAspectFormat,
   kEncodableTextureFormats,
 } from './capability_info.js';
+import { kTextureFormatInfo } from './format_info.js';
 import { makeBufferWithContents } from './util/buffer.js';
 import { checkElementsEqual, checkElementsBetween } from './util/check_contents.js';
 import { CommandBufferMaker, EncoderType } from './util/command_buffer_maker.js';
@@ -1051,7 +1051,7 @@ export function TextureTestMixin<F extends FixtureClass<GPUTest>>(
     }
 
     expectTexelViewComparisonIsOkInTexture(
-      src: GPUImageCopyTexture,
+      src: GPUImageCopyTexture & { aspect?: undefined },
       exp: TexelView,
       size: GPUExtent3D,
       comparisonOptions = {
@@ -1066,7 +1066,7 @@ export function TextureTestMixin<F extends FixtureClass<GPUTest>>(
     }
 
     expectSinglePixelComparisonsAreOkInTexture<E extends PixelExpectation>(
-      src: GPUImageCopyTexture,
+      src: GPUImageCopyTexture & { aspect?: undefined },
       exp: PerPixelComparison<E>[],
       comparisonOptions = {
         maxIntDiff: 0,

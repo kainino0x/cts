@@ -1,9 +1,10 @@
+import { assert } from '../../../../common/util/util.js';
 import {
-  kTextureFormatInfo,
   SizedTextureFormat,
   DepthStencilFormat,
   depthStencilFormatCopyableAspects,
 } from '../../../capability_info.js';
+import { kTextureFormatInfo } from '../../../format_info.js';
 import { align } from '../../../util/math.js';
 import { ImageCopyType } from '../../../util/texture/layout.js';
 import { ValidationTest } from '../validation_test.js';
@@ -186,30 +187,30 @@ function valuesToTestDivisibilityBy(number: number): Iterable<number> {
   return values;
 }
 
-interface WithFormat {
+interface WithFormatAspect {
   format: SizedTextureFormat;
+  aspect: 'color' | 'depth' | 'stencil';
 }
 
-interface WithFormatAndCoordinate extends WithFormat {
+interface WithFormatAndCoordinate extends WithFormatAspect {
   coordinateToTest: keyof GPUOrigin3DDict | keyof GPUExtent3DDict;
 }
 
-interface WithFormatAndMethod extends WithFormat {
+interface WithFormatAspectMethod extends WithFormatAspect {
   method: ImageCopyType;
 }
 
 // This is a helper function used for expanding test parameters for offset alignment, by spec
-export function texelBlockAlignmentTestExpanderForOffset({ format }: WithFormat) {
-  const info = kTextureFormatInfo[format];
-  if (info.depth || info.stencil) {
+export function texelBlockAlignmentTestExpanderForOffset({ format, aspect }: WithFormatAspect) {
+  if (aspect === 'depth' || aspect === 'stencil') {
     return valuesToTestDivisibilityBy(4);
   }
 
-  return valuesToTestDivisibilityBy(kTextureFormatInfo[format].bytesPerBlock);
+  return valuesToTestDivisibilityBy(kTextureFormatInfo[format].color!.bytes);
 }
 
 // This is a helper function used for expanding test parameters for texel block alignment tests on rowsPerImage
-export function texelBlockAlignmentTestExpanderForRowsPerImage({ format }: WithFormat) {
+export function texelBlockAlignmentTestExpanderForRowsPerImage({ format }: WithFormatAspect) {
   return valuesToTestDivisibilityBy(kTextureFormatInfo[format].blockHeight);
 }
 
@@ -234,19 +235,21 @@ export function texelBlockAlignmentTestExpanderForValueToCoordinate({
 }
 
 // This is a helper function used for filtering test parameters
-export function formatCopyableWithMethod({ format, method }: WithFormatAndMethod): boolean {
+export function formatCopyableWithMethod({
+  format,
+  aspect,
+  method,
+}: WithFormatAspectMethod): boolean {
   const info = kTextureFormatInfo[format];
-  if (info.depth || info.stencil) {
-    const supportedAspects: readonly GPUTextureAspect[] = depthStencilFormatCopyableAspects(
-      method,
-      format as DepthStencilFormat
-    );
-    return supportedAspects.length > 0;
-  }
-  if (method === 'CopyT2B') {
-    return info.copySrc;
-  } else {
-    return info.copyDst;
+  const aspectInfo = info[aspect];
+  assert(!!aspectInfo);
+
+  switch (method) {
+    case 'CopyT2B':
+      return aspectInfo.copySrc;
+    case 'CopyB2T':
+    case 'WriteTexture':
+      return aspectInfo.copyDst;
   }
 }
 
@@ -254,7 +257,7 @@ export function formatCopyableWithMethod({ format, method }: WithFormatAndMethod
 export function getACopyableAspectWithMethod({
   format,
   method,
-}: WithFormatAndMethod): GPUTextureAspect {
+}: WithFormatAspectMethod): GPUTextureAspect {
   const info = kTextureFormatInfo[format];
   if (info.depth || info.stencil) {
     const supportedAspects: readonly GPUTextureAspect[] = depthStencilFormatCopyableAspects(

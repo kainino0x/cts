@@ -1,5 +1,6 @@
 import { assert, ErrorWithExtra, unreachable } from '../../../common/util/util.js';
-import { EncodableTextureFormat, kTextureFormatInfo } from '../../capability_info.js';
+import { EncodableTextureFormat } from '../../capability_info.js';
+import { kTextureFormatInfo } from '../../format_info.js';
 import { GPUTest } from '../../gpu_test.js';
 import { generatePrettyTable } from '../pretty_diff_tables.js';
 import { reifyExtent3D, reifyOrigin3D } from '../unions.js';
@@ -233,9 +234,10 @@ function findFailedPixels(
   }
 
   const info = kTextureFormatInfo[format];
+  assert(!!info.color, 'depth/stencil not yet implemented');
   const repr = kTexelRepresentationInfo[format];
 
-  const integerSampleType = info.sampleType === 'uint' || info.sampleType === 'sint';
+  const integerSampleType = info.color.type === 'uint' || info.color.type === 'sint';
   const numberToString = integerSampleType
     ? (n: number) => n.toFixed()
     : (n: number) => n.toPrecision(6);
@@ -308,7 +310,7 @@ ${generatePrettyTable(opts, [
  */
 export async function textureContentIsOKByT2B(
   t: GPUTest,
-  source: GPUImageCopyTexture,
+  source: GPUImageCopyTexture & { aspect?: undefined },
   copySize_: GPUExtent3D,
   { expTexelView }: { expTexelView: TexelView },
   texelCompareOptions: TexelCompareOptions,

@@ -1,10 +1,14 @@
 import { assert, memcpy } from '../../../common/util/util.js';
 import {
   EncodableTextureFormat,
-  kTextureFormatInfo,
   resolvePerAspectFormat,
   SizedTextureFormat,
 } from '../../capability_info.js';
+import {
+  TextureSingleAspect,
+  guessAspectForFormat,
+  kTextureFormatInfo,
+} from '../../format_info.js';
 import { align } from '../math.js';
 import { reifyExtent3D } from '../unions.js';
 
@@ -97,7 +101,8 @@ export function getTextureSubCopyLayout(
   } = {}
 ): TextureSubCopyLayout {
   format = resolvePerAspectFormat(format, aspect);
-  const { blockWidth, blockHeight, bytesPerBlock } = kTextureFormatInfo[format];
+  const info = kTextureFormatInfo[format];
+  const bytesPerBlock = (info.color ?? info.depth ?? info.stencil).bytes;
   assert(bytesPerBlock !== undefined);
 
   const copySize_ = reifyExtent3D(copySize);
@@ -106,13 +111,13 @@ export function getTextureSubCopyLayout(
     'not implemented for empty copySize'
   );
   assert(
-    copySize_.width % blockWidth === 0 && copySize_.height % blockHeight === 0,
+    copySize_.width % info.blockWidth === 0 && copySize_.height % info.blockHeight === 0,
     () =>
-      `copySize (${copySize_.width},${copySize_.height}) must be a multiple of the block size (${blockWidth},${blockHeight})`
+      `copySize (${copySize_.width},${copySize_.height}) must be a multiple of the block size (${info.blockWidth},${info.blockHeight})`
   );
   const copySizeBlocks = {
-    width: copySize_.width / blockWidth,
-    height: copySize_.height / blockHeight,
+    width: copySize_.width / info.blockWidth,
+    height: copySize_.height / info.blockHeight,
     depthOrArrayLayers: copySize_.depthOrArrayLayers,
   };
 
@@ -160,10 +165,11 @@ export function fillTextureDataWithTexelValue(
   size: [number, number, number],
   options: LayoutOptions = kDefaultLayoutOptions
 ): void {
-  const { blockWidth, blockHeight, bytesPerBlock } = kTextureFormatInfo[format];
+  const info = kTextureFormatInfo[format];
   // Block formats are not handled correctly below.
-  assert(blockWidth === 1);
-  assert(blockHeight === 1);
+  assert(info.blockWidth === 1);
+  assert(info.blockHeight === 1);
+  const bytesPerBlock = (info.color ?? info.depth ?? info.stencil).bytes;
 
   assert(bytesPerBlock === texelValue.byteLength, 'texelValue must be of size bytesPerBlock');
 
@@ -180,8 +186,8 @@ export function fillTextureDataWithTexelValue(
 
   const outputTexelValueBytes = new Uint8Array(outputBuffer);
   for (let slice = 0; slice < mipSize[2]; ++slice) {
-    for (let row = 0; row < mipSize[1]; row += blockHeight) {
-      for (let col = 0; col < mipSize[0]; col += blockWidth) {
+    for (let row = 0; row < mipSize[1]; row += info.blockHeight) {
+      for (let col = 0; col < mipSize[0]; col += info.blockWidth) {
         const byteOffset =
           slice * rowsPerImage * bytesPerRow + row * bytesPerRow + col * texelValue.byteLength;
         memcpy({ src: texelValue }, { dst: outputTexelValueBytes, start: byteOffset });
@@ -243,8 +249,9 @@ export const kImageCopyTypes: readonly ImageCopyType[] = [
  */
 export function bytesInACompleteRow(copyWidth: number, format: SizedTextureFormat): number {
   const info = kTextureFormatInfo[format];
+  const bytesPerBlock = (info.color ?? info.depth ?? info.stencil).bytes;
   assert(copyWidth % info.blockWidth === 0);
-  return (info.bytesPerBlock * copyWidth) / info.blockWidth;
+  return (bytesPerBlock * copyWidth) / info.blockWidth;
 }
 
 function validateBytesPerRow({
@@ -292,6 +299,7 @@ function validateRowsPerImage({
 interface DataBytesForCopyArgs {
   layout: GPUImageDataLayout;
   format: SizedTextureFormat;
+  aspect?: TextureSingleAspect;
   copySize: Readonly<GPUExtent3DDict> | readonly number[];
   method: ImageCopyType;
 }
@@ -314,12 +322,16 @@ export function dataBytesForCopyOrFail(args: DataBytesForCopyArgs): number {
 export function dataBytesForCopyOrOverestimate({
   layout,
   format,
+  aspect,
   copySize: copySize_,
   method,
 }: DataBytesForCopyArgs): { minDataSizeOrOverestimate: number; copyValid: boolean } {
+  aspect = guessAspectForFormat(format, aspect);
+
   const copyExtent = reifyExtent3D(copySize_);
 
   const info = kTextureFormatInfo[format];
+  const bytesPerBlock = info[aspect]!.bytes;
   assert(copyExtent.width % info.blockWidth === 0);
   assert(copyExtent.height % info.blockHeight === 0);
   const sizeInBlocks = {
@@ -327,12 +339,12 @@ export function dataBytesForCopyOrOverestimate({
     height: copyExtent.height / info.blockHeight,
     depthOrArrayLayers: copyExtent.depthOrArrayLayers,
   } as const;
-  const bytesInLastRow = sizeInBlocks.width * info.bytesPerBlock;
+  const bytesInLastRow = sizeInBlocks.width * bytesPerBlock;
 
   let valid = true;
   const offset = layout.offset ?? 0;
   if (method !== 'WriteTexture') {
-    if (offset % info.bytesPerBlock !== 0) valid = false;
+    if (offset % bytesPerBlock !== 0) valid = false;
     if (layout.bytesPerRow && layout.bytesPerRow % 256 !== 0) valid = false;
   }
 
@@ -353,7 +365,7 @@ export function dataBytesForCopyOrOverestimate({
       valid = false;
     }
     // Pick values for cases when (a) bpr/rpi was invalid or (b) they're validly undefined.
-    bytesPerRow ??= align(info.bytesPerBlock * sizeInBlocks.width, 256);
+    bytesPerRow ??= align(bytesPerBlock * sizeInBlocks.width, 256);
     rowsPerImage ??= sizeInBlocks.height;
 
     if (copyExtent.depthOrArrayLayers > 1) {
