@@ -18,7 +18,6 @@ import {
 import { makeTestGroup } from '../../../../common/framework/test_group.js';
 import { assert, unreachable } from '../../../../common/util/util.js';
 import {
-  kTextureFormatInfo,
   kTextureAspects,
   kUncompressedTextureFormats,
   EncodableTextureFormat,
@@ -27,6 +26,7 @@ import {
   kTextureDimensions,
 } from '../../../capability_info.js';
 import { GPUConst } from '../../../constants.js';
+import { TextureFormatInfo, kTextureFormatInfo } from '../../../format_info.js';
 import { GPUTest, GPUTestSubcaseBatchState } from '../../../gpu_test.js';
 import { virtualMipSize } from '../../../util/texture/base.js';
 import { createTextureUploadBuffer } from '../../../util/texture/layout.js';
@@ -170,14 +170,19 @@ function getRequiredTextureUsage(
     usage |= GPUConst.TextureUsage.RENDER_ATTACHMENT;
   }
 
-  if (!kTextureFormatInfo[format].copyDst) {
+  const info = kTextureFormatInfo[format];
+  if (!(info.color ?? info.depth ?? info.stencil).copyDst) {
     // Copies are not possible. We need OutputAttachment to initialize
     // canary data.
-    assert(kTextureFormatInfo[format].renderable);
+    assert(!!(info.depth || info.stencil || info.colorRender));
     usage |= GPUConst.TextureUsage.RENDER_ATTACHMENT;
   }
 
   return usage;
+}
+
+function isRenderable(info: TextureFormatInfo): boolean {
+  return !!(info.depth || info.stencil || info.colorRender);
 }
 
 export class TextureZeroInitTest extends GPUTest {
@@ -399,10 +404,10 @@ export class TextureZeroInitTest extends GPUTest {
     state: InitializedState,
     subresourceRange: SubresourceRange
   ): void {
-    if (this.p.sampleCount > 1 || !kTextureFormatInfo[this.p.format].copyDst) {
-      // Copies to multisampled textures not yet specified.
-      // Use a storeOp for now.
-      assert(kTextureFormatInfo[this.p.format].renderable);
+    const info = kTextureFormatInfo[this.p.format];
+    if (this.p.sampleCount > 1 || !(info.color ?? info.depth ?? info.stencil).copyDst) {
+      // Copies are not supported; use a storeOp to initialize.
+      assert(!!(info.depth || info.stencil || info.colorRender));
       this.initializeWithStoreOp(state, texture, subresourceRange);
     } else {
       this.initializeWithCopy(texture, state, subresourceRange);
@@ -469,14 +474,15 @@ const kTestParams = kUnitCaseParamsBuilder
   .unless(({ readMethod, format, aspect }) => {
     const info = kTextureFormatInfo[format];
     return (
+      // FIXME: something is redundant between this and the conditions a few lines down
       (readMethod === ReadMethod.DepthTest && (!info.depth || aspect === 'stencil-only')) ||
       (readMethod === ReadMethod.StencilTest && (!info.stencil || aspect === 'depth-only')) ||
       (readMethod === ReadMethod.ColorBlending && !info.color) ||
       // [1]: Test with depth/stencil sampling
-      (readMethod === ReadMethod.Sample && (info.depth || info.stencil)) ||
+      (readMethod === ReadMethod.Sample && (!!info.depth || !!info.stencil)) ||
       (aspect === 'depth-only' && !info.depth) ||
       (aspect === 'stencil-only' && !info.stencil) ||
-      (aspect === 'all' && info.depth && info.stencil) ||
+      (aspect === 'all' && !!info.depth && !!info.stencil) ||
       // Cannot copy from a packed depth format.
       // [2]: Test copying out of the stencil aspect.
       ((readMethod === ReadMethod.CopyToBuffer || readMethod === ReadMethod.CopyToTexture) &&
@@ -501,8 +507,8 @@ const kTestParams = kUnitCaseParamsBuilder
     return (
       dimension !== '2d' &&
       (sampleCount > 1 ||
-        formatInfo.depth ||
-        formatInfo.stencil ||
+        !!formatInfo.depth ||
+        !!formatInfo.stencil ||
         readMethod === ReadMethod.DepthTest ||
         readMethod === ReadMethod.StencilTest ||
         readMethod === ReadMethod.ColorBlending ||
@@ -528,16 +534,18 @@ const kTestParams = kUnitCaseParamsBuilder
     const info = kTextureFormatInfo[format];
 
     return (
-      ((usage & GPUConst.TextureUsage.RENDER_ATTACHMENT) !== 0 && !info.renderable) ||
-      ((usage & GPUConst.TextureUsage.STORAGE_BINDING) !== 0 && !info.storage) ||
+      ((usage & GPUConst.TextureUsage.RENDER_ATTACHMENT) !== 0 && !isRenderable(info)) ||
+      ((usage & GPUConst.TextureUsage.STORAGE_BINDING) !== 0 && !info.color?.storage) ||
       (sampleCount > 1 && !info.multisample)
     );
   })
   .combine('nonPowerOfTwo', [false, true])
   .combine('canaryOnCreation', [false, true])
   .filter(({ canaryOnCreation, format }) => {
+    const info = kTextureFormatInfo[format];
     // We can only initialize the texture if it's encodable or renderable.
-    const canInitialize = format in kTextureFormatInfo || kTextureFormatInfo[format].renderable;
+    // FIXME: this appears to be always true?
+    const canInitialize = format in kTextureFormatInfo || isRenderable(info);
 
     // Filter out cases where we want canary values but can't initialize.
     return !canaryOnCreation || canInitialize;
