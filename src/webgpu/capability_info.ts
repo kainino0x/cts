@@ -8,6 +8,7 @@ import { assertTypeTrue, TypeEqual } from '../common/util/types.js';
 import { assert, unreachable } from '../common/util/util.js';
 
 import { GPUConst, kMaxUnsignedLongValue, kMaxUnsignedLongLongValue } from './constants.js';
+import { kTextureFormatInfo } from './format_info.js';
 import { ImageCopyType } from './util/texture/layout.js';
 
 // Base device limits can be found in constants.ts.
@@ -295,56 +296,6 @@ export const kCanvasColorSpacesInfo: {
 };
 export const kCanvasColorSpaces = keysOf(kCanvasColorSpacesInfo);
 
-/** Per-GPUTextureFormat info. */
-// Exists just for documentation. Otherwise could be inferred by `makeTable`.
-// MAINTENANCE_TODO: Refactor this to separate per-aspect data for multi-aspect formats. In particular:
-// - bytesPerBlock only makes sense on a per-aspect basis. But this table can't express that.
-//   So we put depth32float-stencil8 to be an unsized format for now.
-export type TextureFormatInfo = {
-  /** Whether the format can be used as `RENDER_ATTACHMENT`. */
-  renderable: boolean;
-  /** Whether the format can be used in a multisample texture. */
-  multisample: boolean;
-  /** Whether the texture with the format can be used as a resolve target. */
-  resolve: boolean;
-  /** Whether the format has a color aspect. */
-  color: boolean;
-  /** Whether the format has a depth aspect. */
-  depth: boolean;
-  /** Whether the format has a stencil aspect. */
-  stencil: boolean;
-  /** Whether the format can be used as `STORAGE`. */
-  storage: boolean;
-  /** Whether the format can be used as `COPY_SRC`. */
-  copySrc: boolean;
-  /** Whether the format can be used as `COPY_DST`. */
-  copyDst: boolean;
-  /** Sample type of the color or depth aspect. */
-  sampleType: GPUTextureSampleType;
-  /** Byte size of one texel block, or `undefined` if the format is unsized. */
-  bytesPerBlock: number | undefined;
-  /** Width, in texels, of one texel block. */
-  blockWidth: number;
-  /** Height, in texels, of one texel block. */
-  blockHeight: number;
-  /** The raw, unaligned, byte cost towards the color attachment bytes per sample.
-   *  (See https://www.w3.org/TR/webgpu/#abstract-opdef-calculating-color-attachment-bytes-per-sample). */
-  renderTargetPixelByteCost: number | undefined;
-  /** The alignment used for the format when computing the color attachment bytes per sample. */
-  renderTargetComponentAlignment: number | undefined;
-  /** Optional feature required to use this format, or `undefined` if none. */
-  feature: GPUFeatureName | undefined;
-  // Add fields as needed
-};
-/** Per-GPUTextureFormat info. FIXME: Remove. */
-const kTextureFormatInfo: {
-  readonly [k in GPUTextureFormat]: TextureFormatInfo &
-    // TextureFormatInfo exists just for documentation (and verification of the table data types).
-    // The next line constrains the types so that accessing kTextureFormatInfo with
-    // a subtype of GPUTextureFormat actually returns nicely a constrained info type
-    // (e.g. with `bytesPerBlock: number` instead of `bytesPerBlock: number | undefined`).
-    typeof kAllTextureFormatInfo[k];
-} = kAllTextureFormatInfo;
 /** List of all GPUTextureFormat values. */
 /* prettier-ignore */ export const kTextureFormats: readonly GPUTextureFormat[] = keysOf(kAllTextureFormatInfo);
 
@@ -514,7 +465,7 @@ export function resolvePerAspectFormat(
   if (aspect === 'all' || aspect === undefined) {
     return format;
   }
-  assert(kTextureFormatInfo[format].depth || kTextureFormatInfo[format].stencil);
+  assert(!!kTextureFormatInfo[format].depth || !!kTextureFormatInfo[format].stencil);
   const resolved = kDepthStencilFormatResolvedAspect[format as DepthStencilFormat][aspect ?? 'all'];
   assert(resolved !== undefined);
   return resolved;
