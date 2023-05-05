@@ -8,8 +8,9 @@ import {
   kSizedTextureFormats,
   textureDimensionAndFormatCompatible,
   kTextureDimensions,
-} from '../../../capability_info.js';
-import { aspectsForFormat, kTextureFormatInfo } from '../../../format_info.js';
+  aspectsForFormat,
+  kTextureFormatInfo,
+} from '../../../format_info.js';
 import { align } from '../../../util/math.js';
 import {
   bytesInACompleteRow,

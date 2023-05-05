@@ -11,8 +11,11 @@ TODO: Test zero-sized copies from all sources (just make sure params cover it) (
 `;
 
 import { makeTestGroup } from '../../../common/framework/test_group.js';
-import { kValidTextureFormatsForCopyE2T, EncodableTextureFormat } from '../../capability_info.js';
-import { kTextureFormatInfo } from '../../format_info.js';
+import {
+  kValidTextureFormatsForCopyE2T,
+  EncodableTextureFormat,
+  kTextureFormatInfo,
+} from '../../format_info.js';
 import { CopyToTextureUtils, kCopySubrectInfo } from '../../util/copy_to_texture.js';
 import { PerTexelComponent } from '../../util/texture/texel_data.js';
 import { TexelView } from '../../util/texture/texel_view.js';

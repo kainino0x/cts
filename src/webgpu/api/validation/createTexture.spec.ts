@@ -3,21 +3,20 @@ export const description = `createTexture validation tests.`;
 import { SkipTestCase } from '../../../common/framework/fixture.js';
 import { makeTestGroup } from '../../../common/framework/test_group.js';
 import { assert } from '../../../common/util/util.js';
+import { kTextureUsages, kLimitInfo } from '../../capability_info.js';
+import { GPUConst } from '../../constants.js';
 import {
+  kTextureFormatInfo,
   kTextureFormats,
   kCompressedTextureFormats,
   kTextureDimensions,
-  kTextureUsages,
   kUncompressedTextureFormats,
   kRegularTextureFormats,
   kFeaturesForFormats,
   textureDimensionAndFormatCompatible,
-  kLimitInfo,
   viewCompatible,
   filterFormatsByFeature,
-} from '../../capability_info.js';
-import { GPUConst } from '../../constants.js';
-import { kTextureFormatInfo } from '../../format_info.js';
+} from '../../format_info.js';
 import { maxMipLevelCount } from '../../util/texture/base.js';
 
 import { ValidationTest } from './validation_test.js';

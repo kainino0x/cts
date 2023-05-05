@@ -3,8 +3,6 @@ import {
   EncodableTextureFormat,
   resolvePerAspectFormat,
   SizedTextureFormat,
-} from '../../capability_info.js';
-import {
   TextureSingleAspect,
   guessAspectForFormat,
   kTextureFormatInfo,

@@ -1,6 +1,5 @@
 import { assert, unreachable } from '../../../common/util/util.js';
-import { ColorTextureFormat } from '../../capability_info.js';
-import { kTextureFormatInfo } from '../../format_info.js';
+import { ColorTextureFormat, kTextureFormatInfo } from '../../format_info.js';
 import { gammaDecompress, float32ToFloat16Bits } from '../../util/conversion.js';
 import { align } from '../../util/math.js';
 

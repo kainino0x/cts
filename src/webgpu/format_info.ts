@@ -1,4 +1,11 @@
+import { keysOf } from '../common/util/data_tables.js';
 import { assert, unreachable } from '../common/util/util.js';
+
+import { ImageCopyType } from './util/texture/layout.js';
+
+//
+// Texture format tables
+//
 
 /** Per-GPUTextureFormat-per-aspect info. */
 interface TextureFormatAspectInfo {
@@ -686,6 +693,233 @@ const kTextureFormatInfo_TypeCheck: {
   readonly [F in GPUTextureFormat]: TextureFormatInfo_TypeCheck;
 } = kTextureFormatInfo;
 
+// MAINTENANCE_TODO: Consider generating the exports below programmatically by filtering the big list, instead
+// of using these local constants? Requires some type magic though.
+/* prettier-ignore */ const   kCompressedTextureFormatInfo = { ...kBCTextureFormatInfo, ...kETC2TextureFormatInfo, ...kASTCTextureFormatInfo } as const;
+/* prettier-ignore */ const        kColorTextureFormatInfo = { ...kRegularTextureFormatInfo, ...kCompressedTextureFormatInfo } as const;
+/* prettier-ignore */ const    kEncodableTextureFormatInfo = { ...kRegularTextureFormatInfo, ...kSizedDepthStencilFormatInfo } as const;
+/* prettier-ignore */ const        kSizedTextureFormatInfo = { ...kRegularTextureFormatInfo, ...kSizedDepthStencilFormatInfo, ...kCompressedTextureFormatInfo } as const;
+/* prettier-ignore */ const        kDepthStencilFormatInfo = { ...kSizedDepthStencilFormatInfo, ...kUnsizedDepthStencilFormatInfo } as const;
+/* prettier-ignore */ const kUncompressedTextureFormatInfo = { ...kRegularTextureFormatInfo, ...kSizedDepthStencilFormatInfo, ...kUnsizedDepthStencilFormatInfo } as const;
+/* prettier-ignore */ const          kAllTextureFormatInfo = { ...kUncompressedTextureFormatInfo, ...kCompressedTextureFormatInfo } as const;
+
+/** A "regular" texture format (uncompressed, sized, single-plane color formats). */
+/* prettier-ignore */ export type      RegularTextureFormat = keyof typeof kRegularTextureFormatInfo;
+/** A sized depth/stencil texture format. */
+/* prettier-ignore */ export type   SizedDepthStencilFormat = keyof typeof kSizedDepthStencilFormatInfo;
+/** An unsized depth/stencil texture format. */
+/* prettier-ignore */ export type UnsizedDepthStencilFormat = keyof typeof kUnsizedDepthStencilFormatInfo;
+/** A compressed (block) texture format. */
+/* prettier-ignore */ export type   CompressedTextureFormat = keyof typeof kCompressedTextureFormatInfo;
+
+/** A color texture format (regular | compressed). */
+/* prettier-ignore */ export type        ColorTextureFormat = keyof typeof kColorTextureFormatInfo;
+/** An encodable texture format (regular | sized depth/stencil). */
+/* prettier-ignore */ export type    EncodableTextureFormat = keyof typeof kEncodableTextureFormatInfo;
+/** A sized texture format (regular | sized depth/stencil | compressed). */
+/* prettier-ignore */ export type        SizedTextureFormat = keyof typeof kSizedTextureFormatInfo;
+/** A depth/stencil format (sized | unsized). */
+/* prettier-ignore */ export type        DepthStencilFormat = keyof typeof kDepthStencilFormatInfo;
+/** An uncompressed (block size 1x1) format (regular | depth/stencil). */
+/* prettier-ignore */ export type UncompressedTextureFormat = keyof typeof kUncompressedTextureFormatInfo;
+
+/* prettier-ignore */ export const      kRegularTextureFormats: readonly      RegularTextureFormat[] = keysOf(     kRegularTextureFormatInfo);
+/* prettier-ignore */ export const   kSizedDepthStencilFormats: readonly   SizedDepthStencilFormat[] = keysOf(  kSizedDepthStencilFormatInfo);
+/* prettier-ignore */ export const kUnsizedDepthStencilFormats: readonly UnsizedDepthStencilFormat[] = keysOf(kUnsizedDepthStencilFormatInfo);
+/* prettier-ignore */ export const   kCompressedTextureFormats: readonly   CompressedTextureFormat[] = keysOf(  kCompressedTextureFormatInfo);
+
+/* prettier-ignore */ export const        kColorTextureFormats: readonly        ColorTextureFormat[] = keysOf(       kColorTextureFormatInfo);
+/* prettier-ignore */ export const    kEncodableTextureFormats: readonly    EncodableTextureFormat[] = keysOf(   kEncodableTextureFormatInfo);
+/* prettier-ignore */ export const        kSizedTextureFormats: readonly        SizedTextureFormat[] = keysOf(       kSizedTextureFormatInfo);
+/* prettier-ignore */ export const        kDepthStencilFormats: readonly        DepthStencilFormat[] = keysOf(       kDepthStencilFormatInfo);
+/* prettier-ignore */ export const kUncompressedTextureFormats: readonly UncompressedTextureFormat[] = keysOf(kUncompressedTextureFormatInfo);
+/* prettier-ignore */ export const          kAllTextureFormats: readonly          GPUTextureFormat[] = keysOf(         kAllTextureFormatInfo);
+
+/** List of all GPUTextureFormat values. */
+export const kTextureFormats: readonly GPUTextureFormat[] = keysOf(kAllTextureFormatInfo);
+
+// CompressedTextureFormat are unrenderable so filter from RegularTextureFormats for color targets is enough
+export const kRenderableColorTextureFormats = kRegularTextureFormats.filter(
+  v => kColorTextureFormatInfo[v].colorRender
+);
+
+/** Valid GPUTextureFormats for `copyExternalImageToTexture`, by spec. */
+export const kValidTextureFormatsForCopyE2T = [
+  'r8unorm',
+  'r16float',
+  'r32float',
+  'rg8unorm',
+  'rg16float',
+  'rg32float',
+  'rgba8unorm',
+  'rgba8unorm-srgb',
+  'bgra8unorm',
+  'bgra8unorm-srgb',
+  'rgb10a2unorm',
+  'rgba16float',
+  'rgba32float',
+] as const;
+
+//
+// Other related stuff
+//
+
+const kDepthStencilFormatCapabilityInBufferTextureCopy = {
+  // kUnsizedDepthStencilFormats
+  depth24plus: {
+    CopyB2T: [],
+    CopyT2B: [],
+    texelAspectSize: { 'depth-only': -1, 'stencil-only': -1 },
+  },
+  'depth24plus-stencil8': {
+    CopyB2T: ['stencil-only'],
+    CopyT2B: ['stencil-only'],
+    texelAspectSize: { 'depth-only': -1, 'stencil-only': 1 },
+  },
+
+  // kSizedDepthStencilFormats
+  depth16unorm: {
+    CopyB2T: ['all', 'depth-only'],
+    CopyT2B: ['all', 'depth-only'],
+    texelAspectSize: { 'depth-only': 2, 'stencil-only': -1 },
+  },
+  depth32float: {
+    CopyB2T: [],
+    CopyT2B: ['all', 'depth-only'],
+    texelAspectSize: { 'depth-only': 4, 'stencil-only': -1 },
+  },
+  'depth32float-stencil8': {
+    CopyB2T: ['stencil-only'],
+    CopyT2B: ['depth-only', 'stencil-only'],
+    texelAspectSize: { 'depth-only': 4, 'stencil-only': 1 },
+  },
+  stencil8: {
+    CopyB2T: ['all', 'stencil-only'],
+    CopyT2B: ['all', 'stencil-only'],
+    texelAspectSize: { 'depth-only': -1, 'stencil-only': 1 },
+  },
+} as const;
+
+/** `kDepthStencilFormatResolvedAspect[format][aspect]` returns the aspect-specific format for a
+ *  depth-stencil format, or `undefined` if the format doesn't have the aspect.
+ */
+export const kDepthStencilFormatResolvedAspect: {
+  readonly [k in DepthStencilFormat]: {
+    readonly [a in GPUTextureAspect]: DepthStencilFormat | undefined;
+  };
+} = {
+  // kUnsizedDepthStencilFormats
+  depth24plus: {
+    all: 'depth24plus',
+    'depth-only': 'depth24plus',
+    'stencil-only': undefined,
+  },
+  'depth24plus-stencil8': {
+    all: 'depth24plus-stencil8',
+    'depth-only': 'depth24plus',
+    'stencil-only': 'stencil8',
+  },
+
+  // kSizedDepthStencilFormats
+  depth16unorm: {
+    all: 'depth16unorm',
+    'depth-only': 'depth16unorm',
+    'stencil-only': undefined,
+  },
+  depth32float: {
+    all: 'depth32float',
+    'depth-only': 'depth32float',
+    'stencil-only': undefined,
+  },
+  'depth32float-stencil8': {
+    all: 'depth32float-stencil8',
+    'depth-only': 'depth32float',
+    'stencil-only': 'stencil8',
+  },
+  stencil8: {
+    all: 'stencil8',
+    'depth-only': undefined,
+    'stencil-only': 'stencil8',
+  },
+} as const;
+
+/**
+ * @returns the GPUTextureFormat corresponding to the @param aspect of @param format.
+ * This allows choosing the correct format for depth-stencil aspects when creating pipelines that
+ * will have to match the resolved format of views, or to get per-aspect information like the
+ * `blockByteSize`.
+ *
+ * Many helpers use an `undefined` `aspect` to means `'all'` so this is also the default for this
+ * function.
+ */
+export function resolvePerAspectFormat(
+  format: GPUTextureFormat,
+  aspect?: GPUTextureAspect
+): GPUTextureFormat {
+  if (aspect === 'all' || aspect === undefined) {
+    return format;
+  }
+  assert(!!kTextureFormatInfo[format].depth || !!kTextureFormatInfo[format].stencil);
+  const resolved = kDepthStencilFormatResolvedAspect[format as DepthStencilFormat][aspect ?? 'all'];
+  assert(resolved !== undefined);
+  return resolved;
+}
+
+/**
+ * Gets all copyable aspects for copies between texture and buffer for specified depth/stencil format and copy type, by spec.
+ */
+export function depthStencilFormatCopyableAspects(
+  type: ImageCopyType,
+  format: DepthStencilFormat
+): readonly GPUTextureAspect[] {
+  const appliedType = type === 'WriteTexture' ? 'CopyB2T' : type;
+  return kDepthStencilFormatCapabilityInBufferTextureCopy[format][appliedType];
+}
+
+/**
+ * Computes whether a copy between a depth/stencil texture aspect and a buffer is supported, by spec.
+ */
+export function depthStencilBufferTextureCopySupported(
+  type: ImageCopyType,
+  format: DepthStencilFormat,
+  aspect: GPUTextureAspect
+): boolean {
+  const supportedAspects: readonly GPUTextureAspect[] = depthStencilFormatCopyableAspects(
+    type,
+    format
+  );
+  return supportedAspects.includes(aspect);
+}
+
+/**
+ * Returns the byte size of the depth or stencil aspect of the specified depth/stencil format,
+ * or -1 if none.
+ */
+export function depthStencilFormatAspectSize(
+  format: DepthStencilFormat,
+  aspect: 'depth-only' | 'stencil-only'
+) {
+  const texelAspectSize =
+    kDepthStencilFormatCapabilityInBufferTextureCopy[format].texelAspectSize[aspect];
+  assert(texelAspectSize > 0);
+  return texelAspectSize;
+}
+
+/**
+ * Returns true iff a texture can be created with the provided GPUTextureDimension
+ * (defaulting to 2d) and GPUTextureFormat, by spec.
+ */
+export function textureDimensionAndFormatCompatible(
+  dimension: undefined | GPUTextureDimension,
+  format: GPUTextureFormat
+): boolean {
+  const info = kAllTextureFormatInfo[format];
+  return !(
+    (dimension === '1d' || dimension === '3d') &&
+    (info.blockWidth > 1 || info.depth || info.stencil)
+  );
+}
+
 export type TextureSingleAspect = 'color' | 'depth' | 'stencil';
 
 export function* aspectsForFormat({ format }: { format: GPUTextureFormat }) {
@@ -719,3 +953,38 @@ export const kAspectInfo = {
   depth: { viewAspect: 'depth-only' },
   stencil: { viewAspect: 'stencil-only' },
 } as const;
+
+/** Per-GPUTextureDimension info. */
+export const kTextureDimensionInfo: {
+  readonly [k in GPUTextureDimension]: {};
+} = /* prettier-ignore */ {
+  '1d': {},
+  '2d': {},
+  '3d': {},
+};
+/** List of all GPUTextureDimension values. */
+export const kTextureDimensions = keysOf(kTextureDimensionInfo);
+
+/**
+ * Check if two formats are view format compatible.
+ *
+ * This function may need to be generalized to use `baseFormat` from `kTextureFormatInfo`.
+ */
+export function viewCompatible(a: GPUTextureFormat, b: GPUTextureFormat): boolean {
+  return a === b || a + '-srgb' === b || b + '-srgb' === a;
+}
+
+export function getFeaturesForFormats<T>(
+  formats: readonly (T & (GPUTextureFormat | undefined))[]
+): readonly (GPUFeatureName | undefined)[] {
+  return Array.from(new Set(formats.map(f => (f ? kTextureFormatInfo[f].feature : undefined))));
+}
+
+export function filterFormatsByFeature<T>(
+  feature: GPUFeatureName | undefined,
+  formats: readonly (T & (GPUTextureFormat | undefined))[]
+): readonly (T & (GPUTextureFormat | undefined))[] {
+  return formats.filter(f => f === undefined || kTextureFormatInfo[f].feature === feature);
+}
+
+export const kFeaturesForFormats = getFeaturesForFormats(kTextureFormats);

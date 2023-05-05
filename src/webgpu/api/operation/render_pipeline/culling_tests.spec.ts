@@ -5,8 +5,7 @@ Test all culling combinations of GPUFrontFace and GPUCullMode show the correct o
 `;
 
 import { makeTestGroup } from '../../../../common/framework/test_group.js';
-import { SizedTextureFormat } from '../../../capability_info.js';
-import { kTextureFormatInfo } from '../../../format_info.js';
+import { SizedTextureFormat, kTextureFormatInfo } from '../../../format_info.js';
 import { GPUTest, TextureTestMixin } from '../../../gpu_test.js';
 
 function faceIsCulled(face: 'cw' | 'ccw', frontFace: GPUFrontFace, cullMode: GPUCullMode): boolean {

@@ -5,12 +5,12 @@ Texture Usages Validation Tests in Render Pass and Compute Pass.
 import { makeTestGroup } from '../../../../../common/framework/test_group.js';
 import { pp } from '../../../../../common/util/preprocessor.js';
 import { assert } from '../../../../../common/util/util.js';
+import { GPUConst } from '../../../../constants.js';
 import {
   kDepthStencilFormats,
   kDepthStencilFormatResolvedAspect,
-} from '../../../../capability_info.js';
-import { GPUConst } from '../../../../constants.js';
-import { kTextureFormatInfo } from '../../../../format_info.js';
+  kTextureFormatInfo,
+} from '../../../../format_info.js';
 import { ValidationTest } from '../../validation_test.js';
 
 type TextureBindingType = 'sampled-texture' | 'multisampled-texture' | 'writeonly-storage-texture';

@@ -2,8 +2,11 @@ export const description = 'Test helpers for texel data produce the expected dat
 
 import { makeTestGroup } from '../../../common/framework/test_group.js';
 import { assert } from '../../../common/util/util.js';
-import { kEncodableTextureFormats, EncodableTextureFormat } from '../../capability_info.js';
-import { kTextureFormatInfo } from '../../format_info.js';
+import {
+  kEncodableTextureFormats,
+  EncodableTextureFormat,
+  kTextureFormatInfo,
+} from '../../format_info.js';
 import { GPUTest } from '../../gpu_test.js';
 
 import {

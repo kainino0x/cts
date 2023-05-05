@@ -4,13 +4,8 @@ This test dedicatedly tests validation of GPUDepthStencilState of createRenderPi
 
 import { makeTestGroup } from '../../../../common/framework/test_group.js';
 import { unreachable } from '../../../../common/util/util.js';
-import {
-  kTextureFormats,
-  kDepthStencilFormats,
-  kCompareFunctions,
-  kStencilOperations,
-} from '../../../capability_info.js';
-import { kTextureFormatInfo } from '../../../format_info.js';
+import { kCompareFunctions, kStencilOperations } from '../../../capability_info.js';
+import { kTextureFormats, kDepthStencilFormats, kTextureFormatInfo } from '../../../format_info.js';
 import { getFragmentShaderCodeWithOutput } from '../../../util/shader.js';
 
 import { CreateRenderPipelineValidationTest } from './common.js';

@@ -4,8 +4,7 @@ Tests for capability checking for features enabling optional texture formats.
 
 import { makeTestGroup } from '../../../../../common/framework/test_group.js';
 import { assert } from '../../../../../common/util/util.js';
-import { kAllTextureFormats } from '../../../../capability_info.js';
-import { kTextureFormatInfo } from '../../../../format_info.js';
+import { kAllTextureFormats, kTextureFormatInfo } from '../../../../format_info.js';
 import { kAllCanvasTypes, createCanvas } from '../../../../util/create_elements.js';
 import { ValidationTest } from '../../validation_test.js';
 

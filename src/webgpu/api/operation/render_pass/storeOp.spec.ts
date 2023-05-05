@@ -28,8 +28,11 @@ export const description = `API Operation Tests for RenderPass StoreOp.
       TODO: test with more interesting loadOp values`;
 
 import { makeTestGroup } from '../../../../common/framework/test_group.js';
-import { kEncodableTextureFormats, kSizedDepthStencilFormats } from '../../../capability_info.js';
-import { kTextureFormatInfo } from '../../../format_info.js';
+import {
+  kEncodableTextureFormats,
+  kSizedDepthStencilFormats,
+  kTextureFormatInfo,
+} from '../../../format_info.js';
 import { GPUTest } from '../../../gpu_test.js';
 import { PerTexelComponent } from '../../../util/texture/texel_data.js';
 

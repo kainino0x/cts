@@ -11,12 +11,12 @@ import {
 } from '../../../../../common/framework/resources.js';
 import { makeTestGroup } from '../../../../../common/framework/test_group.js';
 import { raceWithRejectOnTimeout, unreachable, assert } from '../../../../../common/util/util.js';
+import { kTextureUsages } from '../../../../capability_info.js';
 import {
   kTextureFormats,
-  kTextureUsages,
   kValidTextureFormatsForCopyE2T,
-} from '../../../../capability_info.js';
-import { kTextureFormatInfo } from '../../../../format_info.js';
+  kTextureFormatInfo,
+} from '../../../../format_info.js';
 import { kResourceStates } from '../../../../gpu_test.js';
 import {
   CanvasType,

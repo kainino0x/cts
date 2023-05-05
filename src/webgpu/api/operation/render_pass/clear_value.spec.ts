@@ -4,8 +4,11 @@ Tests for render pass clear values.
 
 import { makeTestGroup } from '../../../../common/framework/test_group.js';
 import { assert } from '../../../../common/util/util.js';
-import { kDepthStencilFormats, depthStencilFormatAspectSize } from '../../../capability_info.js';
-import { kTextureFormatInfo } from '../../../format_info.js';
+import {
+  kDepthStencilFormats,
+  depthStencilFormatAspectSize,
+  kTextureFormatInfo,
+} from '../../../format_info.js';
 import { GPUTest } from '../../../gpu_test.js';
 
 export const g = makeTestGroup(GPUTest);

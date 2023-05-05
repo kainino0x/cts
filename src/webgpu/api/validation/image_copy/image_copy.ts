@@ -3,8 +3,8 @@ import {
   SizedTextureFormat,
   DepthStencilFormat,
   depthStencilFormatCopyableAspects,
-} from '../../../capability_info.js';
-import { kTextureFormatInfo } from '../../../format_info.js';
+  kTextureFormatInfo,
+} from '../../../format_info.js';
 import { align } from '../../../util/math.js';
 import { ImageCopyType } from '../../../util/texture/layout.js';
 import { ValidationTest } from '../validation_test.js';

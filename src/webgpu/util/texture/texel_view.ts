@@ -1,6 +1,6 @@
 import { assert, memcpy } from '../../../common/util/util.js';
-import { EncodableTextureFormat } from '../../capability_info.js';
 import {
+  EncodableTextureFormat,
   guessAspectForFormat,
   kTextureFormatInfo,
   TextureSingleAspect,

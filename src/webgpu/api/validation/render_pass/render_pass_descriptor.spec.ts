@@ -6,14 +6,13 @@ TODO: review for completeness
 
 import { makeTestGroup } from '../../../../common/framework/test_group.js';
 import { range } from '../../../../common/util/util.js';
+import { kMaxColorAttachments, kQueryTypes } from '../../../capability_info.js';
+import { GPUConst } from '../../../constants.js';
 import {
   kDepthStencilFormats,
-  kMaxColorAttachments,
-  kQueryTypes,
   kRenderableColorTextureFormats,
-} from '../../../capability_info.js';
-import { GPUConst } from '../../../constants.js';
-import { kTextureFormatInfo } from '../../../format_info.js';
+  kTextureFormatInfo,
+} from '../../../format_info.js';
 import { ValidationTest } from '../validation_test.js';
 
 class F extends ValidationTest {

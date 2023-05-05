@@ -13,17 +13,19 @@ import {
   kBufferUsageInfo,
   kBufferUsageCopy,
   kBufferUsageCopyInfo,
-  kCompressedTextureFormats,
   kQueryTypes,
   kTextureUsageType,
   kTextureUsageTypeInfo,
   kTextureUsageCopy,
   kTextureUsageCopyInfo,
-  kRegularTextureFormats,
-  kRenderableColorTextureFormats,
   kShaderStageKeys,
 } from '../../../../capability_info.js';
-import { kTextureFormatInfo } from '../../../../format_info.js';
+import {
+  kCompressedTextureFormats,
+  kRegularTextureFormats,
+  kRenderableColorTextureFormats,
+  kTextureFormatInfo,
+} from '../../../../format_info.js';
 import { CommandBufferMaker, EncoderType } from '../../../../util/command_buffer_maker.js';
 import {
   createCanvas,

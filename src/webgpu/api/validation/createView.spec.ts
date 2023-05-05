@@ -3,16 +3,15 @@ export const description = `createView validation tests.`;
 import { kUnitCaseParamsBuilder } from '../../../common/framework/params_builder.js';
 import { makeTestGroup } from '../../../common/framework/test_group.js';
 import { unreachable } from '../../../common/util/util.js';
+import { kTextureAspects, kTextureViewDimensions } from '../../capability_info.js';
 import {
-  kTextureAspects,
+  kTextureFormatInfo,
   kTextureDimensions,
   kTextureFormats,
-  kTextureViewDimensions,
   kFeaturesForFormats,
   viewCompatible,
   filterFormatsByFeature,
-} from '../../capability_info.js';
-import { kTextureFormatInfo } from '../../format_info.js';
+} from '../../format_info.js';
 import { kResourceStates } from '../../gpu_test.js';
 import {
   getTextureDimensionFromView,

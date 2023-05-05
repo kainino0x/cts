@@ -4,16 +4,15 @@ Validation for attachment compatibility between render passes, bundles, and pipe
 
 import { makeTestGroup } from '../../../../common/framework/test_group.js';
 import { range } from '../../../../common/util/util.js';
+import { kTextureSampleCounts, kMaxColorAttachments } from '../../../capability_info.js';
 import {
   kRegularTextureFormats,
   kSizedDepthStencilFormats,
   kUnsizedDepthStencilFormats,
-  kTextureSampleCounts,
-  kMaxColorAttachments,
   getFeaturesForFormats,
   filterFormatsByFeature,
-} from '../../../capability_info.js';
-import { kTextureFormatInfo } from '../../../format_info.js';
+  kTextureFormatInfo,
+} from '../../../format_info.js';
 import { ValidationTest } from '../validation_test.js';
 
 const kColorAttachmentCounts = range(kMaxColorAttachments, i => i + 1);
