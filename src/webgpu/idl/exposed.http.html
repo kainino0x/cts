@@ -5,7 +5,24 @@
     <title>WebGPU exposed items (non-HTTPS)</title>
     <meta name=assert content="WebGPU should not be exposed on a non-[SecureContext]">
     <link rel=help href='https://gpuweb.github.io/gpuweb/'>
-    <script type=module src=exposed.html.js></script>
+    <script src=/resources/testharness.js></script>
+    <script src=/resources/testharnessreport.js></script>
   </head>
-  <body></body>
+  <body>
+    <script src="./exposed.html.js"></script>
+      setup({ single_test: true });
+
+      assert_false('gpu' in globalThis.navigator);
+
+      const gpuExposedGlobals =
+        Object.getOwnPropertyNames(globalThis).filter(k => k.startsWith('GPU'));
+      assert_equals(
+        gpuExposedGlobals.length, 0, 'No GPU* globals should be exposed on non-secure context');
+
+      const wgslExposedGlobals =
+        Object.getOwnPropertyNames(globalThis).filter(k => k.startsWith('WGSL'));
+      assert_equals(
+        wgslExposedGlobals.length, 0, 'No WGSL* globals should be exposed on non-secure context');
+    </script>
+  </body>
 </html>

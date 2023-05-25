@@ -1,11 +1,65 @@
 <!doctype html>
 <html>
   <head>
-    <title>WebGPU exposed items (HTTPS)</title>
     <meta charset=utf-8>
+    <title>WebGPU exposed items (HTTPS)</title>
     <meta name=assert content="All specified WebGPU items/interfaces should be exposed, on a [SecureContext]">
     <link rel=help href='https://gpuweb.github.io/gpuweb/'>
-    <script type=module src=exposed.html.js></script>
+    <script src=/resources/testharness.js></script>
+    <script src=/resources/testharnessreport.js></script>
   </head>
-  <body></body>
+  <body>
+    <script src="./exposed.html.js"></script>
+      setup({ single_test: true });
+
+      assert_true('gpu' in globalThis.navigator);
+
+      const gpuInterfacesV1 = [
+        'GPU',
+        'GPUAdapter',
+        'GPUAdapterInfo',
+        'GPUBindGroup',
+        'GPUBindGroupLayout',
+        'GPUBuffer',
+        'GPUBufferUsage',
+        'GPUCanvasContext',
+        'GPUColorWrite',
+        'GPUCommandBuffer',
+        'GPUCommandEncoder',
+        'GPUCompilationInfo',
+        'GPUCompilationMessage',
+        'GPUComputePassEncoder',
+        'GPUComputePipeline',
+        'GPUDevice',
+        'GPUDeviceLostInfo',
+        'GPUError',
+        'GPUExternalTexture',
+        'GPUInternalError',
+        'GPUMapMode',
+        'GPUOutOfMemoryError',
+        'GPUPipelineError',
+        'GPUPipelineLayout',
+        'GPUQuerySet',
+        'GPUQueue',
+        'GPURenderBundle',
+        'GPURenderBundleEncoder',
+        'GPURenderPassEncoder',
+        'GPURenderPipeline',
+        'GPUSampler',
+        'GPUShaderModule',
+        'GPUShaderStage',
+        'GPUSupportedFeatures',
+        'GPUSupportedLimits',
+        'GPUTexture',
+        'GPUTextureUsage',
+        'GPUTextureView',
+        'GPUUncapturedErrorEvent',
+        'GPUValidationError',
+        'WGSLLanguageFeatures',
+      ];
+      for (const name of gpuInterfacesV1) {
+        assert_true(name in globalThis);
+      }
+    </script>
+  </body>
 </html>
