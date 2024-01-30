@@ -211,24 +211,12 @@ g.test('limits,maxColorAttachmentBytesPerSample,unaligned')
         // become 4 and 4+4+8+16+1 > 32. Re-ordering this so the R8Unorm's are at the end, however
         // is allowed: 4+8+16+1+1 < 32.
         {
-          formats: [
-            'r8unorm',
-            'r32float',
-            'rgba8unorm',
-            'rgba32float',
-            'r8unorm',
-          ] as GPUTextureFormat[],
+          formats: ['r8unorm', 'r32float', 'rgba8unorm', 'rgba32float', 'r8unorm'],
         },
         {
-          formats: [
-            'r32float',
-            'rgba8unorm',
-            'rgba32float',
-            'r8unorm',
-            'r8unorm',
-          ] as GPUTextureFormat[],
+          formats: ['r32float', 'rgba8unorm', 'rgba32float', 'r8unorm', 'r8unorm'],
         },
-      ])
+      ] as const)
       .beginSubcases()
       .combine('isAsync', [false, true])
   )
