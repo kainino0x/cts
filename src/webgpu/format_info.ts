@@ -32,8 +32,6 @@ const kFormatUniversalDefaults = {
   baseFormat: undefined,
 
   /** @deprecated */
-  copySrc: undefined,
-  /** @deprecated */
   copyDst: undefined,
   /** @deprecated Use `.color.bytes`, `.depth.bytes`, or `.stencil.bytes`. */
   bytesPerBlock: undefined,
@@ -78,7 +76,7 @@ function formatTableWithDefaults<Defaults extends {}, Table extends { readonly [
 
 /** "plain color formats", plus rgb9e5ufloat. */
 const kRegularTextureFormatInfo = formatTableWithDefaults({
-  defaults: { blockWidth: 1, blockHeight: 1, copySrc: true, copyDst: true },
+  defaults: { blockWidth: 1, blockHeight: 1, copyDst: true },
   table: {
     // plain, 8 bits per component
 
@@ -685,7 +683,7 @@ const kRegularTextureFormatInfo = formatTableWithDefaults({
 // because one aspect can be sized and one can be unsized. This should be cleaned up, but is kept
 // this way during a migration phase.
 const kSizedDepthStencilFormatInfo = formatTableWithDefaults({
-  defaults: { blockWidth: 1, blockHeight: 1, multisample: true, copySrc: true, renderable: true },
+  defaults: { blockWidth: 1, blockHeight: 1, multisample: true, renderable: true },
   table: {
     stencil8: {
       stencil: {
@@ -737,7 +735,6 @@ const kUnsizedDepthStencilFormatInfo = formatTableWithDefaults({
         readWriteStorage: false,
         bytes: undefined,
       },
-      copySrc: false,
       copyDst: false,
       renderable: true,
     },
@@ -758,7 +755,6 @@ const kUnsizedDepthStencilFormatInfo = formatTableWithDefaults({
         readWriteStorage: false,
         bytes: 1,
       },
-      copySrc: false,
       copyDst: false,
       renderable: true,
     },
@@ -780,7 +776,6 @@ const kUnsizedDepthStencilFormatInfo = formatTableWithDefaults({
         bytes: 1,
       },
       feature: 'depth32float-stencil8',
-      copySrc: false,
       copyDst: false,
       renderable: true,
     },
@@ -793,7 +788,6 @@ const kBCTextureFormatInfo = formatTableWithDefaults({
     blockHeight: 4,
     multisample: false,
     feature: 'texture-compression-bc',
-    copySrc: true,
     copyDst: true,
   },
   table: {
@@ -974,7 +968,6 @@ const kETC2TextureFormatInfo = formatTableWithDefaults({
     blockHeight: 4,
     multisample: false,
     feature: 'texture-compression-etc2',
-    copySrc: true,
     copyDst: true,
   },
   table: {
@@ -1105,7 +1098,6 @@ const kASTCTextureFormatInfo = formatTableWithDefaults({
   defaults: {
     multisample: false,
     feature: 'texture-compression-astc',
-    copySrc: true,
     copyDst: true,
   },
   table: {
@@ -1616,7 +1608,6 @@ type TextureFormatInfo_TypeCheck = {
   baseFormat: GPUTextureFormat | undefined;
   feature: GPUFeatureName | undefined;
 
-  copySrc: boolean;
   copyDst: boolean;
   bytesPerBlock: number | undefined;
   renderable: boolean;
