@@ -6,7 +6,7 @@ import { makeTestGroup } from '../../../../../common/framework/test_group.js';
 import { kTextureUsages, kTextureDimensions } from '../../../../capability_info.js';
 import {
   kTextureFormatInfo,
-  kTextureFormats,
+  kAllTextureFormats,
   kCompressedTextureFormats,
   kDepthStencilFormats,
   kFeaturesForFormats,
@@ -360,10 +360,10 @@ Test the formats of textures in copyTextureToTexture must be copy-compatible.
       .combine('dstFormatFeature', kFeaturesForFormats)
       .beginSubcases()
       .expand('srcFormat', ({ srcFormatFeature }) =>
-        filterFormatsByFeature(srcFormatFeature, kTextureFormats)
+        filterFormatsByFeature(srcFormatFeature, kAllTextureFormats)
       )
       .expand('dstFormat', ({ dstFormatFeature }) =>
-        filterFormatsByFeature(dstFormatFeature, kTextureFormats)
+        filterFormatsByFeature(dstFormatFeature, kAllTextureFormats)
       )
   )
   .beforeAllSubcases(t => {

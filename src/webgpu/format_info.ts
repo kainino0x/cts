@@ -1724,10 +1724,6 @@ const kTextureFormatInfo_TypeCheck: {
   readonly [F in GPUTextureFormat]: TextureFormatInfo_TypeCheck;
 } = kTextureFormatInfo;
 
-/** List of all GPUTextureFormat values. */
-// MAINTENANCE_TODO: dedup with kAllTextureFormats
-export const kTextureFormats: readonly GPUTextureFormat[] = keysOf(kAllTextureFormatInfo);
-
 /** Valid GPUTextureFormats for `copyExternalImageToTexture`, by spec. */
 export const kValidTextureFormatsForCopyE2T = [
   'r8unorm',
@@ -1957,7 +1953,7 @@ export function isEncodableTextureformat(format: GPUTextureFormat) {
   return format in kEncodableTextureFormatInfo;
 }
 
-export const kFeaturesForFormats = getFeaturesForFormats(kTextureFormats);
+export const kFeaturesForFormats = getFeaturesForFormats(kAllTextureFormats);
 
 /**
  * Given an array of texture formats return the number of bytes per sample.

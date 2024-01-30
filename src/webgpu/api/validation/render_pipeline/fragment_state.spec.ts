@@ -10,7 +10,7 @@ import {
   kMaxColorAttachmentsToTest,
 } from '../../../capability_info.js';
 import {
-  kTextureFormats,
+  kAllTextureFormats,
   kRenderableColorTextureFormats,
   kTextureFormatInfo,
   computeBytesPerSampleFromFormats,
@@ -51,7 +51,11 @@ g.test('color_target_exists')
 
 g.test('targets_format_renderable')
   .desc(`Tests that color target state format must have RENDER_ATTACHMENT capability.`)
-  .params(u => u.combine('isAsync', [false, true]).combine('format', kTextureFormats))
+  .params(u =>
+    u //
+      .combine('isAsync', [false, true])
+      .combine('format', kAllTextureFormats)
+  )
   .beforeAllSubcases(t => {
     const { format } = t.params;
     const info = kTextureFormatInfo[format];

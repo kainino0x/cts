@@ -6,7 +6,7 @@ import { assert, makeValueTestVariant } from '../../../common/util/util.js';
 import { kTextureDimensions, kTextureUsages } from '../../capability_info.js';
 import { GPUConst } from '../../constants.js';
 import {
-  kTextureFormats,
+  kAllTextureFormats,
   kTextureFormatInfo,
   kCompressedTextureFormats,
   kUncompressedTextureFormats,
@@ -104,7 +104,9 @@ g.test('dimension_type_and_format_compatibility')
     `Test every dimension type on every format. Note that compressed formats and depth/stencil formats are not valid for 1D/3D dimension types.`
   )
   .params(u =>
-    u.combine('dimension', [undefined, ...kTextureDimensions]).combine('format', kTextureFormats)
+    u //
+      .combine('dimension', [undefined, ...kTextureDimensions])
+      .combine('format', kAllTextureFormats)
   )
   .beforeAllSubcases(t => {
     const { format } = t.params;
@@ -136,7 +138,7 @@ g.test('mipLevelCount,format')
   .params(u =>
     u
       .combine('dimension', [undefined, ...kTextureDimensions])
-      .combine('format', kTextureFormats)
+      .combine('format', kAllTextureFormats)
       .beginSubcases()
       .combine('mipLevelCount', [1, 2, 3, 6, 7])
       // Filter out incompatible dimension type and format combinations.
@@ -271,7 +273,7 @@ g.test('sampleCount,various_sampleCount_with_all_formats')
   .params(u =>
     u
       .combine('dimension', [undefined, '2d'] as const)
-      .combine('format', kTextureFormats)
+      .combine('format', kAllTextureFormats)
       .beginSubcases()
       .combine('sampleCount', [0, 1, 2, 4, 8, 16, 32, 256])
   )
@@ -318,7 +320,7 @@ g.test('sampleCount,valid_sampleCount_with_other_parameter_varies')
   .params(u =>
     u
       .combine('dimension', [undefined, ...kTextureDimensions])
-      .combine('format', kTextureFormats)
+      .combine('format', kAllTextureFormats)
       .beginSubcases()
       .combine('sampleCount', [1, 4])
       .combine('arrayLayerCount', [1, 2])
@@ -1032,7 +1034,7 @@ g.test('texture_usage')
   .params(u =>
     u
       .combine('dimension', [undefined, ...kTextureDimensions])
-      .combine('format', kTextureFormats)
+      .combine('format', kAllTextureFormats)
       .beginSubcases()
       // If usage0 and usage1 are the same, then the usage being test is a single usage. Otherwise, it is a combined usage.
       .combine('usage0', kTextureUsages)
@@ -1090,10 +1092,10 @@ g.test('viewFormats')
       .combine('viewFormatFeature', kFeaturesForFormats)
       .beginSubcases()
       .expand('format', ({ formatFeature }) =>
-        filterFormatsByFeature(formatFeature, kTextureFormats)
+        filterFormatsByFeature(formatFeature, kAllTextureFormats)
       )
       .expand('viewFormat', ({ viewFormatFeature }) =>
-        filterFormatsByFeature(viewFormatFeature, kTextureFormats)
+        filterFormatsByFeature(viewFormatFeature, kAllTextureFormats)
       )
   )
   .beforeAllSubcases(t => {
