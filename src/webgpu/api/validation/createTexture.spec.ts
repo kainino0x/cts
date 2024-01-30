@@ -299,7 +299,7 @@ g.test('sampleCount,various_sampleCount_with_all_formats')
       usage,
     };
 
-    const success = sampleCount === 1 || (sampleCount === 4 && info.multisample && info.renderable);
+    const success = sampleCount === 1 || (sampleCount === 4 && info.multisample);
 
     t.expectValidationError(() => {
       t.device.createTexture(descriptor);
@@ -1066,16 +1066,13 @@ g.test('texture_usage')
     // Note that we unconditionally test copy usages for all formats. We don't check copySrc/copyDst in kTextureFormatInfo in capability_info.js
     // if (!info.copySrc && (usage & GPUTextureUsage.COPY_SRC) !== 0) success = false;
     // if (!info.copyDst && (usage & GPUTextureUsage.COPY_DST) !== 0) success = false;
-    if (
-      (usage & GPUTextureUsage.STORAGE_BINDING) !== 0 &&
-      !isTextureFormatUsableAsStorageFormat(format, t.isCompatibility)
-    )
-      success = false;
-    if (
-      (!info.renderable || (appliedDimension !== '2d' && appliedDimension !== '3d')) &&
-      (usage & GPUTextureUsage.RENDER_ATTACHMENT) !== 0
-    )
-      success = false;
+    if (usage & GPUTextureUsage.STORAGE_BINDING) {
+      if (!isTextureFormatUsableAsStorageFormat(format, t.isCompatibility)) success = false;
+    }
+    if (usage & GPUTextureUsage.RENDER_ATTACHMENT) {
+      if (appliedDimension === '1d') success = false;
+      if (info.color && !info.colorRender) success = false;
+    }
 
     t.expectValidationError(() => {
       t.device.createTexture(descriptor);

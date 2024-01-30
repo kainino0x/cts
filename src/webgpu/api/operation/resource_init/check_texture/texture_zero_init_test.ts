@@ -153,11 +153,17 @@ export function getRequiredTextureUsage(
       unreachable();
   }
 
+  if (sampleCount > 1) {
+    // Copies to multisampled textures are not allowed. We need OutputAttachment to initialize
+    // canary data in multisampled textures.
+    usage |= GPUConst.TextureUsage.RENDER_ATTACHMENT;
+  }
+
   const info = kTextureFormatInfo[format];
-  if (sampleCount > 1 || !info.allAspectsCopyDst) {
-    // Copies to multisampled textures and some formats are not allowed.
-    // We need RENDER_ATTACHMENT to initialize canary data in multisampled textures.
-    assert(info.renderable);
+  if (!info.allAspectsCopyDst) {
+    // Copies are not possible. We need OutputAttachment to initialize
+    // canary data.
+    const _staticAssertNotColorFormat: undefined = info.color;
     usage |= GPUConst.TextureUsage.RENDER_ATTACHMENT;
   }
 
@@ -387,7 +393,7 @@ export class TextureZeroInitTest extends GPUTest {
     if (this.p.sampleCount > 1 || !info.allAspectsCopyDst) {
       // Copies to multisampled textures not yet specified.
       // Use a storeOp for now.
-      assert(info.renderable);
+      if (info.color) assert(!!info.colorRender);
       this.initializeWithStoreOp(state, texture, subresourceRange);
     } else {
       this.initializeWithCopy(texture, state, subresourceRange);
@@ -513,7 +519,9 @@ export const kTestParams = kUnitCaseParamsBuilder
     const info = kTextureFormatInfo[format];
 
     return (
-      ((usage & GPUConst.TextureUsage.RENDER_ATTACHMENT) !== 0 && !info.renderable) ||
+      ((usage & GPUConst.TextureUsage.RENDER_ATTACHMENT) !== 0 &&
+        info.color &&
+        !info.colorRender) ||
       ((usage & GPUConst.TextureUsage.STORAGE_BINDING) !== 0 && !info.color?.storage) ||
       (sampleCount > 1 && !info.multisample)
     );
