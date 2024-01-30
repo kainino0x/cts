@@ -527,14 +527,7 @@ export const kTestParams = kUnitCaseParamsBuilder
     );
   })
   .combine('nonPowerOfTwo', [false, true])
-  .combine('canaryOnCreation', [false, true])
-  .filter(({ canaryOnCreation, format }) => {
-    // We can only initialize the texture if it's encodable or renderable.
-    const canInitialize = format in kTextureFormatInfo || kTextureFormatInfo[format].renderable;
-
-    // Filter out cases where we want canary values but can't initialize.
-    return !canaryOnCreation || canInitialize;
-  });
+  .combine('canaryOnCreation', [false, true]);
 
 type TextureZeroParams = ParamTypeOf<typeof kTestParams>;
 
