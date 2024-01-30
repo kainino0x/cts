@@ -1949,8 +1949,8 @@ export function isTextureFormatUsableAsStorageFormat(
   return !!kTextureFormatInfo[format].color?.storage;
 }
 
-export function isEncodableTextureformat(format: GPUTextureFormat) {
-  return format in kEncodableTextureFormatInfo;
+export function isRegularTextureFormat(format: GPUTextureFormat) {
+  return format in kRegularTextureFormatInfo;
 }
 
 export const kFeaturesForFormats = getFeaturesForFormats(kAllTextureFormats);
