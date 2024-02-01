@@ -1687,9 +1687,9 @@ export function TextureTestMixin<F extends FixtureClass<GPUTest>>(
     }
 
     copyWholeTextureToNewBufferSimple(texture: GPUTexture, mipLevel: number) {
-      const { blockWidth, blockHeight, bytesPerBlock } = kTextureFormatInfo[texture.format];
+      const info = kTextureFormatInfo[texture.format];
       const mipSize = physicalMipSizeFromTexture(texture, mipLevel);
-      assert(bytesPerBlock !== undefined);
+      assert(!(info.depth && info.stencil), 'cannot copy multi-aspect texture');
 
       const blocksPerRow = mipSize[0] / blockWidth;
       const blocksPerColumn = mipSize[1] / blockHeight;

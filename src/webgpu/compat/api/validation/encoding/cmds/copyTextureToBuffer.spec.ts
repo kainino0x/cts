@@ -19,16 +19,16 @@ g.test('compressed')
   .fn(t => {
     const { format } = t.params;
 
-    const { blockWidth, blockHeight, bytesPerBlock } = kTextureFormatInfo[format];
+    const info = kTextureFormatInfo[format];
 
     const texture = t.device.createTexture({
-      size: [blockWidth, blockHeight, 1],
+      size: [info.blockWidth, info.blockHeight, 1],
       format,
       usage: GPUTextureUsage.COPY_SRC,
     });
     t.trackForCleanup(texture);
 
-    const bytesPerRow = align(bytesPerBlock, 256);
+    const bytesPerRow = align(info.color.bytes, 256);
 
     const buffer = t.device.createBuffer({
       size: bytesPerRow,

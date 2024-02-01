@@ -216,7 +216,7 @@ export function texelBlockAlignmentTestExpanderForOffset({ format }: WithFormat)
     return valuesToTestDivisibilityBy(4);
   }
 
-  return valuesToTestDivisibilityBy(kTextureFormatInfo[format].bytesPerBlock);
+  return valuesToTestDivisibilityBy(info.color.bytes);
 }
 
 // This is a helper function used for expanding test parameters for texel block alignment tests on rowsPerImage

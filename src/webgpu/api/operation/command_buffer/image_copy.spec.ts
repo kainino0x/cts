@@ -1595,7 +1595,7 @@ works for every format with 2d and 2d-array textures.
     };
     let textureHeight = 4 * info.blockHeight;
     let rowsPerImage = rowsPerImageEqualsCopyHeight ? copyHeight : copyHeight + 1;
-    const bytesPerRow = align(copyWidth * info.bytesPerBlock, 256);
+    const bytesPerRow = align(copyWidth * info.color.bytes, 256);
 
     if (dimension === '1d') {
       copySize.height = 1;

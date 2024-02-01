@@ -19,7 +19,7 @@ type ShaderStageForReadWriteStorageTexture =
 class F extends GPUTest {
   GetInitialData(storageTexture: GPUTexture): ArrayBuffer {
     const format = storageTexture.format;
-    const bytesPerBlock = kTextureFormatInfo[format].bytesPerBlock;
+    const bytesPerBlock = kTextureFormatInfo[format].color!.bytes;
     assert(bytesPerBlock !== undefined);
 
     const width = storageTexture.width;
@@ -68,7 +68,7 @@ class F extends GPUTest {
     initialData: ArrayBuffer
   ): ArrayBuffer {
     const format = storageTexture.format;
-    const bytesPerBlock = kTextureFormatInfo[format].bytesPerBlock;
+    const bytesPerBlock = kTextureFormatInfo[format].color!.bytes;
     assert(bytesPerBlock !== undefined);
 
     const width = storageTexture.width;
@@ -332,7 +332,7 @@ g.test('basic')
     });
     t.trackForCleanup(storageTexture);
 
-    const bytesPerBlock = kTextureFormatInfo[format].bytesPerBlock;
+    const bytesPerBlock = kTextureFormatInfo[format].color.bytes;
     const initialData = t.GetInitialData(storageTexture);
     t.queue.writeTexture(
       { texture: storageTexture },

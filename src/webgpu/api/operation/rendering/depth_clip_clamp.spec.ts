@@ -221,17 +221,18 @@ have unexpected values then get drawn to the color buffer, which is later checke
       ? t.device.createTexture({ ...checkTextureDesc, sampleCount: 4 }).createView()
       : undefined;
 
+    const bytesPerBlock = info.depth!.bytes;
     const dsActual =
-      !multisampled && info.bytesPerBlock
+      !multisampled && bytesPerBlock
         ? t.device.createBuffer({
-            size: kNumTestPoints * info.bytesPerBlock,
+            size: kNumTestPoints * bytesPerBlock,
             usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
           })
         : undefined;
     const dsExpected =
-      !multisampled && info.bytesPerBlock
+      !multisampled && bytesPerBlock
         ? t.device.createBuffer({
-            size: kNumTestPoints * info.bytesPerBlock,
+            size: kNumTestPoints * bytesPerBlock,
             usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
           })
         : undefined;
