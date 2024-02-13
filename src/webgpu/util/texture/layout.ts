@@ -1,4 +1,4 @@
-import { assert, memcpy } from '../../../common/util/util.js';
+import { assert, memcpy, unreachable } from '../../../common/util/util.js';
 import {
   kTextureFormatInfo,
   resolvePerAspectFormat,
@@ -77,6 +77,30 @@ export function getTextureCopyLayout(
   return { ...layout, mipSize: [mipSize.width, mipSize.height, mipSize.depthOrArrayLayers] };
 }
 
+type SingleTextureAspect = 'color' | 'depth' | 'stencil';
+function aspectToSingleAspect(
+  info: typeof kTextureFormatInfo[GPUTextureFormat],
+  aspect: GPUTextureAspect
+): SingleTextureAspect {
+  switch (aspect) {
+    case 'all':
+      assert(!('depth' in info && 'stencil' in info), 'depth-stencil format has multiple aspects');
+      return 'color' in info
+        ? 'color'
+        : 'depth' in info
+        ? 'depth'
+        : 'stencil' in info
+        ? 'stencil'
+        : unreachable();
+    case 'depth-only':
+      assert('depth' in info);
+      return 'depth';
+    case 'stencil-only':
+      assert('stencil' in info);
+      return 'stencil';
+  }
+}
+
 /**
  * Computes layout information for a copy of size `copySize` to/from a GPUTexture with the provided
  * `format`.
@@ -96,8 +120,11 @@ export function getTextureSubCopyLayout(
     readonly aspect?: GPUTextureAspect;
   } = {}
 ): TextureSubCopyLayout {
-  format = resolvePerAspectFormat(format, aspect);
-  const { blockWidth, blockHeight, bytesPerBlock } = kTextureFormatInfo[format];
+  const info = kTextureFormatInfo[format];
+  const singleAspect = aspectToSingleAspect(info, aspect);
+
+  const { blockWidth, blockHeight } = info;
+  let bytesPerBlock = info[singleAspect]!.bytes;
   assert(bytesPerBlock !== undefined);
 
   const copySize_ = reifyExtent3D(copySize);
@@ -160,7 +187,12 @@ export function fillTextureDataWithTexelValue(
   size: [number, number, number],
   options: LayoutOptions = kDefaultLayoutOptions
 ): void {
-  const { blockWidth, blockHeight, bytesPerBlock } = kTextureFormatInfo[format];
+  const info = kTextureFormatInfo[format];
+  const singleAspect = aspectToSingleAspect(info, 'all');
+
+  const { blockWidth, blockHeight } = info;
+  const bytesPerBlock = info[singleAspect]!.bytes;
+
   // Block formats are not handled correctly below.
   assert(blockWidth === 1);
   assert(blockHeight === 1);
@@ -241,10 +273,14 @@ export const kImageCopyTypes: readonly ImageCopyType[] = [
 /**
  * Computes `bytesInACompleteRow` (as defined by the WebGPU spec) for image copies (B2T/T2B/writeTexture).
  */
-export function bytesInACompleteRow(copyWidth: number, format: SizedTextureFormat): number {
+export function bytesInACompleteRow(copyWidth: number, format: SizedTextureFormat, aspect: GPUTextureAspect): number {
   const info = kTextureFormatInfo[format];
+  const singleAspect = aspectToSingleAspect(info, aspect);
+
+  const bytesPerBlock = info[singleAspect]!.bytes;
+
   assert(copyWidth % info.blockWidth === 0);
-  return (info.bytesPerBlock * copyWidth) / info.blockWidth;
+  return bytesPerBlock * (copyWidth / info.blockWidth);
 }
 
 function validateBytesPerRow({

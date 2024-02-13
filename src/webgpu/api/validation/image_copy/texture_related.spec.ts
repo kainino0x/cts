@@ -18,7 +18,7 @@ import { kImageCopyTypes } from '../../../util/texture/layout.js';
 import {
   ImageCopyTest,
   texelBlockAlignmentTestExpanderForValueToCoordinate,
-  formatCopyableWithMethod,
+  formatHasAspectCopyableWithMethod,
   getACopyableAspectWithMethod,
 } from './image_copy.js';
 
@@ -251,7 +251,7 @@ Test the copy must be a full subresource if the texture's format is depth/stenci
       ] as const)
       .combine('format', kSizedTextureFormats)
       .filter(({ dimension, format }) => textureDimensionAndFormatCompatible(dimension, format))
-      .filter(formatCopyableWithMethod)
+      .filter(formatHasAspectCopyableWithMethod)
       .beginSubcases()
       .combine('mipLevel', [0, 2])
       .unless(p => p.dimension === '1d' && p.mipLevel !== 0)
@@ -342,7 +342,7 @@ Test that the texture copy origin must be aligned to the format's block size.
       .combine('method', kImageCopyTypes)
       // No need to test depth/stencil formats because its copy origin must be [0, 0, 0], which is already aligned with block size.
       .combine('format', kColorTextureFormats)
-      .filter(formatCopyableWithMethod)
+      .filter(formatHasAspectCopyableWithMethod)
       .combineWithParams([
         { depthOrArrayLayers: 1, dimension: '1d' },
         { depthOrArrayLayers: 1, dimension: '2d' },
@@ -405,7 +405,7 @@ Test that the copy size must be aligned to the texture's format's block size.
       .combine('method', kImageCopyTypes)
       // No need to test depth/stencil formats because its copy size must be subresource's size, which is already aligned with block size.
       .combine('format', kColorTextureFormats)
-      .filter(formatCopyableWithMethod)
+      .filter(formatHasAspectCopyableWithMethod)
       .combine('dimension', kTextureDimensions)
       .filter(({ dimension, format }) => textureDimensionAndFormatCompatible(dimension, format))
       .beginSubcases()

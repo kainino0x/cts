@@ -22,7 +22,7 @@ import {
   ImageCopyTest,
   texelBlockAlignmentTestExpanderForOffset,
   texelBlockAlignmentTestExpanderForRowsPerImage,
-  formatCopyableWithMethod,
+  formatHasAspectCopyableWithMethod,
 } from './image_copy.js';
 
 export const g = makeTestGroup(ImageCopyTest);
@@ -136,7 +136,7 @@ Test the computation of requiredBytesInCopy by computing the minimum data size f
     u
       .combine('method', kImageCopyTypes)
       .combine('format', kSizedTextureFormats)
-      .filter(formatCopyableWithMethod)
+      .filter(formatHasAspectCopyableWithMethod)
       .combine('dimension', kTextureDimensions)
       .filter(({ dimension, format }) => textureDimensionAndFormatCompatible(dimension, format))
       .beginSubcases()
@@ -242,7 +242,7 @@ Test that rowsPerImage has no alignment constraints.
     u
       .combine('method', kImageCopyTypes)
       .combine('format', kSizedTextureFormats)
-      .filter(formatCopyableWithMethod)
+      .filter(formatHasAspectCopyableWithMethod)
       .combine('dimension', kTextureDimensions)
       .filter(({ dimension, format }) => textureDimensionAndFormatCompatible(dimension, format))
       .beginSubcases()
@@ -287,7 +287,7 @@ Test the alignment requirement on the linear data offset (block size, or 4 for d
     u
       .combine('method', kImageCopyTypes)
       .combine('format', kSizedTextureFormats)
-      .filter(formatCopyableWithMethod)
+      .filter(formatHasAspectCopyableWithMethod)
       .combine('dimension', kTextureDimensions)
       .filter(({ dimension, format }) => textureDimensionAndFormatCompatible(dimension, format))
       .beginSubcases()
@@ -340,7 +340,7 @@ Test that bytesPerRow, if specified must be big enough for a full copy row.
     u
       .combine('method', kImageCopyTypes)
       .combine('format', kSizedTextureFormats)
-      .filter(formatCopyableWithMethod)
+      .filter(formatHasAspectCopyableWithMethod)
       .combine('dimension', kTextureDimensions)
       .filter(({ dimension, format }) => textureDimensionAndFormatCompatible(dimension, format))
       .beginSubcases()

@@ -1748,7 +1748,7 @@ export function TextureTestMixin<F extends FixtureClass<GPUTest>>(
       }
     ): void {
       const { src, dest } = copyParams;
-      const rowLength = bytesInACompleteRow(copySize.width, format);
+      const rowLength = bytesInACompleteRow(copySize.width, format, 'all');
       for (const texel of this.iterateBlockRows(copySize, format)) {
         const srcOffsetElements = this.getTexelOffsetInBytes(
           src.dataLayout,
