@@ -1,5 +1,5 @@
 import { keysOf } from '../common/util/data_tables.js';
-import { assert } from '../common/util/util.js';
+import { assert, unreachable } from '../common/util/util.js';
 
 import { align } from './util/math.js';
 import { ImageCopyType } from './util/texture/layout.js';
@@ -1786,6 +1786,35 @@ export function resolvePerAspectFormat(
   const resolved = kDepthStencilFormatResolvedAspect[format as DepthStencilFormat][aspect ?? 'all'];
   assert(resolved !== undefined);
   return resolved;
+}
+
+/**
+ * @returns the sample type of the specified aspect of the specified format.
+ */
+export function sampleTypeForFormatAndAspect(
+  format: GPUTextureFormat,
+  aspect: GPUTextureAspect
+): 'uint' | 'depth' | 'float' | 'sint' | 'unfilterable-float' {
+  const info = kTextureFormatInfo[format];
+  if (info.color) {
+    assert(aspect === 'all', `color format ${format} used with aspect ${aspect}`);
+    return info.color.type;
+  } else if (info.depth && info.stencil) {
+    if (aspect === 'depth-only') {
+      return info.depth.type;
+    } else if (aspect === 'stencil-only') {
+      return info.stencil.type;
+    } else {
+      unreachable(`depth-stencil format ${format} used with aspect ${aspect}`);
+    }
+  } else if (info.depth) {
+    assert(aspect !== 'stencil-only', `depth-only format ${format} used with aspect ${aspect}`);
+    return info.depth.type;
+  } else if (info.stencil) {
+    assert(aspect !== 'depth-only', `stencil-only format ${format} used with aspect ${aspect}`);
+    return info.stencil.type;
+  }
+  unreachable();
 }
 
 /**

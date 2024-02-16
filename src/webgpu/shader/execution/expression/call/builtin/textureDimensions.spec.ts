@@ -12,6 +12,7 @@ import {
   kAllTextureFormats,
   kColorTextureFormats,
   kTextureFormatInfo,
+  sampleTypeForFormatAndAspect,
   textureDimensionAndFormatCompatible,
 } from '../../../../../format_info.js';
 import { GPUTest } from '../../../../../gpu_test.js';
@@ -308,7 +309,7 @@ Parameters:
   .params(u =>
     u
       .combine('format', kAllTextureFormats)
-      .unless(u => kTextureFormatInfo[u.format].sampleType === 'unfilterable-float')
+      .unless(p => kTextureFormatInfo[p.format].color?.type === 'unfilterable-float')
       .expand('aspect', u => aspectsForFormat(u.format))
       .expand('samples', u => samplesForFormat(u.format))
       .beginSubcases()
@@ -344,11 +345,8 @@ Parameters:
     function wgslSampledTextureType(): string {
       const base = t.params.samples !== 1 ? 'texture_multisampled' : 'texture';
       const dimensions = t.params.dimensions.replace('-', '_');
-      if (t.params.aspect === 'stencil-only') {
-        return `${base}_${dimensions}<u32>`;
-      }
-      const formatInfo = kTextureFormatInfo[t.params.format];
-      switch (formatInfo.sampleType) {
+      const sampleType = sampleTypeForFormatAndAspect(t.params.format, t.params.aspect);
+      switch (sampleType) {
         case 'depth':
         case 'float':
           return `${base}_${dimensions}<f32>`;
@@ -388,7 +386,7 @@ Parameters:
   .params(u =>
     u
       .combine('format', kAllTextureFormats)
-      .filter(u => kTextureFormatInfo[u.format].sampleType === 'depth')
+      .filter(p => !!kTextureFormatInfo[p.format].depth)
       .expand('aspect', u => aspectsForFormat(u.format))
       .unless(u => u.aspect === 'stencil-only')
       .expand('samples', u => samplesForFormat(u.format))
