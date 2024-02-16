@@ -6,6 +6,8 @@ Also tested:
 - The positions of samples in the standard sample patterns.
 - Per-sample interpolation sampling: @interpolate(perspective, sample).
 
+TODO: Test sample_mask as an input.
+
 TODO: add a test without a 0th color attachment (sparse color attachment), with different color attachments and alpha value output.
 The cross-platform behavior is unknown. could be any of:
 - coverage is always 100%

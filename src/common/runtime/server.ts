@@ -91,6 +91,8 @@ for (let i = 0; i < sys.args.length; ++i) {
       globalTestConfig.compatibility = true;
     } else if (a === '--coverage') {
       emitCoverage = true;
+    } else if (a === '--force-fallback-adapter') {
+      globalTestConfig.forceFallbackAdapter = true;
     } else if (a === '--gpu-provider') {
       const modulePath = sys.args[++i];
       gpuProviderModule = require(modulePath);
@@ -110,9 +112,12 @@ for (let i = 0; i < sys.args.length; ++i) {
 
 let codeCoverage: CodeCoverageProvider | undefined = undefined;
 
-if (globalTestConfig.compatibility) {
+if (globalTestConfig.compatibility || globalTestConfig.forceFallbackAdapter) {
   // MAINTENANCE_TODO: remove the cast once compatibilityMode is officially added
-  setDefaultRequestAdapterOptions({ compatibilityMode: true } as GPURequestAdapterOptions);
+  setDefaultRequestAdapterOptions({
+    compatibilityMode: globalTestConfig.compatibility,
+    forceFallbackAdapter: globalTestConfig.forceFallbackAdapter,
+  } as GPURequestAdapterOptions);
 }
 
 if (gpuProviderModule) {

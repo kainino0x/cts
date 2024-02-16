@@ -47,7 +47,14 @@ const { queries: qs, options } = parseSearchParamLikeWithOptions(
   kStandaloneOptionsInfos,
   window.location.search || rootQuerySpec
 );
-const { runnow, debug, unrollConstEvalLoops, powerPreference, compatibility } = options;
+const {
+  runnow,
+  debug,
+  unrollConstEvalLoops,
+  powerPreference,
+  compatibility,
+  forceFallbackAdapter,
+} = options;
 globalTestConfig.unrollConstEvalLoops = unrollConstEvalLoops;
 globalTestConfig.compatibility = compatibility;
 
@@ -70,11 +77,12 @@ stopButtonElem.addEventListener('click', () => {
   stopRequested = true;
 });
 
-if (powerPreference || compatibility) {
+if (powerPreference || compatibility || forceFallbackAdapter) {
   setDefaultRequestAdapterOptions({
     ...(powerPreference && { powerPreference }),
     // MAINTENANCE_TODO: Change this to whatever the option ends up being
     ...(compatibility && { compatibilityMode: true }),
+    ...(forceFallbackAdapter && { forceFallbackAdapter: true }),
   });
 }
 

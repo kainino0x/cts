@@ -28,6 +28,7 @@ export interface CTSOptions {
   worker: boolean;
   debug: boolean;
   compatibility: boolean;
+  forceFallbackAdapter: boolean;
   unrollConstEvalLoops: boolean;
   powerPreference?: GPUPowerPreference | '';
 }
@@ -36,6 +37,7 @@ export const kDefaultCTSOptions: CTSOptions = {
   worker: false,
   debug: true,
   compatibility: false,
+  forceFallbackAdapter: false,
   unrollConstEvalLoops: false,
   powerPreference: '',
 };
@@ -62,6 +64,7 @@ export const kCTSOptionsInfo: OptionsInfos<CTSOptions> = {
   worker: { description: 'run in a worker' },
   debug: { description: 'show more info' },
   compatibility: { description: 'run in compatibility mode' },
+  forceFallbackAdapter: { description: 'pass forceFallbackAdapter: true to requestAdapter' },
   unrollConstEvalLoops: { description: 'unroll const eval loops in WGSL' },
   powerPreference: {
     description: 'set default powerPreference for some tests',
