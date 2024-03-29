@@ -273,3 +273,16 @@ Tests that an ETC2 format passes validation iff the feature is enabled.`
       });
     });
   });
+
+g.test('environment')
+  .desc(
+    `Test which prints what global scope (e.g. worker type) it's running in.
+Typically, tests will check for the presence of the feature they need (like HTMLCanvasElement)
+and skip if it's not available.
+
+Run this test under various configurations to see different results
+(Window, worker scopes, Node, etc.)`
+  )
+  .fn(t => {
+    t.info('global scope is: ' + Object.getPrototypeOf(globalThis).constructor.name);
+  });
