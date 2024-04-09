@@ -58,7 +58,7 @@ It creates HTMLVideoElement with videos under Resource folder.
       t.skip('WebCodec is not supported');
     }
 
-    const videoElement = getVideoElement(t, videoName);
+    const videoElement = await getVideoElement(t, videoName);
 
     await startPlayingAndWaitForVideo(videoElement, async () => {
       let source, width, height;

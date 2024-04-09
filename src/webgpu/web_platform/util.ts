@@ -502,7 +502,7 @@ export async function getVideoFrameFromVideoElement(
  * @param videoName: Required video name
  *
  */
-export function getVideoElement(t: GPUTest, videoName: VideoName): HTMLVideoElement {
+export function getVideoElement(t: GPUTest, videoName: VideoName): Promise<HTMLVideoElement> {
   if (typeof HTMLVideoElement === 'undefined') {
     t.skip('HTMLVideoElement not available');
   }
@@ -519,7 +519,13 @@ export function getVideoElement(t: GPUTest, videoName: VideoName): HTMLVideoElem
 
   t.trackForCleanup(videoElement);
 
-  return videoElement;
+  // Give the new src a brief moment to take effect.
+  // (Attempts to work around an issue for crbug.com/333449094.)
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve(videoElement);
+    }, 0);
+  });
 }
 
 /**

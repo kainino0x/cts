@@ -44,8 +44,8 @@ class GPUExternalTextureExpireTest extends ValidationTest {
     this.expectValidationError(() => this.device.queue.submit([commandBuffer]), !success);
   }
 
-  getDefaultVideoElementAndCheck(): HTMLVideoElement {
-    const videoElement = getVideoElement(this, 'four-colors-vp9-bt601.webm');
+  async getDefaultVideoElementAndCheck(): Promise<HTMLVideoElement> {
+    const videoElement = await getVideoElement(this, 'four-colors-vp9-bt601.webm');
 
     if (!('requestVideoFrameCallback' in videoElement)) {
       this.skip('HTMLVideoElement.requestVideoFrameCallback is not supported');
@@ -77,7 +77,7 @@ g.test('import_multiple_times_in_same_task_scope')
   )
   .fn(async t => {
     const sourceType = t.params.sourceType;
-    const videoElement = t.getDefaultVideoElementAndCheck();
+    const videoElement = await t.getDefaultVideoElementAndCheck();
 
     let bindGroup: GPUBindGroup;
     let externalTexture: GPUExternalTexture;
@@ -124,7 +124,7 @@ g.test('import_and_use_in_different_microtask')
   )
   .fn(async t => {
     const sourceType = t.params.sourceType;
-    const videoElement = t.getDefaultVideoElementAndCheck();
+    const videoElement = await t.getDefaultVideoElementAndCheck();
 
     let bindGroup: GPUBindGroup;
     let externalTexture: GPUExternalTexture;
@@ -164,7 +164,7 @@ g.test('import_and_use_in_different_task')
   )
   .fn(async t => {
     const sourceType = t.params.sourceType;
-    const videoElement = t.getDefaultVideoElementAndCheck();
+    const videoElement = await t.getDefaultVideoElementAndCheck();
 
     let bindGroup: GPUBindGroup;
     let externalTexture: GPUExternalTexture;
@@ -199,7 +199,7 @@ g.test('use_import_to_refresh')
     `
   )
   .fn(async t => {
-    const videoElement = t.getDefaultVideoElementAndCheck();
+    const videoElement = await t.getDefaultVideoElementAndCheck();
 
     let bindGroup: GPUBindGroup;
     let externalTexture: GPUExternalTexture;
@@ -240,7 +240,7 @@ g.test('webcodec_video_frame_close_expire_immediately')
     `
   )
   .fn(async t => {
-    const videoElement = t.getDefaultVideoElementAndCheck();
+    const videoElement = await t.getDefaultVideoElementAndCheck();
 
     let bindGroup: GPUBindGroup;
     let externalTexture: GPUExternalTexture;
@@ -271,7 +271,7 @@ g.test('import_from_different_video_frame')
     `
   )
   .fn(async t => {
-    const videoElement = t.getDefaultVideoElementAndCheck();
+    const videoElement = await t.getDefaultVideoElementAndCheck();
 
     let bindGroup: GPUBindGroup;
     let externalTexture: GPUExternalTexture;

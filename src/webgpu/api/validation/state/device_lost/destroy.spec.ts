@@ -684,7 +684,7 @@ Tests import external texture on destroyed device. Tests valid combinations of:
   .fn(async t => {
     const { awaitLost, sourceType } = t.params;
 
-    const videoElement = getVideoElement(t, 'four-colors-vp9-bt601.webm');
+    const videoElement = await getVideoElement(t, 'four-colors-vp9-bt601.webm');
     if (!('requestVideoFrameCallback' in videoElement)) {
       t.skip('HTMLVideoElement.requestVideoFrameCallback is not supported');
     }

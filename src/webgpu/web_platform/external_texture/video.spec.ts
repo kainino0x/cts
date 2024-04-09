@@ -159,7 +159,7 @@ for several combinations of video format, video color spaces and dst color space
       t.skip('WebCodec is not supported');
     }
 
-    const videoElement = getVideoElement(t, videoName);
+    const videoElement = await getVideoElement(t, videoName);
 
     await startPlayingAndWaitForVideo(videoElement, async () => {
       const source =
@@ -373,7 +373,7 @@ parameters are present.
   .fn(async t => {
     const { videoName, dstColorSpace } = t.params;
 
-    const videoElement = getVideoElement(t, videoName);
+    const videoElement = await getVideoElement(t, videoName);
 
     await startPlayingAndWaitForVideo(videoElement, async () => {
       const source = await getVideoFrameFromVideoElement(t, videoElement);
@@ -501,7 +501,7 @@ compute shader, for several combinations of video format, video color spaces and
       t.skip('WebCodec is not supported');
     }
 
-    const videoElement = getVideoElement(t, videoName);
+    const videoElement = await getVideoElement(t, videoName);
 
     await startPlayingAndWaitForVideo(videoElement, async () => {
       const source =
