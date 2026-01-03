@@ -3,59 +3,81 @@
 **/export const description = `
 Tests writeBuffer validation.
 
-Note: destroyed buffer is tested in destroyed/.
 Note: buffer map state is tested in ./buffer_mapped.spec.ts.
 `;import { makeTestGroup } from '../../../../common/framework/test_group.js';
+import {
+  kTypedArrayBufferViewConstructors } from
 
 
-
-
+'../../../../common/util/util.js';
+import { Float16Array } from '../../../../external/petamoriken/float16/float16.js';
 import { GPUConst } from '../../../constants.js';
-import { ValidationTest } from '../validation_test.js';
+import { kResourceStates, AllFeaturesMaxLimitsGPUTest } from '../../../gpu_test.js';
+import * as vtu from '../validation_test_utils.js';
 
-export const g = makeTestGroup(ValidationTest);
+export const g = makeTestGroup(AllFeaturesMaxLimitsGPUTest);
+
+g.test('buffer_state').
+desc(
+  `
+  Test that the buffer used for GPUQueue.writeBuffer() must be valid. Tests calling writeBuffer
+  with {valid, invalid, destroyed} buffer.
+  `
+).
+params((u) => u.combine('bufferState', kResourceStates)).
+fn((t) => {
+  const { bufferState } = t.params;
+  const buffer = vtu.createBufferWithState(t, bufferState, {
+    size: 16,
+    usage: GPUBufferUsage.COPY_DST
+  });
+  const data = new Uint8Array(16);
+  const _valid = bufferState === 'valid';
+
+  t.expectValidationError(() => {
+    t.device.queue.writeBuffer(buffer, 0, data, 0, data.length);
+  }, !_valid);
+});
 
 g.test('ranges').
 desc(
-`
-Tests that the data ranges given to GPUQueue.writeBuffer() are properly validated. Tests calling
-writeBuffer with both TypedArrays and ArrayBuffers and checks that the data offset and size is
-interpreted correctly for both.
+  `
+  Tests that the data ranges given to GPUQueue.writeBuffer() are properly validated. Tests calling
+  writeBuffer with both TypedArrays and ArrayBuffers and checks that the data offset and size is
+  interpreted correctly for both.
+    - When passing a TypedArray the data offset and size is given in elements.
+    - When passing an ArrayBuffer the data offset and size is given in bytes.
 
-  - When passing a TypedArray the data offset and size is given in elements.
-  - When passing an ArrayBuffer the data offset and size is given in bytes.
-
-Also verifies that the specified data range:
-
-  - Describes a valid range of the destination buffer and source buffer.
-  - Fits fully within the destination buffer.
-  - Has a byte size which is a multiple of 4.
-`).
-
-fn(async t => {
+  Also verifies that the specified data range:
+    - Describes a valid range of the destination buffer and source buffer.
+    - Fits fully within the destination buffer.
+    - Has a byte size which is a multiple of 4.
+  `
+).
+fn((t) => {
   const queue = t.device.queue;
 
-  function runTest(arrayType, testBuffer) {
-    const elementSize = arrayType.BYTES_PER_ELEMENT;
+  function runTest(ArrayType, testBuffer) {
+    const elementSize = ArrayType.BYTES_PER_ELEMENT;
     const bufferSize = 16 * elementSize;
-    const buffer = t.device.createBuffer({
+    const buffer = t.createBufferTracked({
       size: bufferSize,
-      usage: GPUBufferUsage.COPY_DST });
-
+      usage: GPUBufferUsage.COPY_DST
+    });
     const arraySm = testBuffer ?
-    new arrayType(8).buffer :
-    new arrayType(8);
+    new ArrayType(8).buffer :
+    new ArrayType(8);
     const arrayMd = testBuffer ?
-    new arrayType(16).buffer :
-    new arrayType(16);
+    new ArrayType(16).buffer :
+    new ArrayType(16);
     const arrayLg = testBuffer ?
-    new arrayType(32).buffer :
-    new arrayType(32);
+    new ArrayType(32).buffer :
+    new ArrayType(32);
 
     if (elementSize < 4) {
       const array15 = testBuffer ?
-      new arrayType(15).buffer :
-      new arrayType(15);
+      new ArrayType(15).buffer :
+      new ArrayType(15);
 
       // Writing the full buffer that isn't 4-byte aligned.
       t.shouldThrow('OperationError', () => queue.writeBuffer(buffer, 0, array15));
@@ -80,7 +102,7 @@ fn(async t => {
     t.expectValidationError(() => queue.writeBuffer(buffer, 8, arrayMd));
 
     // Writing the full buffer with a unaligned offset.
-    t.shouldThrow('OperationError', () => queue.writeBuffer(buffer, 3, arraySm));
+    t.expectValidationError(() => queue.writeBuffer(buffer, 3, arraySm));
 
     // Writing remainder of buffer from offset.
     queue.writeBuffer(buffer, 0, arraySm, 4);
@@ -100,58 +122,53 @@ fn(async t => {
     // Writing with a size that is 4-byte aligned but an offset that is not.
     queue.writeBuffer(buffer, 0, arraySm, 3, 4);
 
-    // Writing zero bytes at the end of the buffer
+    // Writing zero bytes at the end of the buffer.
     queue.writeBuffer(buffer, bufferSize, arraySm, 0, 0);
 
-    // Writing with a buffer offset that is out of range of buffer size
+    // Writing with a buffer offset that is out of range of buffer size.
     t.expectValidationError(() => queue.writeBuffer(buffer, bufferSize + 4, arraySm, 0, 0));
 
-    // Writing zero bytes from the end of the data
+    // Writing zero bytes from the end of the data.
     queue.writeBuffer(buffer, 0, arraySm, 8, 0);
 
-    // Writing with a data offset that is out of range of data size
+    // Writing with a data offset that is out of range of data size.
     t.shouldThrow('OperationError', () => queue.writeBuffer(buffer, 0, arraySm, 9, 0));
 
-    // A data offset of undefined should be treated as 0
+    // Writing with a data offset that is out of range of data size with implicit copy size.
+    t.shouldThrow('OperationError', () => queue.writeBuffer(buffer, 0, arraySm, 9, undefined));
+
+    // A data offset of undefined should be treated as 0.
     queue.writeBuffer(buffer, 0, arraySm, undefined, 8);
     t.shouldThrow('OperationError', () => queue.writeBuffer(buffer, 0, arraySm, undefined, 12));
   }
 
-  const arrayTypes = [
-  Uint8Array,
-  Uint8ClampedArray,
-  Int8Array,
-  Uint16Array,
-  Int16Array,
-  Uint32Array,
-  Int32Array,
-  Float32Array,
-  Float64Array];
-
-
   runTest(Uint8Array, true);
 
-  for (const arrayType of arrayTypes) {
+  for (const arrayType of kTypedArrayBufferViewConstructors) {
+    if (arrayType === Float16Array) {
+      // Skip Float16Array since it is supplied by an external module, so there isn't an overload for it.
+      continue;
+    }
     runTest(arrayType, false);
   }
 });
 
 g.test('usages').
 desc(
-`
-Tests calling writeBuffer with the buffer missed COPY_DST usage.
-- buffer {with, without} COPY DST usage
-`).
-
+  `
+  Tests calling writeBuffer with the buffer missed COPY_DST usage.
+    - buffer {with, without} COPY DST usage
+  `
+).
 paramsSubcasesOnly([
 { usage: GPUConst.BufferUsage.COPY_DST, _valid: true }, // control case
 { usage: GPUConst.BufferUsage.STORAGE, _valid: false }, // without COPY_DST usage
 { usage: GPUConst.BufferUsage.STORAGE | GPUConst.BufferUsage.COPY_SRC, _valid: false }, // with other usage
 { usage: GPUConst.BufferUsage.STORAGE | GPUConst.BufferUsage.COPY_DST, _valid: true } // with COPY_DST usage
 ]).
-fn(async t => {
+fn((t) => {
   const { usage, _valid } = t.params;
-  const buffer = t.device.createBuffer({ size: 16, usage });
+  const buffer = t.createBufferTracked({ size: 16, usage });
   const data = new Uint8Array(16);
 
   t.expectValidationError(() => {
@@ -160,7 +177,24 @@ fn(async t => {
 });
 
 g.test('buffer,device_mismatch').
-desc('Tests writeBuffer cannot be called with a buffer created from another device').
-paramsSubcasesOnly(u => u.combine('mismatched', [true, false])).
-unimplemented();
+desc('Tests writeBuffer cannot be called with a buffer created from another device.').
+paramsSubcasesOnly((u) => u.combine('mismatched', [true, false])).
+beforeAllSubcases((t) => t.usesMismatchedDevice()).
+fn((t) => {
+  const { mismatched } = t.params;
+  const sourceDevice = mismatched ? t.mismatchedDevice : t.device;
+
+  const buffer = t.trackForCleanup(
+    sourceDevice.createBuffer({
+      size: 16,
+      usage: GPUBufferUsage.COPY_DST
+    })
+  );
+
+  const data = new Uint8Array(16);
+
+  t.expectValidationError(() => {
+    t.device.queue.writeBuffer(buffer, 0, data, 0, data.length);
+  }, mismatched);
+});
 //# sourceMappingURL=writeBuffer.spec.js.map

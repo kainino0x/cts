@@ -3,15 +3,15 @@
 **/export const description = `
 Tests for default pipeline layouts.
 `;import { makeTestGroup } from '../../../../common/framework/test_group.js';
-import { GPUTest } from '../../../gpu_test.js';
+import { AllFeaturesMaxLimitsGPUTest } from '../../../gpu_test.js';
 
-export const g = makeTestGroup(GPUTest);
+export const g = makeTestGroup(AllFeaturesMaxLimitsGPUTest);
 
 g.test('getBindGroupLayout_js_object').
 desc(
-`Test that getBindGroupLayout returns [TODO: the same or a different, needs spec] object
-each time.`).
-
+  `Test that getBindGroupLayout returns [TODO: the same or a different, needs spec] object
+each time.`
+).
 unimplemented();
 
 g.test('incompatible_with_explicit').
@@ -20,9 +20,9 @@ unimplemented();
 
 g.test('layout').
 desc(
-`Test that bind group layouts of the default pipeline layout are correct by passing various
+  `Test that bind group layouts of the default pipeline layout are correct by passing various
 shaders and then checking their computed bind group layouts are compatible with particular bind
-groups.`).
-
+groups.`
+).
 unimplemented();
 //# sourceMappingURL=default_layout.spec.js.map

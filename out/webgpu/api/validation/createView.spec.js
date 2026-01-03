@@ -1,52 +1,84 @@
 /**
 * AUTO-GENERATED - DO NOT EDIT. Source: https://github.com/gpuweb/cts
-**/export const description = `createView validation tests.`;import { kUnitCaseParamsBuilder } from '../../../common/framework/params_builder.js';
+**/export const description = `createView validation tests.`;import { AllFeaturesMaxLimitsGPUTest, kResourceStates } from '../.././gpu_test.js';
+import { kUnitCaseParamsBuilder } from '../../../common/framework/params_builder.js';
 import { makeTestGroup } from '../../../common/framework/test_group.js';
 import { unreachable } from '../../../common/util/util.js';
 import {
-kTextureAspects,
-kTextureDimensions,
-kTextureFormatInfo,
-kTextureFormats,
-kTextureViewDimensions } from
+  kTextureAspects,
+  kTextureDimensions,
+  kTextureUsages,
+  kTextureViewDimensions } from
 '../../capability_info.js';
-import { kResourceStates } from '../../gpu_test.js';
+import { GPUConst } from '../../constants.js';
 import {
-getTextureDimensionFromView,
-reifyTextureViewDescriptor,
-viewDimensionsForTextureDimension } from
+  kAllTextureFormats,
+  kFeaturesForFormats,
+  filterFormatsByFeature,
+  textureFormatsAreViewCompatible,
+  isDepthTextureFormat,
+  isTextureFormatUsableWithStorageAccessMode,
+  isTextureFormatColorRenderable,
+  isColorTextureFormat,
+  isStencilTextureFormat,
+  getBlockInfoForTextureFormat,
+  isTextureFormatPossiblyUsableAsRenderAttachment } from
+'../../format_info.js';
+import {
+  getTextureDimensionFromView,
+  reifyTextureViewDescriptor,
+  viewDimensionsForTextureDimension } from
 '../../util/texture/base.js';
 import { reifyExtent3D } from '../../util/unions.js';
 
-import { ValidationTest } from './validation_test.js';
+import * as vtu from './validation_test_utils.js';
 
-export const g = makeTestGroup(ValidationTest);
+export const g = makeTestGroup(AllFeaturesMaxLimitsGPUTest);
 
 const kLevels = 6;
 
 g.test('format').
 desc(
-`Views must have the same format as the base texture, for all {texture format}x{view format}.`).
-
+  `Views must have the view format compatible with the base texture, for all {texture format}x{view format}.`
+).
 params((u) =>
 u.
-combine('textureFormat', kTextureFormats).
-beginSubcases()
-// If undefined, should default to textureFormat.
-.combine('viewFormat', [undefined, ...kTextureFormats])).
+combine('textureFormatFeature', kFeaturesForFormats).
+combine('viewFormatFeature', kFeaturesForFormats).
+beginSubcases().
+expand('textureFormat', ({ textureFormatFeature }) =>
+filterFormatsByFeature(textureFormatFeature, kAllTextureFormats)
+).
+expand('viewFormat', ({ viewFormatFeature }) =>
+filterFormatsByFeature(viewFormatFeature, [undefined, ...kAllTextureFormats])
+).
+combine('useViewFormatList', [false, true])
+).
+fn((t) => {
+  const { textureFormat, viewFormat, useViewFormatList } = t.params;
+  const { blockWidth, blockHeight } = getBlockInfoForTextureFormat(textureFormat);
 
-fn(async t => {
-  const { textureFormat, viewFormat } = t.params;
-  await t.selectDeviceForTextureFormatOrSkipTestCase([textureFormat, viewFormat]);
-  const { blockWidth, blockHeight } = kTextureFormatInfo[textureFormat];
+  t.skipIfTextureFormatNotSupported(textureFormat, viewFormat);
 
-  const texture = t.device.createTexture({
+  const compatible =
+  viewFormat === undefined ||
+  textureFormatsAreViewCompatible(t.device, textureFormat, viewFormat);
+
+  const texture = t.createTextureTracked({
     format: textureFormat,
     size: [blockWidth, blockHeight],
-    usage: GPUTextureUsage.TEXTURE_BINDING });
+    usage: GPUTextureUsage.TEXTURE_BINDING,
 
+    // This is a test of createView, not createTexture. Don't pass viewFormats here that
+    // are not compatible, as that is tested in createTexture.spec.ts.
+    viewFormats:
+    useViewFormatList && compatible && viewFormat !== undefined ? [viewFormat] : undefined
+  });
 
-  const success = viewFormat === undefined || viewFormat === textureFormat;
+  // Successful if there is no view format, no reinterpretation was required, or the formats are compatible
+  // and is was specified in the viewFormats list.
+  const success =
+  viewFormat === undefined || viewFormat === textureFormat || compatible && useViewFormatList;
   t.expectValidationError(() => {
     texture.createView({ format: viewFormat });
   }, !success);
@@ -54,27 +86,28 @@ fn(async t => {
 
 g.test('dimension').
 desc(
-`For all {texture dimension}, {view dimension}, test that they must be compatible:
+  `For all {texture dimension}, {view dimension}, test that they must be compatible:
   - 1d -> 1d
   - 2d -> 2d, 2d-array, cube, or cube-array
-  - 3d -> 3d`).
-
+  - 3d -> 3d`
+).
 params((u) =>
 u.
 combine('textureDimension', kTextureDimensions).
-combine('viewDimension', [...kTextureViewDimensions, undefined])).
-
-fn(t => {
+combine('viewDimension', [...kTextureViewDimensions, undefined])
+).
+fn((t) => {
   const { textureDimension, viewDimension } = t.params;
+  t.skipIfTextureViewDimensionNotSupported(t.params.viewDimension);
 
   const size = textureDimension === '1d' ? [4] : [4, 4, 6];
   const textureDescriptor = {
     format: 'rgba8unorm',
     dimension: textureDimension,
     size,
-    usage: GPUTextureUsage.TEXTURE_BINDING };
-
-  const texture = t.device.createTexture(textureDescriptor);
+    usage: GPUTextureUsage.TEXTURE_BINDING
+  };
+  const texture = t.createTextureTracked(textureDescriptor);
 
   const view = { dimension: viewDimension };
   const reified = reifyTextureViewDescriptor(textureDescriptor, view);
@@ -87,31 +120,32 @@ fn(t => {
 
 g.test('aspect').
 desc(
-`For every {format}x{aspect}, test that the view aspect must exist in the format:
+  `For every {format}x{aspect}, test that the view aspect must exist in the format:
   - "all" is allowed for any format
   - "depth-only" is allowed only for depth and depth-stencil formats
-  - "stencil-only" is allowed only for stencil and depth-stencil formats`).
-
+  - "stencil-only" is allowed only for stencil and depth-stencil formats`
+).
 params((u) =>
 u //
-.combine('format', kTextureFormats).
-combine('aspect', kTextureAspects)).
-
-fn(async t => {
+.combine('format', kAllTextureFormats).
+combine('aspect', kTextureAspects)
+).
+fn((t) => {
   const { format, aspect } = t.params;
-  await t.selectDeviceForTextureFormatOrSkipTestCase(format);
-  const info = kTextureFormatInfo[format];
+  const { blockWidth, blockHeight } = getBlockInfoForTextureFormat(format);
 
-  const texture = t.device.createTexture({
+  t.skipIfTextureFormatNotSupported(format);
+
+  const texture = t.createTextureTracked({
     format,
-    size: [info.blockWidth, info.blockHeight, 1],
-    usage: GPUTextureUsage.TEXTURE_BINDING });
-
+    size: [blockWidth, blockHeight, 1],
+    usage: GPUTextureUsage.TEXTURE_BINDING
+  });
 
   const success =
   aspect === 'all' ||
-  aspect === 'depth-only' && info.depth ||
-  aspect === 'stencil-only' && info.stencil;
+  aspect === 'depth-only' && isDepthTextureFormat(format) ||
+  aspect === 'stencil-only' && isStencilTextureFormat(format);
   t.expectValidationError(() => {
     texture.createView({ aspect });
   }, !success);
@@ -119,10 +153,10 @@ fn(async t => {
 
 const kTextureAndViewDimensions = kUnitCaseParamsBuilder.
 combine('textureDimension', kTextureDimensions).
-expand('viewDimension', p => [
+expand('viewDimension', (p) => [
 undefined,
-...viewDimensionsForTextureDimension(p.textureDimension)]);
-
+...viewDimensionsForTextureDimension(p.textureDimension)]
+);
 
 function validateCreateViewLayersLevels(tex, view) {
   const textureLevels = tex.mipLevelCount ?? 1;
@@ -148,7 +182,7 @@ function validateCreateViewLayersLevels(tex, view) {
 
 g.test('array_layers').
 desc(
-`For each texture dimension {1d,2d,3d}, for each possible view dimension for that texture
+  `For each texture dimension {1d,2d,3d}, for each possible view dimension for that texture
     dimension (or undefined, which defaults to the texture dimension), test validation of layer
     counts:
   - 1d, 2d, and 3d must have exactly 1 layer
@@ -156,33 +190,36 @@ desc(
   - cube must have 6 layers
   - cube-array must have a positive multiple of 6 layers
   - Defaulting of baseArrayLayer and arrayLayerCount
-  - baseArrayLayer+arrayLayerCount must be within the texture`).
-
-params((u) =>
-kTextureAndViewDimensions.
-beginSubcases().
-expand('textureLayers', ({ textureDimension: d }) => d === '2d' ? [1, 6, 18] : [1]).
-combine('textureLevels', [1, kLevels]).
-expand(
-'baseArrayLayer',
-({ textureLayers: l }) => new Set([undefined, 0, 1, 5, 6, 7, l - 1, l, l + 1])).
-
-expand('arrayLayerCount', function* ({ textureLayers: l, baseArrayLayer = 0 }) {
-  yield undefined;
-  for (const lastArrayLayer of new Set([0, 1, 5, 6, 7, l - 1, l, l + 1])) {
-    if (baseArrayLayer <= lastArrayLayer) yield lastArrayLayer - baseArrayLayer;
-  }
-})).
-
-fn(t => {
+  - baseArrayLayer+arrayLayerCount must be within the texture`
+).
+params(
+  kTextureAndViewDimensions.
+  beginSubcases().
+  expand('textureLayers', ({ textureDimension: d }) => d === '2d' ? [1, 6, 18] : [1]).
+  combine('textureLevels', [1, kLevels]).
+  unless((p) => p.textureDimension === '1d' && p.textureLevels !== 1).
+  expand(
+    'baseArrayLayer',
+    ({ textureLayers: l }) => new Set([undefined, 0, 1, 5, 6, 7, l - 1, l, l + 1])
+  ).
+  expand('arrayLayerCount', function* ({ textureLayers: l, baseArrayLayer = 0 }) {
+    yield undefined;
+    for (const lastArrayLayer of new Set([0, 1, 5, 6, 7, l - 1, l, l + 1])) {
+      if (baseArrayLayer <= lastArrayLayer) yield lastArrayLayer - baseArrayLayer;
+    }
+  })
+).
+fn((t) => {
   const {
     textureDimension,
     viewDimension,
     textureLayers,
     textureLevels,
     baseArrayLayer,
-    arrayLayerCount } =
-  t.params;
+    arrayLayerCount
+  } = t.params;
+
+  t.skipIfTextureViewDimensionNotSupported(viewDimension);
 
   const kWidth = 1 << kLevels - 1; // 32
   const textureDescriptor = {
@@ -197,13 +234,13 @@ fn(t => {
     [kWidth, kWidth, kWidth] :
     unreachable(),
     mipLevelCount: textureLevels,
-    usage: GPUTextureUsage.TEXTURE_BINDING };
-
+    usage: GPUTextureUsage.TEXTURE_BINDING
+  };
 
   const viewDescriptor = { dimension: viewDimension, baseArrayLayer, arrayLayerCount };
   const success = validateCreateViewLayersLevels(textureDescriptor, viewDescriptor);
 
-  const texture = t.device.createTexture(textureDescriptor);
+  const texture = t.createTextureTracked(textureDescriptor);
   t.expectValidationError(() => {
     texture.createView(viewDescriptor);
   }, !success);
@@ -211,36 +248,34 @@ fn(t => {
 
 g.test('mip_levels').
 desc(
-`Views must have at least one level, and must be within the level of the base texture.
+  `Views must have at least one level, and must be within the level of the base texture.
 
   - mipLevelCount=0 at various baseMipLevel values
   - Cases where baseMipLevel+mipLevelCount goes past the end of the texture
   - Cases with baseMipLevel or mipLevelCount undefined (compares against reference defaulting impl)
-  `).
-
-params((u) =>
-kTextureAndViewDimensions.
-beginSubcases().
-combine('textureLevels', [1, kLevels - 2, kLevels]).
-expand(
-'baseMipLevel',
-({ textureLevels: l }) => new Set([undefined, 0, 1, 5, 6, 7, l - 1, l, l + 1])).
-
-expand('mipLevelCount', function* ({ textureLevels: l, baseMipLevel = 0 }) {
-  yield undefined;
-  for (const lastMipLevel of new Set([0, 1, 5, 6, 7, l - 1, l, l + 1])) {
-    if (baseMipLevel <= lastMipLevel) yield lastMipLevel - baseMipLevel;
-  }
-})).
-
-fn(t => {
-  const {
-    textureDimension,
-    viewDimension,
-    textureLevels,
-    baseMipLevel,
-    mipLevelCount } =
+  `
+).
+params(
+  kTextureAndViewDimensions.
+  beginSubcases().
+  combine('textureLevels', [1, kLevels - 2, kLevels]).
+  unless((p) => p.textureDimension === '1d' && p.textureLevels !== 1).
+  expand(
+    'baseMipLevel',
+    ({ textureLevels: l }) => new Set([undefined, 0, 1, 5, 6, 7, l - 1, l, l + 1])
+  ).
+  expand('mipLevelCount', function* ({ textureLevels: l, baseMipLevel = 0 }) {
+    yield undefined;
+    for (const lastMipLevel of new Set([0, 1, 5, 6, 7, l - 1, l, l + 1])) {
+      if (baseMipLevel <= lastMipLevel) yield lastMipLevel - baseMipLevel;
+    }
+  })
+).
+fn((t) => {
+  const { textureDimension, viewDimension, textureLevels, baseMipLevel, mipLevelCount } =
   t.params;
+
+  t.skipIfTextureViewDimensionNotSupported(viewDimension);
 
   const textureDescriptor = {
     format: 'rgba8unorm',
@@ -248,14 +283,14 @@ fn(t => {
     size:
     textureDimension === '1d' ? [32] : textureDimension === '3d' ? [32, 32, 32] : [32, 32, 18],
     mipLevelCount: textureLevels,
-    usage: GPUTextureUsage.TEXTURE_BINDING };
-
+    usage: GPUTextureUsage.TEXTURE_BINDING
+  };
 
   const viewDescriptor = { dimension: viewDimension, baseMipLevel, mipLevelCount };
   const success = validateCreateViewLayersLevels(textureDescriptor, viewDescriptor);
 
-  const texture = t.device.createTexture(textureDescriptor);
-  t.debug(mipLevelCount + ' ' + success);
+  const texture = t.createTextureTracked(textureDescriptor);
+  t.debug(`${mipLevelCount} ${success}`);
   t.expectValidationError(() => {
     texture.createView(viewDescriptor);
   }, !success);
@@ -263,9 +298,9 @@ fn(t => {
 
 g.test('cube_faces_square').
 desc(
-`Test that the X/Y dimensions of cube and cube array textures must be square.
-  - {2d (control case), cube, cube-array}`).
-
+  `Test that the X/Y dimensions of cube and cube array textures must be square.
+  - {2d (control case), cube, cube-array}`
+).
 params((u) =>
 u //
 .combine('dimension', ['2d', 'cube', 'cube-array']).
@@ -274,17 +309,19 @@ combine('size', [
 [5, 5, 6],
 [4, 5, 6],
 [4, 8, 6],
-[8, 4, 6]])).
-
-
-fn(async t => {
+[8, 4, 6]]
+)
+).
+fn((t) => {
   const { dimension, size } = t.params;
 
-  const texture = t.device.createTexture({
+  t.skipIfTextureViewDimensionNotSupported(dimension);
+
+  const texture = t.createTextureTracked({
     format: 'rgba8unorm',
     size,
-    usage: GPUTextureUsage.TEXTURE_BINDING });
-
+    usage: GPUTextureUsage.TEXTURE_BINDING
+  });
 
   const success = dimension === '2d' || size[0] === size[1];
   t.expectValidationError(() => {
@@ -294,13 +331,124 @@ fn(async t => {
 
 g.test('texture_state').
 desc(`createView should fail if the texture is invalid (but succeed if it is destroyed)`).
-paramsSubcasesOnly(u => u.combine('state', kResourceStates)).
-fn(async t => {
+paramsSubcasesOnly((u) => u.combine('state', kResourceStates)).
+fn((t) => {
   const { state } = t.params;
-  const texture = t.createTextureWithState(state);
+  const texture = vtu.createTextureWithState(t, state);
 
   t.expectValidationError(() => {
     texture.createView();
   }, state === 'invalid');
+});
+
+g.test('texture_view_usage').
+desc(
+  `Test texture view usage (single, combined, inherited) for every texture format and texture usage`
+).
+params((u) =>
+u //
+.combine('format', kAllTextureFormats).
+combine('textureUsage', kTextureUsages).
+unless(({ format, textureUsage }) => {
+  return (
+    (textureUsage & GPUConst.TextureUsage.RENDER_ATTACHMENT) !== 0 &&
+    !isTextureFormatPossiblyUsableAsRenderAttachment(format));
+
+}).
+beginSubcases().
+combine('textureViewUsage', [0, ...kTextureUsages]).
+unless(({ textureUsage, textureViewUsage }) => {
+  // TRANSIENT_ATTACHMENT is only valid when combined with RENDER_ATTACHMENT.
+  return (
+    textureUsage === GPUConst.TextureUsage.TRANSIENT_ATTACHMENT ||
+    textureViewUsage === GPUConst.TextureUsage.TRANSIENT_ATTACHMENT);
+
+})
+).
+fn((t) => {
+  const { format, textureUsage, textureViewUsage } = t.params;
+
+  t.skipIfTextureFormatNotSupported(format);
+  t.skipIfTextureFormatDoesNotSupportUsage(textureUsage, format);
+
+  const { blockWidth, blockHeight } = getBlockInfoForTextureFormat(format);
+
+  const texture = t.createTextureTracked({
+    size: [blockWidth, blockHeight, 1],
+    format,
+    usage: textureUsage
+  });
+
+  let success = true;
+
+  // Texture view usage must be a subset of texture usage
+  if ((~textureUsage & textureViewUsage) !== 0) success = false;
+
+  t.expectValidationError(() => {
+    texture.createView({
+      usage: textureViewUsage
+    });
+  }, !success);
+});
+
+g.test('texture_view_usage_with_view_format').
+desc(
+  `Test that the texture view usage must be supported by the view's format. Checks for every view format possible, and every usage supported by the texture's format`
+).
+params((u) =>
+u.
+combine('textureFormat', kAllTextureFormats).
+combine('usage', kTextureUsages).
+beginSubcases().
+combine('viewFormat', kAllTextureFormats).
+unless(({ usage }) => {
+  // TRANSIENT_ATTACHMENT is only valid when combined with RENDER_ATTACHMENT.
+  return usage === GPUConst.TextureUsage.TRANSIENT_ATTACHMENT;
+})
+).
+fn((t) => {
+  const { textureFormat, viewFormat, usage } = t.params;
+
+  t.skipIfTextureFormatNotSupported(textureFormat, viewFormat);
+  t.skipIfTextureFormatDoesNotSupportUsage(usage, textureFormat);
+
+  if (!textureFormatsAreViewCompatible(t.device, textureFormat, viewFormat)) {
+    t.skip(`"${textureFormat}" and "${viewFormat}" are not view-compatible`);
+  }
+
+  const { blockWidth, blockHeight } = getBlockInfoForTextureFormat(textureFormat);
+  const texture = t.createTextureTracked({
+    size: [blockWidth, blockHeight, 1],
+    format: textureFormat,
+    usage,
+    viewFormats: [viewFormat]
+  });
+
+  let success = true;
+
+  // Texture view usage must be a subset of texture usage
+  if (usage & GPUTextureUsage.STORAGE_BINDING) {
+    if (!isTextureFormatUsableWithStorageAccessMode(t.device, viewFormat, 'write-only'))
+    success = false;
+  }
+  if (usage & GPUTextureUsage.RENDER_ATTACHMENT) {
+    if (isColorTextureFormat(viewFormat) && !isTextureFormatColorRenderable(t.device, viewFormat))
+    success = false;
+  }
+
+  // Test with explicitly setting the view usage.
+  t.expectValidationError(() => {
+    texture.createView({
+      usage,
+      format: viewFormat
+    });
+  }, !success);
+
+  // Test with inheriting the view usage.
+  t.expectValidationError(() => {
+    texture.createView({
+      format: viewFormat
+    });
+  }, !success);
 });
 //# sourceMappingURL=createView.spec.js.map

@@ -54,7 +54,7 @@ class If extends Directive {
 }
 
 class ElseIf extends If {
-  applyTo(stack: StateStack) {
+  override applyTo(stack: StateStack) {
     assert(stack.length >= 1);
     const { allowsFollowingElse, state: siblingState } = stack.pop()!;
     this.checkDepth(stack);
@@ -105,7 +105,7 @@ class EndIf extends Directive {
  * ```
  *
  * @param strings - The array of constant string chunks of the template string.
- * @param ...values - The array of interpolated ${} values within the template string.
+ * @param ...values - The array of interpolated `${}` values within the template string.
  */
 export function pp(
   strings: TemplateStringsArray,

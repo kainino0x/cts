@@ -3,15 +3,15 @@
 **/export const description = `
 Test vertex-only render pipeline.
 `;import { makeTestGroup } from '../../../../common/framework/test_group.js';
-import { GPUTest } from '../../../gpu_test.js';
+import { AllFeaturesMaxLimitsGPUTest } from '../../../gpu_test.js';
 
-class F extends GPUTest {}
+class F extends AllFeaturesMaxLimitsGPUTest {}
 
 export const g = makeTestGroup(F);
 
 g.test('draw_depth_and_stencil_with_vertex_only_pipeline').
 desc(
-`
+  `
 TODO:
 - Test drawing depth and stencil with vertex-only render pipelines by
   1. Create a color attachment and depth-stencil attachment of 4 pixels in a line, clear the color
@@ -24,7 +24,7 @@ TODO:
      with depth test requiring depth no less than 0.5 and stencil test requiring stencil equals to 0x1
   5. Validate that only the third pixel is of color RGBA(0.0, 1.0, 0.0, 1.0), and all other pixels
      are RGBA(0.0, 0.0, 0.0, 0.0).
-`).
-
+`
+).
 unimplemented();
 //# sourceMappingURL=vertex_only_render_pipeline.spec.js.map

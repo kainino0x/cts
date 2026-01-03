@@ -5,9 +5,10 @@ Validation tests for GPUBuffer.destroy.
 import { makeTestGroup } from '../../../../common/framework/test_group.js';
 import { kBufferUsages } from '../../../capability_info.js';
 import { GPUConst } from '../../../constants.js';
-import { ValidationTest } from '../validation_test.js';
+import { AllFeaturesMaxLimitsGPUTest } from '../../../gpu_test.js';
+import * as vtu from '../validation_test_utils.js';
 
-export const g = makeTestGroup(ValidationTest);
+export const g = makeTestGroup(AllFeaturesMaxLimitsGPUTest);
 
 g.test('all_usages')
   .desc('Test destroying buffers of every usage type.')
@@ -15,9 +16,9 @@ g.test('all_usages')
     u //
       .combine('usage', kBufferUsages)
   )
-  .fn(async t => {
+  .fn(t => {
     const { usage } = t.params;
-    const buf = t.device.createBuffer({
+    const buf = t.createBufferTracked({
       size: 4,
       usage,
     });
@@ -27,8 +28,8 @@ g.test('all_usages')
 
 g.test('error_buffer')
   .desc('Test that error buffers may be destroyed without generating validation errors.')
-  .fn(async t => {
-    const buf = t.getErrorBuffer();
+  .fn(t => {
+    const buf = vtu.getErrorBuffer(t);
     buf.destroy();
   });
 
@@ -47,8 +48,8 @@ g.test('twice')
         { size: 4, usage: GPUConst.BufferUsage.COPY_DST | GPUConst.BufferUsage.MAP_READ },
       ])
   )
-  .fn(async t => {
-    const buf = t.device.createBuffer(t.params);
+  .fn(t => {
+    const buf = t.createBufferTracked(t.params);
 
     buf.destroy();
     buf.destroy();
@@ -81,7 +82,7 @@ g.test('while_mapped')
   )
   .fn(async t => {
     const { usage, mapMode, mappedAtCreation, unmapBeforeDestroy } = t.params;
-    const buf = t.device.createBuffer({
+    const buf = t.createBufferTracked({
       size: 4,
       usage,
       mappedAtCreation,

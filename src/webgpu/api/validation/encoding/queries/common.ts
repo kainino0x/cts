@@ -5,11 +5,9 @@ export function createQuerySetWithType(
   type: GPUQueryType,
   count: GPUSize32
 ): GPUQuerySet {
-  return t.device.createQuerySet({
+  return t.createQuerySetTracked({
     type,
     count,
-    pipelineStatistics:
-      type === 'pipeline-statistics' ? (['clipper-invocations'] as const) : ([] as const),
   });
 }
 
@@ -18,8 +16,8 @@ export function beginRenderPassWithQuerySet(
   encoder: GPUCommandEncoder,
   querySet?: GPUQuerySet
 ): GPURenderPassEncoder {
-  const view = t.device
-    .createTexture({
+  const view = t
+    .createTextureTracked({
       format: 'rgba8unorm' as const,
       size: { width: 16, height: 16, depthOrArrayLayers: 1 },
       usage: GPUTextureUsage.RENDER_ATTACHMENT,
@@ -29,7 +27,8 @@ export function beginRenderPassWithQuerySet(
     colorAttachments: [
       {
         view,
-        loadValue: { r: 1.0, g: 0.0, b: 0.0, a: 1.0 },
+        clearValue: { r: 1.0, g: 0.0, b: 0.0, a: 1.0 },
+        loadOp: 'clear',
         storeOp: 'store',
       },
     ],

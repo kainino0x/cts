@@ -2,9 +2,9 @@
 * AUTO-GENERATED - DO NOT EDIT. Source: https://github.com/gpuweb/cts
 **/import { kUnitCaseParamsBuilder } from '../../../../../../common/framework/params_builder.js';import { kRenderEncodeTypes } from '../../../../../util/command_buffer_maker.js';
 export const kRenderEncodeTypeParams = kUnitCaseParamsBuilder.combine(
-'encoderType',
-kRenderEncodeTypes);
-
+  'encoderType',
+  kRenderEncodeTypes
+);
 
 export function buildBufferOffsetAndSizeOOBTestParams(minAlignment, bufferSize) {
   return kRenderEncodeTypeParams.combineWithParams([
@@ -24,7 +24,7 @@ export function buildBufferOffsetAndSizeOOBTestParams(minAlignment, bufferSize) 
   { offset: minAlignment, size: undefined, _valid: true },
   { offset: bufferSize - minAlignment, size: undefined, _valid: true },
   { offset: bufferSize, size: undefined, _valid: true },
-  { offset: bufferSize + minAlignment, size: undefined, _valid: false }]);
-
+  { offset: bufferSize + minAlignment, size: undefined, _valid: false }]
+  );
 }
 //# sourceMappingURL=render.js.map

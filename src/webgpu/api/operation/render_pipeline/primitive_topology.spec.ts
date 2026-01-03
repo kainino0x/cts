@@ -56,7 +56,9 @@ Test locations are framebuffer coordinates:
 `;
 
 import { makeTestGroup } from '../../../../common/framework/test_group.js';
-import { GPUTest } from '../../../gpu_test.js';
+import { AllFeaturesMaxLimitsGPUTest } from '../../../gpu_test.js';
+import * as ttu from '../../../texture_test_utils.js';
+import { PerPixelComparison } from '../../../util/texture/texture_ok.js';
 
 const kRTSize: number = 56;
 const kColorFormat = 'rgba8unorm';
@@ -92,10 +94,7 @@ class Point2D {
   }
 }
 
-interface TestLocation {
-  location: Point2D;
-  color: Uint8Array;
-}
+type TestLocation = PerPixelComparison<Uint8Array>;
 
 const VertexLocations = [
   new Point2D(8, 24), // v1
@@ -110,7 +109,7 @@ function getPointTestLocations(expectedColor: Uint8Array): TestLocation[] {
   // Test points are always equal to vertex locations.
   const testLocations: TestLocation[] = [];
   for (const location of VertexLocations) {
-    testLocations.push({ location, color: expectedColor });
+    testLocations.push({ coord: location, exp: expectedColor });
   }
   return testLocations;
 }
@@ -120,18 +119,18 @@ function getLineTestLocations(expectedColor: Uint8Array): TestLocation[] {
   return [
     {
       // Line {v1, v2}
-      location: Point2D.getMidpoint(VertexLocations[0], VertexLocations[1]),
-      color: expectedColor,
+      coord: Point2D.getMidpoint(VertexLocations[0], VertexLocations[1]),
+      exp: expectedColor,
     },
     {
       // Line {v3, v4}
-      location: Point2D.getMidpoint(VertexLocations[2], VertexLocations[3]),
-      color: expectedColor,
+      coord: Point2D.getMidpoint(VertexLocations[2], VertexLocations[3]),
+      exp: expectedColor,
     },
     {
       // Line {v5, v6}
-      location: Point2D.getMidpoint(VertexLocations[4], VertexLocations[5]),
-      color: expectedColor,
+      coord: Point2D.getMidpoint(VertexLocations[4], VertexLocations[5]),
+      exp: expectedColor,
     },
   ];
 }
@@ -141,13 +140,13 @@ function getPrimitiveRestartLineTestLocations(expectedColor: Uint8Array): TestLo
   return [
     {
       // Line {v1, v2}
-      location: Point2D.getMidpoint(VertexLocations[0], VertexLocations[1]),
-      color: expectedColor,
+      coord: Point2D.getMidpoint(VertexLocations[0], VertexLocations[1]),
+      exp: expectedColor,
     },
     {
       // Line {v5, v6}
-      location: Point2D.getMidpoint(VertexLocations[4], VertexLocations[5]),
-      color: expectedColor,
+      coord: Point2D.getMidpoint(VertexLocations[4], VertexLocations[5]),
+      exp: expectedColor,
     },
   ];
 }
@@ -157,13 +156,13 @@ function getLineStripTestLocations(expectedColor: Uint8Array): TestLocation[] {
   return [
     {
       // Line {v2, v3}
-      location: Point2D.getMidpoint(VertexLocations[1], VertexLocations[2]),
-      color: expectedColor,
+      coord: Point2D.getMidpoint(VertexLocations[1], VertexLocations[2]),
+      exp: expectedColor,
     },
     {
       // Line {v4, v5}
-      location: Point2D.getMidpoint(VertexLocations[3], VertexLocations[4]),
-      color: expectedColor,
+      coord: Point2D.getMidpoint(VertexLocations[3], VertexLocations[4]),
+      exp: expectedColor,
     },
   ];
 }
@@ -173,13 +172,13 @@ function getTriangleListTestLocations(expectedColor: Uint8Array): TestLocation[]
   return [
     {
       // Triangle {v1, v2, v3}
-      location: Point2D.getCentroid(VertexLocations[0], VertexLocations[1], VertexLocations[2]),
-      color: expectedColor,
+      coord: Point2D.getCentroid(VertexLocations[0], VertexLocations[1], VertexLocations[2]),
+      exp: expectedColor,
     },
     {
       // Triangle {v4, v5, v6}
-      location: Point2D.getCentroid(VertexLocations[3], VertexLocations[4], VertexLocations[5]),
-      color: expectedColor,
+      coord: Point2D.getCentroid(VertexLocations[3], VertexLocations[4], VertexLocations[5]),
+      exp: expectedColor,
     },
   ];
 }
@@ -189,13 +188,13 @@ function getTriangleStripTestLocations(expectedColor: Uint8Array): TestLocation[
   return [
     {
       // Triangle {v2, v3, v4}
-      location: Point2D.getCentroid(VertexLocations[1], VertexLocations[2], VertexLocations[3]),
-      color: expectedColor,
+      coord: Point2D.getCentroid(VertexLocations[1], VertexLocations[2], VertexLocations[3]),
+      exp: expectedColor,
     },
     {
       // Triangle {v3, v4, v5}
-      location: Point2D.getCentroid(VertexLocations[2], VertexLocations[3], VertexLocations[4]),
-      color: expectedColor,
+      coord: Point2D.getCentroid(VertexLocations[2], VertexLocations[3], VertexLocations[4]),
+      exp: expectedColor,
     },
   ];
 }
@@ -215,8 +214,8 @@ function getDefaultTestLocations({
     return locations.map((tl, i) => {
       if (i === locations.length - 1) {
         return {
-          location: tl.location,
-          color: kInvalidPixelColor,
+          coord: tl.coord,
+          exp: kInvalidPixelColor,
         };
       } else {
         return tl;
@@ -281,9 +280,9 @@ function generateVertexBuffer(vertexLocations: Point2D[]): Float32Array {
 }
 
 const kDefaultDrawCount = 6;
-class PrimitiveTopologyTest extends GPUTest {
+class PrimitiveTopologyTest extends AllFeaturesMaxLimitsGPUTest {
   makeAttachmentTexture(): GPUTexture {
-    return this.device.createTexture({
+    return this.createTextureTracked({
       format: kColorFormat,
       size: { width: kRTSize, height: kRTSize, depthOrArrayLayers: 1 },
       usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.COPY_SRC,
@@ -311,7 +310,8 @@ class PrimitiveTopologyTest extends GPUTest {
       colorAttachments: [
         {
           view: colorAttachment.createView(),
-          loadValue: { r: 0.0, g: 0.0, b: 0.0, a: 0.0 },
+          clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 0.0 },
+          loadOp: 'clear',
           storeOp: 'store',
         },
       ],
@@ -329,12 +329,13 @@ class PrimitiveTopologyTest extends GPUTest {
     // Output color is solid green.
     renderPass.setPipeline(
       this.device.createRenderPipeline({
+        layout: 'auto',
         vertex: {
           module: this.device.createShaderModule({
             code: `
-              [[stage(vertex)]] fn main(
-                [[location(0)]] pos : vec4<f32>
-                ) -> [[builtin(position)]] vec4<f32> {
+              @vertex fn main(
+                @location(0) pos : vec4<f32>
+                ) -> @builtin(position) vec4<f32> {
                 return pos;
               }`,
           }),
@@ -355,7 +356,7 @@ class PrimitiveTopologyTest extends GPUTest {
         fragment: {
           module: this.device.createShaderModule({
             code: `
-              [[stage(fragment)]] fn main() -> [[location(0)]] vec4<f32> {
+              @fragment fn main() -> @location(0) vec4<f32> {
                 return vec4<f32>(0.0, 1.0, 0.0, 1.0);
               }`,
           }),
@@ -407,18 +408,14 @@ class PrimitiveTopologyTest extends GPUTest {
       }
     }
 
-    renderPass.endPass();
+    renderPass.end();
 
     this.device.queue.submit([encoder.finish()]);
-
-    for (const testPixel of testLocations) {
-      this.expectSinglePixelIn2DTexture(
-        colorAttachment,
-        kColorFormat,
-        { x: testPixel.location.x, y: testPixel.location.y },
-        { exp: testPixel.color }
-      );
-    }
+    ttu.expectSinglePixelComparisonsAreOkInTexture(
+      this,
+      { texture: colorAttachment },
+      testLocations
+    );
   }
 }
 

@@ -1,23 +1,23 @@
-export const description = `
-  texture related validation tests for B2T copy and T2B copy and writeTexture.
-
-  Note: see api,validation,encoding,cmds,copyTextureToTexture:* for validation tests of T2T copy.
-
-  TODO: expand the tests below to 1d texture.
-`;
+export const description = `Texture related validation tests for B2T copy and T2B copy and writeTexture.`;
 
 import { makeTestGroup } from '../../../../common/framework/test_group.js';
 import { assert } from '../../../../common/util/util.js';
+import { kTextureDimensions, kTextureUsages } from '../../../capability_info.js';
+import { GPUConst } from '../../../constants.js';
 import {
+  getBlockInfoForColorTextureFormat,
+  getBlockInfoForSizedTextureFormat,
+  getBlockInfoForTextureFormat,
+  isDepthOrStencilTextureFormat,
   kColorTextureFormats,
   kSizedTextureFormats,
-  kTextureFormatInfo,
-  textureDimensionAndFormatCompatible,
-} from '../../../capability_info.js';
-import { GPUConst } from '../../../constants.js';
+  textureFormatAndDimensionPossiblyCompatible,
+} from '../../../format_info.js';
+import { kResourceStates } from '../../../gpu_test.js';
 import { align } from '../../../util/math.js';
 import { virtualMipSize } from '../../../util/texture/base.js';
 import { kImageCopyTypes } from '../../../util/texture/layout.js';
+import * as vtu from '../validation_test_utils.js';
 
 import {
   ImageCopyTest,
@@ -29,41 +29,37 @@ import {
 export const g = makeTestGroup(ImageCopyTest);
 
 g.test('valid')
-  .desc(`The texture must be valid and not destroyed.`)
+  .desc(
+    `
+Test that the texture must be valid and not destroyed.
+- for all copy methods
+- for all texture states
+- for various dimensions
+`
+  )
   .params(u =>
     u //
       .combine('method', kImageCopyTypes)
-      .combine('textureState', ['valid', 'destroyed', 'error'])
+      .combine('textureState', kResourceStates)
       .combineWithParams([
-        { depthOrArrayLayers: 1, dimension: '2d' },
-        { depthOrArrayLayers: 3, dimension: '2d' },
-        { depthOrArrayLayers: 3, dimension: '3d' },
+        { dimension: '1d', size: [4, 1, 1] },
+        { dimension: '2d', size: [4, 4, 1] },
+        { dimension: '2d', size: [4, 4, 3] },
+        { dimension: '3d', size: [4, 4, 3] },
       ] as const)
   )
-  .fn(async t => {
-    const { method, textureState, depthOrArrayLayers, dimension } = t.params;
+  .fn(t => {
+    const { method, textureState, size, dimension } = t.params;
 
-    // A valid texture.
-    let texture = t.device.createTexture({
-      size: { width: 4, height: 4, depthOrArrayLayers },
+    const texture = vtu.createTextureWithState(t, textureState, {
+      size,
       dimension,
       format: 'rgba8unorm',
       usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.COPY_DST,
     });
 
-    switch (textureState) {
-      case 'destroyed': {
-        texture.destroy();
-        break;
-      }
-      case 'error': {
-        texture = t.getErrorTexture();
-        break;
-      }
-    }
-
     const success = textureState === 'valid';
-    const submit = textureState === 'destroyed';
+    const submit = textureState !== 'invalid';
 
     t.testRun(
       { texture },
@@ -78,37 +74,70 @@ g.test('texture,device_mismatch')
   .paramsSubcasesOnly(u =>
     u.combine('method', kImageCopyTypes).combine('mismatched', [true, false])
   )
-  .unimplemented();
+  .beforeAllSubcases(t => t.usesMismatchedDevice())
+  .fn(t => {
+    const { method, mismatched } = t.params;
+    const sourceDevice = mismatched ? t.mismatchedDevice : t.device;
 
-g.test('buffer,device_mismatch')
-  .desc('Tests the image copies cannot be called with a buffer created from another device')
-  .paramsSubcasesOnly(u =>
-    u.combine('method', ['CopyB2T', 'CopyT2B'] as const).combine('mismatched', [true, false])
-  )
-  .unimplemented();
+    const texture = t.trackForCleanup(
+      sourceDevice.createTexture({
+        size: { width: 4, height: 4, depthOrArrayLayers: 1 },
+        format: 'rgba8unorm',
+        usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.COPY_DST,
+      })
+    );
+
+    t.testRun(
+      { texture },
+      { bytesPerRow: 0 },
+      { width: 0, height: 0, depthOrArrayLayers: 0 },
+      { dataSize: 1, method, success: !mismatched }
+    );
+  });
 
 g.test('usage')
-  .desc(`The texture must have the appropriate COPY_SRC/COPY_DST usage.`)
+  .desc(
+    `
+The texture must have the appropriate COPY_SRC/COPY_DST usage.
+- for various copy methods
+- for various dimensions
+- for various usages
+`
+  )
   .params(u =>
     u
       .combine('method', kImageCopyTypes)
       .combineWithParams([
-        { depthOrArrayLayers: 1, dimension: '2d' },
-        { depthOrArrayLayers: 3, dimension: '2d' },
-        { depthOrArrayLayers: 3, dimension: '3d' },
+        { dimension: '1d', size: [4, 1, 1] },
+        { dimension: '2d', size: [4, 4, 1] },
+        { dimension: '2d', size: [4, 4, 3] },
+        { dimension: '3d', size: [4, 4, 3] },
       ] as const)
       .beginSubcases()
-      .combine('usage', [
-        GPUConst.TextureUsage.COPY_SRC | GPUConst.TextureUsage.TEXTURE_BINDING,
-        GPUConst.TextureUsage.COPY_DST | GPUConst.TextureUsage.TEXTURE_BINDING,
-        GPUConst.TextureUsage.COPY_SRC | GPUConst.TextureUsage.COPY_DST,
-      ])
+      // If usage0 and usage1 are the same, the usage being test is a single usage. Otherwise, it's
+      // a combined usage.
+      .combine('usage0', kTextureUsages)
+      .combine('usage1', kTextureUsages)
+      // RENDER_ATTACHMENT is not valid with 1d and 3d textures.
+      .unless(
+        ({ usage0, usage1, dimension }) =>
+          ((usage0 | usage1) & GPUConst.TextureUsage.RENDER_ATTACHMENT) !== 0 &&
+          (dimension === '1d' || dimension === '3d')
+      )
+      .unless(({ usage0, usage1 }) => {
+        // TRANSIENT_ATTACHMENT is only valid when combined with RENDER_ATTACHMENT.
+        return (
+          usage0 === GPUConst.TextureUsage.TRANSIENT_ATTACHMENT ||
+          usage1 === GPUConst.TextureUsage.TRANSIENT_ATTACHMENT
+        );
+      })
   )
-  .fn(async t => {
-    const { usage, method, depthOrArrayLayers, dimension } = t.params;
+  .fn(t => {
+    const { usage0, usage1, method, size, dimension } = t.params;
 
-    const texture = t.device.createTexture({
-      size: { width: 4, height: 4, depthOrArrayLayers },
+    const usage = usage0 | usage1;
+    const texture = t.createTextureTracked({
+      size,
       dimension,
       format: 'rgba8unorm',
       usage,
@@ -129,7 +158,13 @@ g.test('usage')
 
 g.test('sample_count')
   .desc(
-    `Multisampled textures cannot be copied. Note that we don't test 2D array and 3D textures because multisample is not supported for 2D array and 3D texture creation`
+    `
+Test that multisampled textures cannot be copied.
+- for various copy methods
+- multisampled or not
+
+Note: we don't test 1D, 2D array and 3D textures because multisample is not supported them.
+`
   )
   .params(u =>
     u //
@@ -137,14 +172,18 @@ g.test('sample_count')
       .beginSubcases()
       .combine('sampleCount', [1, 4])
   )
-  .fn(async t => {
+  .fn(t => {
     const { sampleCount, method } = t.params;
 
-    const texture = t.device.createTexture({
+    const texture = t.createTextureTracked({
       size: { width: 4, height: 4, depthOrArrayLayers: 1 },
       sampleCount,
       format: 'rgba8unorm',
-      usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.COPY_DST | GPUTextureUsage.TEXTURE_BINDING,
+      usage:
+        GPUTextureUsage.COPY_SRC |
+        GPUTextureUsage.COPY_DST |
+        GPUTextureUsage.TEXTURE_BINDING |
+        GPUTextureUsage.RENDER_ATTACHMENT,
     });
 
     const success = sampleCount === 1;
@@ -158,24 +197,33 @@ g.test('sample_count')
   });
 
 g.test('mip_level')
-  .desc(`The mipLevel of the copy must be in range of the texture.`)
+  .desc(
+    `
+Test that the mipLevel of the copy must be in range of the texture.
+- for various copy methods
+- for various dimensions
+- for several mipLevelCounts
+- for several target/source mipLevels`
+  )
   .params(u =>
     u
       .combine('method', kImageCopyTypes)
       .combineWithParams([
-        { depthOrArrayLayers: 1, dimension: '2d' },
-        { depthOrArrayLayers: 3, dimension: '2d' },
-        { depthOrArrayLayers: 3, dimension: '3d' },
+        { dimension: '1d', size: [32, 1, 1] },
+        { dimension: '2d', size: [32, 32, 1] },
+        { dimension: '2d', size: [32, 32, 3] },
+        { dimension: '3d', size: [32, 32, 3] },
       ] as const)
       .beginSubcases()
-      .combine('mipLevelCount', [3, 5])
-      .combine('mipLevel', [3, 4])
+      .combine('mipLevelCount', [1, 3, 5])
+      .unless(p => p.dimension === '1d' && p.mipLevelCount !== 1)
+      .combine('mipLevel', [0, 1, 3, 4])
   )
-  .fn(async t => {
-    const { mipLevelCount, mipLevel, method, depthOrArrayLayers, dimension } = t.params;
+  .fn(t => {
+    const { mipLevelCount, mipLevel, method, size, dimension } = t.params;
 
-    const texture = t.device.createTexture({
-      size: { width: 32, height: 32, depthOrArrayLayers },
+    const texture = t.createTextureTracked({
+      size,
       dimension,
       mipLevelCount,
       format: 'rgba8unorm',
@@ -193,20 +241,33 @@ g.test('mip_level')
   });
 
 g.test('format')
-  .desc(`Test that it must be a full copy if the texture's format is depth/stencil format`)
+  .desc(
+    `
+Test the copy must be a full subresource if the texture's format is depth/stencil format.
+- for various copy methods
+- for various dimensions
+- for all sized formats
+- for a couple target/source mipLevels
+- for some modifier (or not) for the full copy size
+`
+  )
   .params(u =>
     u //
       .combine('method', kImageCopyTypes)
       .combineWithParams([
+        { depthOrArrayLayers: 1, dimension: '1d' },
         { depthOrArrayLayers: 1, dimension: '2d' },
         { depthOrArrayLayers: 3, dimension: '2d' },
         { depthOrArrayLayers: 32, dimension: '3d' },
       ] as const)
       .combine('format', kSizedTextureFormats)
-      .filter(({ dimension, format }) => textureDimensionAndFormatCompatible(dimension, format))
+      .filter(({ dimension, format }) =>
+        textureFormatAndDimensionPossiblyCompatible(dimension, format)
+      )
       .filter(formatCopyableWithMethod)
       .beginSubcases()
       .combine('mipLevel', [0, 2])
+      .unless(p => p.dimension === '1d' && p.mipLevel !== 0)
       .combine('copyWidthModifier', [0, -1])
       .combine('copyHeightModifier', [0, -1])
       // If the texture has multiple depth/array slices and it is not a 3D texture, which means it is an array texture,
@@ -216,7 +277,7 @@ g.test('format')
       // need to examine depth dimension via copyDepthModifier to determine whether it is a full copy for a 3D texture.
       .expand('copyDepthModifier', ({ dimension: d }) => (d === '3d' ? [0, -1] : [0]))
   )
-  .fn(async t => {
+  .fn(t => {
     const {
       method,
       depthOrArrayLayers,
@@ -227,32 +288,32 @@ g.test('format')
       copyHeightModifier,
       copyDepthModifier,
     } = t.params;
-
-    const info = kTextureFormatInfo[format];
-    await t.selectDeviceOrSkipTestCase(info.feature);
+    t.skipIfTextureFormatNotSupported(format);
+    t.skipIfTextureFormatAndDimensionNotCompatible(format, dimension);
+    const info = getBlockInfoForSizedTextureFormat(format);
 
     const size = { width: 32 * info.blockWidth, height: 32 * info.blockHeight, depthOrArrayLayers };
-    const texture = t.device.createTexture({
+    if (dimension === '1d') {
+      size.height = 1;
+    }
+
+    const texture = t.createTextureTracked({
       size,
       dimension,
       format,
-      mipLevelCount: 5,
+      mipLevelCount: dimension === '1d' ? 1 : 5,
       usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.COPY_DST,
     });
 
     let success = true;
     if (
-      (info.depth || info.stencil) &&
+      isDepthOrStencilTextureFormat(format) &&
       (copyWidthModifier !== 0 || copyHeightModifier !== 0 || copyDepthModifier !== 0)
     ) {
       success = false;
     }
 
-    const levelSize = virtualMipSize(
-      dimension,
-      [size.width, size.height, size.depthOrArrayLayers],
-      mipLevel
-    );
+    const levelSize = virtualMipSize(dimension, size, mipLevel);
     const copySize = [
       levelSize[0] + copyWidthModifier * info.blockWidth,
       levelSize[1] + copyHeightModifier * info.blockHeight,
@@ -273,7 +334,15 @@ g.test('format')
   });
 
 g.test('origin_alignment')
-  .desc(`Copy origin must be aligned to block size.`)
+  .desc(
+    `
+Test that the texture copy origin must be aligned to the format's block size.
+- for various copy methods
+- for all color formats (depth stencil formats require a full copy)
+- for X, Y and Z coordinates
+- for various values for that coordinate depending on the block size
+`
+  )
   .params(u =>
     u
       .combine('method', kImageCopyTypes)
@@ -281,27 +350,25 @@ g.test('origin_alignment')
       .combine('format', kColorTextureFormats)
       .filter(formatCopyableWithMethod)
       .combineWithParams([
+        { depthOrArrayLayers: 1, dimension: '1d' },
         { depthOrArrayLayers: 1, dimension: '2d' },
         { depthOrArrayLayers: 3, dimension: '2d' },
         { depthOrArrayLayers: 3, dimension: '3d' },
       ] as const)
-      .filter(({ dimension, format }) => textureDimensionAndFormatCompatible(dimension, format))
+      .filter(({ dimension, format }) =>
+        textureFormatAndDimensionPossiblyCompatible(dimension, format)
+      )
       .beginSubcases()
       .combine('coordinateToTest', ['x', 'y', 'z'] as const)
+      .unless(p => p.dimension === '1d' && p.coordinateToTest !== 'x')
       .expand('valueToCoordinate', texelBlockAlignmentTestExpanderForValueToCoordinate)
   )
-  .fn(async t => {
-    const {
-      valueToCoordinate,
-      coordinateToTest,
-      format,
-      method,
-      depthOrArrayLayers,
-      dimension,
-    } = t.params;
-    const info = kTextureFormatInfo[format];
-    await t.selectDeviceOrSkipTestCase(info.feature);
-
+  .fn(t => {
+    const { valueToCoordinate, coordinateToTest, format, method, depthOrArrayLayers, dimension } =
+      t.params;
+    t.skipIfTextureFormatNotSupported(format);
+    t.skipIfTextureFormatAndDimensionNotCompatible(format, dimension);
+    const info = getBlockInfoForTextureFormat(format);
     const size = { width: 0, height: 0, depthOrArrayLayers };
     const origin = { x: 0, y: 0, z: 0 };
     let success = true;
@@ -327,62 +394,37 @@ g.test('origin_alignment')
     });
   });
 
-g.test('1d')
-  .desc(`1d texture copies must have height=depth=1.`)
-  .params(u =>
-    u
-      .combine('method', kImageCopyTypes)
-      .beginSubcases()
-      .combine('width', [0, 1])
-      .combineWithParams([
-        { height: 1, depthOrArrayLayers: 1 },
-        { height: 1, depthOrArrayLayers: 0 },
-        { height: 1, depthOrArrayLayers: 2 },
-        { height: 0, depthOrArrayLayers: 1 },
-        { height: 2, depthOrArrayLayers: 1 },
-      ])
-  )
-  .fn(async t => {
-    const { method, width, height, depthOrArrayLayers } = t.params;
-    const size = { width, height, depthOrArrayLayers };
-
-    const texture = t.device.createTexture({
-      size: { width: 2, height: 1, depthOrArrayLayers: 1 },
-      dimension: '1d',
-      format: 'rgba8unorm',
-      usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.COPY_DST,
-    });
-
-    // For 1d textures we require copyHeight and copyDepth to be 1,
-    // copyHeight or copyDepth being 0 should cause a validation error.
-    const success = size.height === 1 && size.depthOrArrayLayers === 1;
-
-    t.testRun({ texture }, { bytesPerRow: 256, rowsPerImage: 4 }, size, {
-      dataSize: 16,
-      method,
-      success,
-    });
-  });
-
 g.test('size_alignment')
-  .desc(`Copy size must be aligned to block size.`)
+  .desc(
+    `
+Test that the copy size must be aligned to the texture's format's block size.
+- for various copy methods
+- for all formats (depth-stencil formats require a full copy)
+- for all texture dimensions
+- for the size's parameters to test (width / height / depth)
+- for various values for that copy size parameters, depending on the block size
+`
+  )
   .params(u =>
     u
       .combine('method', kImageCopyTypes)
       // No need to test depth/stencil formats because its copy size must be subresource's size, which is already aligned with block size.
       .combine('format', kColorTextureFormats)
       .filter(formatCopyableWithMethod)
-      .combine('dimension', ['2d', '3d'] as const)
-      .filter(({ dimension, format }) => textureDimensionAndFormatCompatible(dimension, format))
+      .combine('dimension', kTextureDimensions)
+      .filter(({ dimension, format }) =>
+        textureFormatAndDimensionPossiblyCompatible(dimension, format)
+      )
       .beginSubcases()
       .combine('coordinateToTest', ['width', 'height', 'depthOrArrayLayers'] as const)
+      .unless(p => p.dimension === '1d' && p.coordinateToTest !== 'width')
       .expand('valueToCoordinate', texelBlockAlignmentTestExpanderForValueToCoordinate)
   )
-  .fn(async t => {
+  .fn(t => {
     const { valueToCoordinate, coordinateToTest, dimension, format, method } = t.params;
-    const info = kTextureFormatInfo[format];
-    await t.selectDeviceOrSkipTestCase(info.feature);
-
+    t.skipIfTextureFormatNotSupported(format);
+    t.skipIfTextureFormatAndDimensionNotCompatible(format, dimension);
+    const info = getBlockInfoForColorTextureFormat(format);
     const size = { width: 0, height: 0, depthOrArrayLayers: 0 };
     const origin = { x: 0, y: 0, z: 0 };
     let success = true;
@@ -414,19 +456,29 @@ g.test('size_alignment')
   });
 
 g.test('copy_rectangle')
-  .desc(`The max corner of the copy rectangle (origin+copySize) must be inside the texture.`)
+  .desc(
+    `
+Test that the max corner of the copy rectangle (origin+copySize) must be inside the texture.
+- for various copy methods
+- for all dimensions
+- for the X, Y and Z dimensions
+- for various origin and copy size values (and texture sizes)
+- for various mip levels
+`
+  )
   .params(u =>
     u
       .combine('method', kImageCopyTypes)
-      .combine('dimension', ['2d', '3d'] as const)
+      .combine('dimension', kTextureDimensions)
       .beginSubcases()
       .combine('originValue', [7, 8])
       .combine('copySizeValue', [7, 8])
       .combine('textureSizeValue', [14, 15])
       .combine('mipLevel', [0, 2])
       .combine('coordinateToTest', [0, 1, 2] as const)
+      .unless(p => p.dimension === '1d' && (p.coordinateToTest !== 0 || p.mipLevel !== 0))
   )
-  .fn(async t => {
+  .fn(t => {
     const {
       originValue,
       copySizeValue,
@@ -437,11 +489,15 @@ g.test('copy_rectangle')
       dimension,
     } = t.params;
     const format = 'rgba8unorm';
-    const info = kTextureFormatInfo[format];
+    const info = getBlockInfoForColorTextureFormat(format);
 
     const origin = [0, 0, 0];
     const copySize = [0, 0, 0];
     const textureSize = { width: 16 << mipLevel, height: 16 << mipLevel, depthOrArrayLayers: 16 };
+    if (dimension === '1d') {
+      textureSize.height = 1;
+      textureSize.depthOrArrayLayers = 1;
+    }
     const success = originValue + copySizeValue <= textureSizeValue;
 
     origin[coordinateToTest] = originValue;
@@ -462,10 +518,10 @@ g.test('copy_rectangle')
       }
     }
 
-    const texture = t.device.createTexture({
+    const texture = t.createTextureTracked({
       size: textureSize,
       dimension,
-      mipLevelCount: 3,
+      mipLevelCount: dimension === '1d' ? 1 : 3,
       format,
       usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.COPY_DST,
     });

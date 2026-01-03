@@ -1,7 +1,7 @@
 // Note: Types ensure every field is specified.
 
 /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
-function checkType<T>(x: T) {}
+function checkType<T>(_: T) {}
 
 const BufferUsage = {
   MAP_READ: 0x0001,
@@ -15,18 +15,24 @@ const BufferUsage = {
   INDIRECT: 0x0100,
   QUERY_RESOLVE: 0x0200,
 } as const;
-checkType<Omit<GPUBufferUsage, '__brand'>>(BufferUsage);
+checkType<typeof GPUBufferUsage>(BufferUsage);
+
+declare global {
+  // MAINTENANCE_TODO: Remove this once TRANSIENT_ATTACHMENT is added to @webgpu/types
+  interface GPUTextureUsage {
+    readonly TRANSIENT_ATTACHMENT: GPUFlagsConstant;
+  }
+}
 
 const TextureUsage = {
   COPY_SRC: 0x01,
   COPY_DST: 0x02,
   TEXTURE_BINDING: 0x04,
-  SAMPLED: 0x04,
   STORAGE_BINDING: 0x08,
-  STORAGE: 0x08,
   RENDER_ATTACHMENT: 0x10,
+  TRANSIENT_ATTACHMENT: 0x20,
 } as const;
-checkType<Omit<GPUTextureUsage, '__brand'>>(TextureUsage);
+checkType<typeof GPUTextureUsage>(TextureUsage);
 
 const ColorWrite = {
   RED: 0x1,
@@ -35,20 +41,20 @@ const ColorWrite = {
   ALPHA: 0x8,
   ALL: 0xf,
 } as const;
-checkType<Omit<GPUColorWrite, '__brand'>>(ColorWrite);
+checkType<typeof GPUColorWrite>(ColorWrite);
 
 const ShaderStage = {
   VERTEX: 0x1,
   FRAGMENT: 0x2,
   COMPUTE: 0x4,
 } as const;
-checkType<Omit<GPUShaderStage, '__brand'>>(ShaderStage);
+checkType<typeof GPUShaderStage>(ShaderStage);
 
 const MapMode = {
   READ: 0x1,
   WRITE: 0x2,
 } as const;
-checkType<Omit<GPUMapMode, '__brand'>>(MapMode);
+checkType<typeof GPUMapMode>(MapMode);
 
 export const GPUConst = {
   BufferUsage,
@@ -58,73 +64,10 @@ export const GPUConst = {
   MapMode,
 } as const;
 
-/** Base limits, per spec. */
-export const DefaultLimits = {
-  maxTextureDimension1D: 8192,
-  maxTextureDimension2D: 8192,
-  maxTextureDimension3D: 2048,
-  maxTextureArrayLayers: 256,
+export const kMaxUnsignedLongValue = 4294967295;
+export const kMaxUnsignedLongLongValue = Number.MAX_SAFE_INTEGER;
 
-  maxBindGroups: 4,
-  maxDynamicUniformBuffersPerPipelineLayout: 8,
-  maxDynamicStorageBuffersPerPipelineLayout: 4,
-  maxSampledTexturesPerShaderStage: 16,
-  maxSamplersPerShaderStage: 16,
-  maxStorageBuffersPerShaderStage: 8,
-  maxStorageTexturesPerShaderStage: 4,
-  maxUniformBuffersPerShaderStage: 12,
-
-  maxUniformBufferBindingSize: 65536,
-  maxStorageBufferBindingSize: 134217728,
-  minUniformBufferOffsetAlignment: 256,
-  minStorageBufferOffsetAlignment: 256,
-
-  maxVertexBuffers: 8,
-  maxVertexAttributes: 16,
-  maxVertexBufferArrayStride: 2048,
-  maxInterStageShaderComponents: 60,
-
-  maxComputeWorkgroupStorageSize: 16352,
-  maxComputeInvocationsPerWorkgroup: 256,
-  maxComputeWorkgroupSizeX: 256,
-  maxComputeWorkgroupSizeY: 256,
-  maxComputeWorkgroupSizeZ: 64,
-  maxComputeWorkgroupsPerDimension: 65535,
-};
-checkType<Omit<GPUSupportedLimits, '__brand'>>(DefaultLimits);
-
-const kMaxUnsignedLongValue = 4294967295;
-const kMaxUnsignedLongLongValue = Number.MAX_SAFE_INTEGER;
-export const LimitMaximum = {
-  maxTextureDimension1D: kMaxUnsignedLongValue,
-  maxTextureDimension2D: kMaxUnsignedLongValue,
-  maxTextureDimension3D: kMaxUnsignedLongValue,
-  maxTextureArrayLayers: kMaxUnsignedLongValue,
-
-  maxBindGroups: kMaxUnsignedLongValue,
-  maxDynamicUniformBuffersPerPipelineLayout: kMaxUnsignedLongValue,
-  maxDynamicStorageBuffersPerPipelineLayout: kMaxUnsignedLongValue,
-  maxSampledTexturesPerShaderStage: kMaxUnsignedLongValue,
-  maxSamplersPerShaderStage: kMaxUnsignedLongValue,
-  maxStorageBuffersPerShaderStage: kMaxUnsignedLongValue,
-  maxStorageTexturesPerShaderStage: kMaxUnsignedLongValue,
-  maxUniformBuffersPerShaderStage: kMaxUnsignedLongValue,
-
-  maxUniformBufferBindingSize: kMaxUnsignedLongLongValue,
-  maxStorageBufferBindingSize: kMaxUnsignedLongLongValue,
-  minUniformBufferOffsetAlignment: kMaxUnsignedLongValue,
-  minStorageBufferOffsetAlignment: kMaxUnsignedLongValue,
-
-  maxVertexBuffers: kMaxUnsignedLongValue,
-  maxVertexAttributes: kMaxUnsignedLongValue,
-  maxVertexBufferArrayStride: kMaxUnsignedLongValue,
-  maxInterStageShaderComponents: kMaxUnsignedLongValue,
-
-  maxComputeWorkgroupStorageSize: kMaxUnsignedLongValue,
-  maxComputeInvocationsPerWorkgroup: kMaxUnsignedLongValue,
-  maxComputeWorkgroupSizeX: kMaxUnsignedLongValue,
-  maxComputeWorkgroupSizeY: kMaxUnsignedLongValue,
-  maxComputeWorkgroupSizeZ: kMaxUnsignedLongValue,
-  maxComputeWorkgroupsPerDimension: kMaxUnsignedLongValue,
-};
-checkType<Omit<GPUSupportedLimits, '__brand'>>(LimitMaximum);
+export const kInterpolationSampling = ['center', 'centroid', 'sample', 'first', 'either'] as const;
+export const kInterpolationType = ['perspective', 'linear', 'flat'] as const;
+export type InterpolationType = (typeof kInterpolationType)[number];
+export type InterpolationSampling = (typeof kInterpolationSampling)[number];

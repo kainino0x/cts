@@ -1,7 +1,30 @@
 /**
 * AUTO-GENERATED - DO NOT EDIT. Source: https://github.com/gpuweb/cts
 **/import { unreachable } from '../../common/util/util.js';
-export const allCanvasTypes = ['onscreen', 'offscreen'];
+// TESTING_TODO: This should expand to more canvas types (which will enhance a bunch of tests):
+// - canvas element not in dom
+// - canvas element in dom
+// - offscreen canvas from transferControlToOffscreen from canvas not in dom
+// - offscreen canvas from transferControlToOffscreen from canvas in dom
+// - offscreen canvas from new OffscreenCanvas
+export const kAllCanvasTypes = ['onscreen', 'offscreen'];
+
+
+
+
+
+
+
+/** Valid contextId for HTMLCanvasElement/OffscreenCanvas,
+ *  spec: https://html.spec.whatwg.org/multipage/canvas.html#dom-canvas-getcontext
+ */
+export const kValidCanvasContextIds = [
+'2d',
+'bitmaprenderer',
+'webgl',
+'webgl2',
+'webgpu'];
+
 
 
 /** Create HTMLCanvas/OffscreenCanvas. */
@@ -11,20 +34,21 @@ canvasType,
 width,
 height)
 {
-  let canvas;
   if (canvasType === 'onscreen') {
     if (typeof document !== 'undefined') {
-      canvas = createOnscreenCanvas(test, width, height);
+      return createOnscreenCanvas(test, width, height);
     } else {
       test.skip('Cannot create HTMLCanvasElement');
     }
   } else if (canvasType === 'offscreen') {
-    canvas = createOffscreenCanvas(test, width, height);
+    if (typeof OffscreenCanvas !== 'undefined') {
+      return createOffscreenCanvas(test, width, height);
+    } else {
+      test.skip('Cannot create an OffscreenCanvas');
+    }
   } else {
     unreachable();
   }
-
-  return canvas;
 }
 
 /** Create HTMLCanvasElement. */

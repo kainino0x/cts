@@ -6,17 +6,42 @@ const items = [
 globalThis.navigator.gpu,
 globalThis.GPU,
 globalThis.GPUAdapter,
-globalThis.GPUDevice,
+globalThis.GPUAdapterInfo,
+globalThis.GPUBindGroup,
+globalThis.GPUBindGroupLayout,
 globalThis.GPUBuffer,
 globalThis.GPUBufferUsage,
-globalThis.GPUCommandEncoder,
+globalThis.GPUCanvasContext,
+globalThis.GPUColorWrite,
 globalThis.GPUCommandBuffer,
+globalThis.GPUCommandEncoder,
+globalThis.GPUCompilationInfo,
+globalThis.GPUCompilationMessage,
 globalThis.GPUComputePassEncoder,
-globalThis.GPURenderPipeline,
+globalThis.GPUComputePipeline,
+globalThis.GPUDevice,
 globalThis.GPUDeviceLostInfo,
-globalThis.GPUValidationError
-// Need to test the rest of the interfaces.
-];
+globalThis.GPUError,
+globalThis.GPUExternalTexture,
+globalThis.GPUMapMode,
+globalThis.GPUOutOfMemoryError,
+globalThis.GPUPipelineLayout,
+globalThis.GPUQuerySet,
+globalThis.GPUQueue,
+globalThis.GPURenderBundle,
+globalThis.GPURenderBundleEncoder,
+globalThis.GPURenderPassEncoder,
+globalThis.GPURenderPipeline,
+globalThis.GPUSampler,
+globalThis.GPUShaderModule,
+globalThis.GPUShaderStage,
+globalThis.GPUSupportedLimits,
+globalThis.GPUTexture,
+globalThis.GPUTextureUsage,
+globalThis.GPUTextureView,
+globalThis.GPUUncapturedErrorEvent,
+globalThis.GPUValidationError];
+
 
 for (const item of items) {
   if (globalThis.isSecureContext) {

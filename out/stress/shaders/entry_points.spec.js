@@ -8,26 +8,26 @@ import { GPUTest } from '../../webgpu/gpu_test.js';
 
 export const g = makeTestGroup(GPUTest);
 
-const makeCode = numEntryPoints => {
+const makeCode = (numEntryPoints) => {
   const kBaseCode = `
-      struct Buffer { data: u32; };
-      [[group(0), binding(0)]] var<storage, read_write> buffer: Buffer;
+      struct Buffer { data: u32, };
+      @group(0) @binding(0) var<storage, read_write> buffer: Buffer;
       fn main() { buffer.data = buffer.data + 1u;  }
       `;
-  const makeEntryPoint = i => `
-      [[stage(compute), workgroup_size(1)]] fn computeMain${i}() { main(); }
+  const makeEntryPoint = (i) => `
+      @compute @workgroup_size(1) fn computeMain${i}() { main(); }
       `;
   return kBaseCode + range(numEntryPoints, makeEntryPoint).join('');
 };
 
 g.test('many').
 desc(
-`Tests compilation and usage of shaders with a huge number of entry points.
+  `Tests compilation and usage of shaders with a huge number of entry points.
 
 TODO: There may be a normative limit to the number of entry points allowed in
-a shader, in which case this would become a validation test instead.`).
-
-fn(async t => {
+a shader, in which case this would become a validation test instead.`
+).
+fn((t) => {
   const data = new Uint32Array([0]);
   const buffer = t.makeBufferWithContents(data, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC);
 
@@ -36,41 +36,41 @@ fn(async t => {
   const kNumEntryPoints = 200;
 
   const shader = t.device.createShaderModule({
-    code: makeCode(kNumEntryPoints) });
-
+    code: makeCode(kNumEntryPoints)
+  });
 
   const layout = t.device.createBindGroupLayout({
     entries: [
     {
       binding: 0,
       visibility: GPUShaderStage.COMPUTE,
-      buffer: { type: 'storage' } }] });
+      buffer: { type: 'storage' }
+    }]
 
-
-
+  });
   const pipelineLayout = t.device.createPipelineLayout({
-    bindGroupLayouts: [layout] });
-
+    bindGroupLayouts: [layout]
+  });
   const bindGroup = t.device.createBindGroup({
     layout,
-    entries: [{ binding: 0, resource: { buffer } }] });
-
+    entries: [{ binding: 0, resource: { buffer } }]
+  });
 
   const encoder = t.device.createCommandEncoder();
-  range(kNumEntryPoints, i => {
+  range(kNumEntryPoints, (i) => {
     const pipeline = t.device.createComputePipeline({
       layout: pipelineLayout,
       compute: {
         module: shader,
-        entryPoint: `computeMain${i}` } });
-
-
+        entryPoint: `computeMain${i}`
+      }
+    });
 
     const pass = encoder.beginComputePass();
     pass.setPipeline(pipeline);
     pass.setBindGroup(0, bindGroup);
-    pass.dispatch(1);
-    pass.endPass();
+    pass.dispatchWorkgroups(1);
+    pass.end();
   });
 
   t.device.queue.submit([encoder.finish()]);

@@ -1,22 +1,24 @@
 /**
 * AUTO-GENERATED - DO NOT EDIT. Source: https://github.com/gpuweb/cts
-**/import { assert } from '../../../../../common/util/util.js';import { virtualMipSize } from '../../../../util/texture/base.js';
+**/import { assert } from '../../../../../common/util/util.js';import { isDepthTextureFormat, isStencilTextureFormat } from '../../../../format_info.js';
+import { virtualMipSize } from '../../../../util/texture/base.js';
+
 
 
 function makeFullscreenVertexModule(device) {
   return device.createShaderModule({
     code: `
-    [[stage(vertex)]]
-    fn main([[builtin(vertex_index)]] VertexIndex : u32)
-         -> [[builtin(position)]] vec4<f32> {
+    @vertex
+    fn main(@builtin(vertex_index) VertexIndex : u32)
+         -> @builtin(position) vec4<f32> {
       var pos : array<vec2<f32>, 3> = array<vec2<f32>, 3>(
         vec2<f32>(-1.0, -3.0),
         vec2<f32>( 3.0,  1.0),
         vec2<f32>(-1.0,  1.0));
       return vec4<f32>(pos[VertexIndex], 0.0, 1.0);
     }
-    ` });
-
+    `
+  });
 }
 
 function getDepthTestEqualPipeline(
@@ -26,37 +28,39 @@ sampleCount,
 expected)
 {
   return t.device.createRenderPipeline({
+    layout: 'auto',
     vertex: {
       entryPoint: 'main',
-      module: makeFullscreenVertexModule(t.device) },
-
+      module: makeFullscreenVertexModule(t.device)
+    },
     fragment: {
       entryPoint: 'main',
       module: t.device.createShaderModule({
         code: `
         struct Outputs {
-          [[builtin(frag_depth)]] FragDepth : f32;
-          [[location(0)]] outSuccess : f32;
+          @builtin(frag_depth) FragDepth : f32,
+          @location(0) outSuccess : f32,
         };
 
-        [[stage(fragment)]]
+        @fragment
         fn main() -> Outputs {
           var output : Outputs;
           output.FragDepth = f32(${expected});
           output.outSuccess = 1.0;
           return output;
         }
-        ` }),
-
-      targets: [{ format: 'r8unorm' }] },
-
+        `
+      }),
+      targets: [{ format: 'r8unorm' }]
+    },
     depthStencil: {
       format,
-      depthCompare: 'equal' },
-
+      depthCompare: 'equal',
+      depthWriteEnabled: false
+    },
     primitive: { topology: 'triangle-list' },
-    multisample: { count: sampleCount } });
-
+    multisample: { count: sampleCount }
+  });
 }
 
 function getStencilTestEqualPipeline(
@@ -65,30 +69,33 @@ format,
 sampleCount)
 {
   return t.device.createRenderPipeline({
+    layout: 'auto',
     vertex: {
       entryPoint: 'main',
-      module: makeFullscreenVertexModule(t.device) },
-
+      module: makeFullscreenVertexModule(t.device)
+    },
     fragment: {
       entryPoint: 'main',
       module: t.device.createShaderModule({
         code: `
-        [[stage(fragment)]]
-        fn main() -> [[location(0)]] f32 {
+        @fragment
+        fn main() -> @location(0) f32 {
           return 1.0;
         }
-        ` }),
-
-      targets: [{ format: 'r8unorm' }] },
-
+        `
+      }),
+      targets: [{ format: 'r8unorm' }]
+    },
     depthStencil: {
+      depthWriteEnabled: false,
+      depthCompare: 'always',
       format,
       stencilFront: { compare: 'equal' },
-      stencilBack: { compare: 'equal' } },
-
+      stencilBack: { compare: 'equal' }
+    },
     primitive: { topology: 'triangle-list' },
-    multisample: { count: sampleCount } });
-
+    multisample: { count: sampleCount }
+  });
 }
 
 const checkContents = (
@@ -101,52 +108,55 @@ subresourceRange) =>
 {
   assert(params.dimension === '2d');
   for (const viewDescriptor of t.generateTextureViewDescriptorsForRendering(
-  params.aspect,
-  subresourceRange))
-  {
+    'all',
+    subresourceRange
+  )) {
     assert(viewDescriptor.baseMipLevel !== undefined);
     const [width, height] = virtualMipSize(
-    params.dimension,
-    [t.textureWidth, t.textureHeight, 1],
-    viewDescriptor.baseMipLevel);
+      params.dimension,
+      [t.textureWidth, t.textureHeight, 1],
+      viewDescriptor.baseMipLevel
+    );
 
-
-    const renderTexture = t.device.createTexture({
+    const renderTexture = t.createTextureTracked({
       size: [width, height, 1],
       format: 'r8unorm',
       usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.COPY_SRC,
-      sampleCount: params.sampleCount });
-
+      sampleCount: params.sampleCount
+    });
 
     let resolveTexture = undefined;
     let resolveTarget = undefined;
     if (params.sampleCount > 1) {
-      resolveTexture = t.device.createTexture({
+      resolveTexture = t.createTextureTracked({
         size: [width, height, 1],
         format: 'r8unorm',
-        usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.COPY_SRC });
-
+        usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.COPY_SRC
+      });
       resolveTarget = resolveTexture.createView();
     }
 
-    const commandEncoder = t.device.createCommandEncoder();
+    const commandEncoder = t.device.createCommandEncoder({ label: 'checkContents' });
+    commandEncoder.pushDebugGroup('checkContentsWithDepthStencil');
+
     const pass = commandEncoder.beginRenderPass({
       colorAttachments: [
       {
         view: renderTexture.createView(),
         resolveTarget,
-        loadValue: [0, 0, 0, 0],
-        storeOp: 'store' }],
-
+        clearValue: [0, 0, 0, 0],
+        loadOp: 'load',
+        storeOp: 'store'
+      }],
 
       depthStencilAttachment: {
         view: texture.createView(viewDescriptor),
-        depthStoreOp: 'store',
-        depthLoadValue: 'load',
-        stencilStoreOp: 'store',
-        stencilLoadValue: 'load' } });
-
-
+        depthLoadOp: isDepthTextureFormat(params.format) ? 'load' : undefined,
+        depthStoreOp: isDepthTextureFormat(params.format) ? 'store' : undefined,
+        stencilLoadOp: isStencilTextureFormat(params.format) ? 'load' : undefined,
+        stencilStoreOp: isStencilTextureFormat(params.format) ? 'store' : undefined
+      }
+    });
 
     switch (type) {
       case 'depth':{
@@ -154,8 +164,8 @@ subresourceRange) =>
           assert(expectedDepth !== undefined);
 
           pass.setPipeline(
-          getDepthTestEqualPipeline(t, params.format, params.sampleCount, expectedDepth));
-
+            getDepthTestEqualPipeline(t, params.format, params.sampleCount, expectedDepth)
+          );
           break;
         }
 
@@ -166,18 +176,19 @@ subresourceRange) =>
           pass.setPipeline(getStencilTestEqualPipeline(t, params.format, params.sampleCount));
           pass.setStencilReference(expectedStencil);
           break;
-        }}
-
+        }
+    }
 
     pass.draw(3);
-    pass.endPass();
+    pass.end();
 
+    commandEncoder.popDebugGroup();
     t.queue.submit([commandEncoder.finish()]);
 
     t.expectSingleColor(resolveTexture || renderTexture, 'r8unorm', {
       size: [width, height, 1],
-      exp: { R: 1 } });
-
+      exp: { R: 1 }
+    });
   }
 };
 

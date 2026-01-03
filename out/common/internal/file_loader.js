@@ -13,6 +13,42 @@ import { loadTreeForQuery } from './tree.js';
 
 
 
+// A .spec.ts file, as imported.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Override the types for addEventListener/removeEventListener so the callbacks can be used as
+// strongly-typed.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -20,31 +56,45 @@ import { loadTreeForQuery } from './tree.js';
 
 
 // Base class for DefaultTestFileLoader and FakeTestFileLoader.
-export class TestFileLoader {
+
+export class TestFileLoader extends EventTarget {
 
 
 
-  importSpecFile(suite, path) {
-    return this.import(`${suite}/${path.join('/')}.spec.js`);
+  async importSpecFile(suite, path) {
+    const url = `${suite}/${path.join('/')}.spec.js`;
+    this.dispatchEvent(new MessageEvent('import', { data: { url } }));
+    const ret = await this.import(url);
+    this.dispatchEvent(new MessageEvent('imported', { data: { url } }));
+    return ret;
   }
 
-  async loadTree(query, subqueriesToExpand = []) {
-    return loadTreeForQuery(
-    this,
-    query,
-    subqueriesToExpand.map(s => {
-      const q = parseQuery(s);
-      assert(q.level >= 2, () => `subqueriesToExpand entries should not be multi-file:\n  ${q}`);
-      return q;
-    }));
-
+  async loadTree(
+  query,
+  {
+    subqueriesToExpand = [],
+    fullyExpandSubtrees = [],
+    maxChunkTime = Infinity
+  } = {})
+  {
+    const tree = await loadTreeForQuery(this, query, {
+      subqueriesToExpand: subqueriesToExpand.map((s) => {
+        const q = parseQuery(s);
+        assert(q.level >= 2, () => `subqueriesToExpand entries should not be multi-file:\n  ${q}`);
+        return q;
+      }),
+      fullyExpandSubtrees: fullyExpandSubtrees.map((s) => parseQuery(s)),
+      maxChunkTime
+    });
+    this.dispatchEvent(new MessageEvent('finish'));
+    return tree;
   }
 
   async loadCases(query) {
     const tree = await this.loadTree(query);
     return tree.iterateLeaves();
-  }}
-
+  }
+}
 
 export class DefaultTestFileLoader extends TestFileLoader {
   async listing(suite) {
@@ -53,5 +103,6 @@ export class DefaultTestFileLoader extends TestFileLoader {
 
   import(path) {
     return import(`../../${path}`);
-  }}
+  }
+}
 //# sourceMappingURL=file_loader.js.map

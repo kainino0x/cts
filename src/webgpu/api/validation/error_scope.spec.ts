@@ -3,170 +3,188 @@ Error scope validation tests.
 
 Note these must create their own device, not use GPUTest (that one already has error scopes on it).
 
-TODO: shorten test names; detail should move to the description.)
-
-TODO: consider slightly revising these tests to make sure they're complete. {
-    - push 0, pop 1
-    - push validation, push oom, pop, pop, pop
-    - push oom, push validation, pop, pop, pop
-    - push validation, pop, pop
-    - push oom, pop, pop
-    - push various x100000 (or some other large number), pop x100000, pop
-    - }
+TODO: (POSTV1) Test error scopes of different threads and make sure they go to the right place.
+TODO: (POSTV1) Test that unhandled errors go the right device, and nowhere if the device was dropped.
 `;
 
-import { Fixture } from '../../../common/framework/fixture.js';
 import { makeTestGroup } from '../../../common/framework/test_group.js';
-import { getGPU } from '../../../common/util/navigator_gpu.js';
-import { assert, raceWithRejectOnTimeout } from '../../../common/util/util.js';
+import { kErrorScopeFilters, kGeneratableErrorScopeFilters } from '../../capability_info.js';
+import { ErrorTest } from '../../error_test.js';
 
-class F extends Fixture {
-  _device: GPUDevice | undefined = undefined;
+export const g = makeTestGroup(ErrorTest);
 
-  get device(): GPUDevice {
-    assert(this._device !== undefined);
-    return this._device;
-  }
+g.test('simple')
+  .desc(
+    `
+Tests that error scopes catches their expected errors, firing an uncaptured error event otherwise.
 
-  async init(): Promise<void> {
-    super.init();
-    const gpu = getGPU();
-    const adapter = await gpu.requestAdapter();
-    assert(adapter !== null);
-    const device = await adapter.requestDevice();
-    assert(device !== null);
-    this._device = device;
-  }
+- Same error and error filter (popErrorScope should return the error)
+- Different error from filter (uncaptured error should result)
+    `
+  )
+  .params(u =>
+    u.combine('errorType', kGeneratableErrorScopeFilters).combine('errorFilter', kErrorScopeFilters)
+  )
+  .fn(async t => {
+    const { errorType, errorFilter } = t.params;
+    t.device.pushErrorScope(errorFilter);
 
-  createErrorBuffer(): void {
-    this.device.createBuffer({
-      size: 1024,
-      usage: 0xffff, // Invalid GPUBufferUsage
-    });
-    // MAINTENANCE_TODO: This is a workaround for Chromium not flushing. Remove when not needed.
-    this.device.queue.submit([]);
-  }
-
-  // Expect an uncapturederror event to occur. Note: this MUST be awaited, because
-  // otherwise it could erroneously pass by capturing an error from later in the test.
-  async expectUncapturedError(fn: Function): Promise<GPUUncapturedErrorEvent> {
-    return this.immediateAsyncExpectation(() => {
-      // MAINTENANCE_TODO: Make arbitrary timeout value a test runner variable
-      const TIMEOUT_IN_MS = 1000;
-
-      const promise: Promise<GPUUncapturedErrorEvent> = new Promise(resolve => {
-        const eventListener = ((event: GPUUncapturedErrorEvent) => {
-          this.debug(`Got uncaptured error event with ${event.error}`);
-          resolve(event);
-        }) as EventListener;
-
-        this.device.addEventListener('uncapturederror', eventListener, { once: true });
+    if (errorType !== errorFilter) {
+      // Different error case
+      const uncapturedErrorEvent = await t.expectUncapturedError(() => {
+        t.generateError(errorType);
       });
+      t.expect(t.isInstanceOfError(errorType, uncapturedErrorEvent.error));
 
-      fn();
-
-      return raceWithRejectOnTimeout(
-        promise,
-        TIMEOUT_IN_MS,
-        'Timeout occurred waiting for uncaptured error'
-      );
-    });
-  }
-}
-
-export const g = makeTestGroup(F);
-
-g.test('simple_case_where_the_error_scope_catches_an_error').fn(async t => {
-  t.device.pushErrorScope('validation');
-
-  t.createErrorBuffer();
-
-  const error = await t.device.popErrorScope();
-  t.expect(error instanceof GPUValidationError);
-});
-
-g.test('errors_bubble_to_the_parent_scope_if_not_handled_by_the_current_scope').fn(async t => {
-  t.device.pushErrorScope('validation');
-  t.device.pushErrorScope('out-of-memory');
-
-  t.createErrorBuffer();
-
-  {
-    const error = await t.device.popErrorScope();
-    t.expect(error === null);
-  }
-  {
-    const error = await t.device.popErrorScope();
-    t.expect(error instanceof GPUValidationError);
-  }
-});
-
-g.test('if_an_error_scope_matches_an_error_it_does_not_bubble_to_the_parent_scope').fn(async t => {
-  t.device.pushErrorScope('validation');
-  t.device.pushErrorScope('validation');
-
-  t.createErrorBuffer();
-
-  {
-    const error = await t.device.popErrorScope();
-    t.expect(error instanceof GPUValidationError);
-  }
-  {
-    const error = await t.device.popErrorScope();
-    t.expect(error === null);
-  }
-});
-
-g.test('if_no_error_scope_handles_an_error_it_fires_an_uncapturederror_event').fn(async t => {
-  t.device.pushErrorScope('out-of-memory');
-
-  const uncapturedErrorEvent = await t.expectUncapturedError(() => {
-    t.createErrorBuffer();
+      const error = await t.device.popErrorScope();
+      t.expect(error === null);
+    } else {
+      // Same error as filter
+      t.generateError(errorType);
+      const error = await t.device.popErrorScope();
+      t.expect(t.isInstanceOfError(errorType, error));
+    }
   });
-  t.expect(uncapturedErrorEvent.error instanceof GPUValidationError);
 
-  const error = await t.device.popErrorScope();
-  t.expect(error === null);
-});
-
-g.test('push,popping_sibling_error_scopes_must_be_balanced').fn(async t => {
-  {
+g.test('empty')
+  .desc(
+    `
+Tests that popping an empty error scope stack should reject.
+    `
+  )
+  .fn(t => {
     const promise = t.device.popErrorScope();
-    t.shouldReject('OperationError', promise);
-  }
+    t.shouldReject('OperationError', promise, { allowMissingStack: true });
+  });
 
-  const promises = [];
-  for (let i = 0; i < 1000; i++) {
-    t.device.pushErrorScope('validation');
-    promises.push(t.device.popErrorScope());
-  }
-  const errors = await Promise.all(promises);
-  t.expect(errors.every(e => e === null));
+g.test('parent_scope')
+  .desc(
+    `
+Tests that an error bubbles to the correct parent scope.
 
-  {
-    const promise = t.device.popErrorScope();
-    t.shouldReject('OperationError', promise);
-  }
-});
+- Different error types as the parent scope
+- Different depths of non-capturing filters for the generated error
+    `
+  )
+  .params(u =>
+    u
+      .combine('errorFilter', kGeneratableErrorScopeFilters)
+      .combine('stackDepth', [1, 10, 100, 1000])
+  )
+  .fn(async t => {
+    const { errorFilter, stackDepth } = t.params;
+    t.device.pushErrorScope(errorFilter);
 
-g.test('push,popping_nested_error_scopes_must_be_balanced').fn(async t => {
-  {
-    const promise = t.device.popErrorScope();
-    t.shouldReject('OperationError', promise);
-  }
+    // Push a bunch of error filters onto the stack (none that match errorFilter)
+    const unmatchedFilters = kErrorScopeFilters.filter(filter => {
+      return filter !== errorFilter;
+    });
+    for (let i = 0; i < stackDepth; i++) {
+      t.device.pushErrorScope(unmatchedFilters[i % unmatchedFilters.length]);
+    }
 
-  const promises = [];
-  for (let i = 0; i < 1000; i++) {
-    t.device.pushErrorScope('validation');
-  }
-  for (let i = 0; i < 1000; i++) {
-    promises.push(t.device.popErrorScope());
-  }
-  const errors = await Promise.all(promises);
-  t.expect(errors.every(e => e === null));
+    // Cause the error and then pop all the unrelated filters.
+    t.generateError(errorFilter);
 
-  {
-    const promise = t.device.popErrorScope();
-    t.shouldReject('OperationError', promise);
-  }
-});
+    await t.chunkedPopManyErrorScopes(stackDepth);
+
+    // Finally the actual error should have been caught by the parent scope.
+    const error = await t.device.popErrorScope();
+    t.expect(t.isInstanceOfError(errorFilter, error));
+  });
+
+g.test('current_scope')
+  .desc(
+    `
+Tests that an error does not bubbles to parent scopes when local scope matches.
+
+- Different error types as the current scope
+- Different depths of non-capturing filters for the generated error
+    `
+  )
+  .params(u =>
+    u
+      .combine('errorFilter', kGeneratableErrorScopeFilters)
+      .combine('stackDepth', [1, 10, 100, 1000, 100000])
+  )
+  .fn(async t => {
+    const { errorFilter, stackDepth } = t.params;
+
+    // Push a bunch of error filters onto the stack
+    for (let i = 0; i < stackDepth; i++) {
+      t.device.pushErrorScope(kErrorScopeFilters[i % kErrorScopeFilters.length]);
+    }
+
+    // Current scope should catch the error immediately.
+    t.device.pushErrorScope(errorFilter);
+    t.generateError(errorFilter);
+    const error = await t.device.popErrorScope();
+    t.expect(t.isInstanceOfError(errorFilter, error));
+
+    // Remaining scopes shouldn't catch anything.
+    await t.chunkedPopManyErrorScopes(stackDepth);
+  });
+
+g.test('balanced_siblings')
+  .desc(
+    `
+Tests that sibling error scopes need to be balanced.
+
+- Different error types as the current scope
+- Different number of sibling errors
+    `
+  )
+  .params(u =>
+    u.combine('errorFilter', kErrorScopeFilters).combine('numErrors', [1, 10, 100, 1000])
+  )
+  .fn(async t => {
+    const { errorFilter, numErrors } = t.params;
+
+    const promises = [];
+    for (let i = 0; i < numErrors; i++) {
+      t.device.pushErrorScope(errorFilter);
+      promises.push(t.device.popErrorScope());
+    }
+
+    {
+      // Trying to pop an additional non-existing scope should reject.
+      const promise = t.device.popErrorScope();
+      t.shouldReject('OperationError', promise, { allowMissingStack: true });
+    }
+
+    const errors = await Promise.all(promises);
+    t.expect(errors.every(e => e === null));
+  });
+
+g.test('balanced_nesting')
+  .desc(
+    `
+Tests that nested error scopes need to be balanced.
+
+- Different error types as the current scope
+- Different number of nested errors
+    `
+  )
+  .params(u =>
+    u.combine('errorFilter', kErrorScopeFilters).combine('numErrors', [1, 10, 100, 1000])
+  )
+  .fn(async t => {
+    const { errorFilter, numErrors } = t.params;
+
+    for (let i = 0; i < numErrors; i++) {
+      t.device.pushErrorScope(errorFilter);
+    }
+
+    const promises = [];
+    for (let i = 0; i < numErrors; i++) {
+      promises.push(t.device.popErrorScope());
+    }
+    const errors = await Promise.all(promises);
+    t.expect(errors.every(e => e === null));
+
+    {
+      // Trying to pop an additional non-existing scope should reject.
+      const promise = t.device.popErrorScope();
+      t.shouldReject('OperationError', promise, { allowMissingStack: true });
+    }
+  });

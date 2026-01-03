@@ -4,15 +4,16 @@
 Validation tests for render pass resolve.
 `;import { makeTestGroup } from '../../../../common/framework/test_group.js';
 import { GPUConst } from '../../../constants.js';
-import { ValidationTest } from '../validation_test.js';
+import { AllFeaturesMaxLimitsGPUTest } from '../../../gpu_test.js';
+import * as vtu from '../validation_test_utils.js';
 
 const kNumColorAttachments = 4;
 
-export const g = makeTestGroup(ValidationTest);
+export const g = makeTestGroup(AllFeaturesMaxLimitsGPUTest);
 
 g.test('resolve_attachment').
 desc(
-`
+  `
 Test various validation behaviors when a resolveTarget is provided.
 
 - base case (valid).
@@ -22,17 +23,18 @@ Test various validation behaviors when a resolveTarget is provided.
 - resolve target must have exactly one subresource:
     - base mip level {0, >0}, mip level count {1, >1}.
     - base array layer {0, >0}, array layer count {1, >1}.
-    - TODO: test zero subresources
+- resolve target GPUTextureView is invalid
 - resolve source and target have different formats.
     - rgba8unorm -> {bgra8unorm, rgba8unorm-srgb}
     - {bgra8unorm, rgba8unorm-srgb} -> rgba8unorm
     - test with other color attachments having a different format
 - resolve source and target have different sizes.
-`).
-
+`
+).
 paramsSimple([
-// control case should be valid
+// control cases should be valid
 { _valid: true },
+{ bindTextureResource: true, _valid: true },
 // a single sampled resolve source should cause a validation error.
 { colorAttachmentSamples: 1, _valid: false },
 // a multisampled resolve target should cause a validation error.
@@ -44,8 +46,10 @@ paramsSimple([
   resolveTargetViewBaseMipLevel: 1,
   resolveTargetHeight: 4,
   resolveTargetWidth: 4,
-  _valid: true },
-
+  _valid: true
+},
+// a validation error should be created when resolveTarget is invalid.
+{ resolveTargetInvalid: true, _valid: false },
 // a validation error should be created when mip count > 1
 { resolveTargetViewMipCount: 2, _valid: false },
 {
@@ -53,8 +57,8 @@ paramsSimple([
   resolveTargetViewMipCount: 2,
   resolveTargetHeight: 4,
   resolveTargetWidth: 4,
-  _valid: false },
-
+  _valid: false
+},
 // non-zero resolve target base array layer should be valid.
 { resolveTargetViewBaseArrayLayer: 1, _valid: true },
 // a validation error should be created when array layer count > 1
@@ -71,16 +75,18 @@ paramsSimple([
 { colorAttachmentHeight: 4, _valid: false },
 { colorAttachmentWidth: 4, _valid: false },
 { resolveTargetHeight: 4, _valid: false },
-{ resolveTargetWidth: 4, _valid: false }]).
-
-fn(async t => {
+{ resolveTargetWidth: 4, _valid: false }]
+).
+fn((t) => {
   const {
+    bindTextureResource = false,
     colorAttachmentFormat = 'rgba8unorm',
     resolveTargetFormat = 'rgba8unorm',
     otherAttachmentFormat = 'rgba8unorm',
     colorAttachmentSamples = 4,
     resolveTargetSamples = 1,
     resolveTargetUsage = GPUTextureUsage.COPY_SRC | GPUTextureUsage.RENDER_ATTACHMENT,
+    resolveTargetInvalid = false,
     resolveTargetViewMipCount = 1,
     resolveTargetViewBaseMipLevel = 0,
     resolveTargetViewArrayLayerCount = 1,
@@ -89,8 +95,8 @@ fn(async t => {
     colorAttachmentWidth = 2,
     resolveTargetHeight = 2,
     resolveTargetWidth = 2,
-    _valid } =
-  t.params;
+    _valid
+  } = t.params;
 
   // Run the test in a nested loop such that the configured color attachment with resolve target
   // is tested while occupying each individual colorAttachment slot.
@@ -101,84 +107,88 @@ fn(async t => {
     colorAttachmentSlot < kNumColorAttachments;
     colorAttachmentSlot++)
     {
-      // resolveSlot === colorAttachmentSlot denotes the color attachment slot that contains the color attachment with resolve
-      // target.
+      // resolveSlot === colorAttachmentSlot denotes the color attachment slot that contains the
+      // color attachment with resolve target.
       if (resolveSlot === colorAttachmentSlot) {
         // Create the color attachment with resolve target with the configurable parameters.
-        const resolveSourceColorAttachment = t.device.createTexture({
+        const resolveSourceColorAttachment = t.createTextureTracked({
           format: colorAttachmentFormat,
           size: {
             width: colorAttachmentWidth,
             height: colorAttachmentHeight,
-            depthOrArrayLayers: 1 },
-
+            depthOrArrayLayers: 1
+          },
           sampleCount: colorAttachmentSamples,
-          usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.RENDER_ATTACHMENT });
+          usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.RENDER_ATTACHMENT
+        });
 
-
-        const resolveTarget = t.device.createTexture({
+        const resolveTarget = t.createTextureTracked({
           format: resolveTargetFormat,
           size: {
             width: resolveTargetWidth,
             height: resolveTargetHeight,
             depthOrArrayLayers:
-            resolveTargetViewBaseArrayLayer + resolveTargetViewArrayLayerCount },
-
+            resolveTargetViewBaseArrayLayer + resolveTargetViewArrayLayerCount
+          },
           sampleCount: resolveTargetSamples,
           mipLevelCount: resolveTargetViewBaseMipLevel + resolveTargetViewMipCount,
-          usage: resolveTargetUsage });
-
+          usage: resolveTargetUsage
+        });
 
         renderPassColorAttachmentDescriptors.push({
           view: resolveSourceColorAttachment.createView(),
-          loadValue: 'load',
+          loadOp: 'load',
           storeOp: 'discard',
-          resolveTarget: resolveTarget.createView({
+          resolveTarget: resolveTargetInvalid ?
+          vtu.getErrorTextureView(t) :
+          bindTextureResource ?
+          resolveTarget :
+          resolveTarget.createView({
             dimension: resolveTargetViewArrayLayerCount === 1 ? '2d' : '2d-array',
             mipLevelCount: resolveTargetViewMipCount,
             arrayLayerCount: resolveTargetViewArrayLayerCount,
             baseMipLevel: resolveTargetViewBaseMipLevel,
-            baseArrayLayer: resolveTargetViewBaseArrayLayer }) });
-
-
+            baseArrayLayer: resolveTargetViewBaseArrayLayer
+          })
+        });
       } else {
         // Create a basic texture to fill other color attachment slots. This texture's dimensions
         // and sample count must match the resolve source color attachment to be valid.
-        const colorAttachment = t.device.createTexture({
+        const colorAttachment = t.createTextureTracked({
           format: otherAttachmentFormat,
           size: {
             width: colorAttachmentWidth,
             height: colorAttachmentHeight,
-            depthOrArrayLayers: 1 },
-
+            depthOrArrayLayers: 1
+          },
           sampleCount: colorAttachmentSamples,
-          usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.RENDER_ATTACHMENT });
+          usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.RENDER_ATTACHMENT
+        });
 
-
-        const resolveTarget = t.device.createTexture({
+        const resolveTarget = t.createTextureTracked({
           format: otherAttachmentFormat,
           size: {
             width: colorAttachmentWidth,
             height: colorAttachmentHeight,
-            depthOrArrayLayers: 1 },
-
+            depthOrArrayLayers: 1
+          },
           sampleCount: 1,
-          usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.RENDER_ATTACHMENT });
-
+          usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.RENDER_ATTACHMENT
+        });
 
         renderPassColorAttachmentDescriptors.push({
           view: colorAttachment.createView(),
-          loadValue: 'load',
+          loadOp: 'load',
           storeOp: 'discard',
-          resolveTarget: resolveTarget.createView() });
-
+          resolveTarget: resolveTarget.createView()
+        });
       }
     }
     const encoder = t.device.createCommandEncoder();
     const pass = encoder.beginRenderPass({
-      colorAttachments: renderPassColorAttachmentDescriptors });
-
-    pass.endPass();
+      colorAttachments: renderPassColorAttachmentDescriptors
+    });
+    pass.end();
 
     t.expectValidationError(() => {
       encoder.finish();

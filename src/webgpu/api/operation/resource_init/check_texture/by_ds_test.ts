@@ -1,14 +1,16 @@
 import { assert } from '../../../../../common/util/util.js';
+import { isDepthTextureFormat, isStencilTextureFormat } from '../../../../format_info.js';
 import { GPUTest } from '../../../../gpu_test.js';
 import { virtualMipSize } from '../../../../util/texture/base.js';
-import { CheckContents } from '../texture_zero.spec.js';
+
+import { CheckContents } from './texture_zero_init_test.js';
 
 function makeFullscreenVertexModule(device: GPUDevice) {
   return device.createShaderModule({
     code: `
-    [[stage(vertex)]]
-    fn main([[builtin(vertex_index)]] VertexIndex : u32)
-         -> [[builtin(position)]] vec4<f32> {
+    @vertex
+    fn main(@builtin(vertex_index) VertexIndex : u32)
+         -> @builtin(position) vec4<f32> {
       var pos : array<vec2<f32>, 3> = array<vec2<f32>, 3>(
         vec2<f32>(-1.0, -3.0),
         vec2<f32>( 3.0,  1.0),
@@ -26,6 +28,7 @@ function getDepthTestEqualPipeline(
   expected: number
 ): GPURenderPipeline {
   return t.device.createRenderPipeline({
+    layout: 'auto',
     vertex: {
       entryPoint: 'main',
       module: makeFullscreenVertexModule(t.device),
@@ -35,11 +38,11 @@ function getDepthTestEqualPipeline(
       module: t.device.createShaderModule({
         code: `
         struct Outputs {
-          [[builtin(frag_depth)]] FragDepth : f32;
-          [[location(0)]] outSuccess : f32;
+          @builtin(frag_depth) FragDepth : f32,
+          @location(0) outSuccess : f32,
         };
 
-        [[stage(fragment)]]
+        @fragment
         fn main() -> Outputs {
           var output : Outputs;
           output.FragDepth = f32(${expected});
@@ -53,6 +56,7 @@ function getDepthTestEqualPipeline(
     depthStencil: {
       format,
       depthCompare: 'equal',
+      depthWriteEnabled: false,
     },
     primitive: { topology: 'triangle-list' },
     multisample: { count: sampleCount },
@@ -65,6 +69,7 @@ function getStencilTestEqualPipeline(
   sampleCount: number
 ): GPURenderPipeline {
   return t.device.createRenderPipeline({
+    layout: 'auto',
     vertex: {
       entryPoint: 'main',
       module: makeFullscreenVertexModule(t.device),
@@ -73,8 +78,8 @@ function getStencilTestEqualPipeline(
       entryPoint: 'main',
       module: t.device.createShaderModule({
         code: `
-        [[stage(fragment)]]
-        fn main() -> [[location(0)]] f32 {
+        @fragment
+        fn main() -> @location(0) f32 {
           return 1.0;
         }
         `,
@@ -82,6 +87,8 @@ function getStencilTestEqualPipeline(
       targets: [{ format: 'r8unorm' }],
     },
     depthStencil: {
+      depthWriteEnabled: false,
+      depthCompare: 'always',
       format,
       stencilFront: { compare: 'equal' },
       stencilBack: { compare: 'equal' },
@@ -101,7 +108,7 @@ const checkContents: (type: 'depth' | 'stencil', ...args: Parameters<CheckConten
 ) => {
   assert(params.dimension === '2d');
   for (const viewDescriptor of t.generateTextureViewDescriptorsForRendering(
-    params.aspect,
+    'all',
     subresourceRange
   )) {
     assert(viewDescriptor.baseMipLevel !== undefined);
@@ -111,7 +118,7 @@ const checkContents: (type: 'depth' | 'stencil', ...args: Parameters<CheckConten
       viewDescriptor.baseMipLevel
     );
 
-    const renderTexture = t.device.createTexture({
+    const renderTexture = t.createTextureTracked({
       size: [width, height, 1],
       format: 'r8unorm',
       usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.COPY_SRC,
@@ -121,7 +128,7 @@ const checkContents: (type: 'depth' | 'stencil', ...args: Parameters<CheckConten
     let resolveTexture = undefined;
     let resolveTarget = undefined;
     if (params.sampleCount > 1) {
-      resolveTexture = t.device.createTexture({
+      resolveTexture = t.createTextureTracked({
         size: [width, height, 1],
         format: 'r8unorm',
         usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.COPY_SRC,
@@ -129,22 +136,25 @@ const checkContents: (type: 'depth' | 'stencil', ...args: Parameters<CheckConten
       resolveTarget = resolveTexture.createView();
     }
 
-    const commandEncoder = t.device.createCommandEncoder();
+    const commandEncoder = t.device.createCommandEncoder({ label: 'checkContents' });
+    commandEncoder.pushDebugGroup('checkContentsWithDepthStencil');
+
     const pass = commandEncoder.beginRenderPass({
       colorAttachments: [
         {
           view: renderTexture.createView(),
           resolveTarget,
-          loadValue: [0, 0, 0, 0],
+          clearValue: [0, 0, 0, 0],
+          loadOp: 'load',
           storeOp: 'store',
         },
       ],
       depthStencilAttachment: {
         view: texture.createView(viewDescriptor),
-        depthStoreOp: 'store',
-        depthLoadValue: 'load',
-        stencilStoreOp: 'store',
-        stencilLoadValue: 'load',
+        depthLoadOp: isDepthTextureFormat(params.format) ? 'load' : undefined,
+        depthStoreOp: isDepthTextureFormat(params.format) ? 'store' : undefined,
+        stencilLoadOp: isStencilTextureFormat(params.format) ? 'load' : undefined,
+        stencilStoreOp: isStencilTextureFormat(params.format) ? 'store' : undefined,
       },
     });
 
@@ -170,8 +180,9 @@ const checkContents: (type: 'depth' | 'stencil', ...args: Parameters<CheckConten
     }
 
     pass.draw(3);
-    pass.endPass();
+    pass.end();
 
+    commandEncoder.popDebugGroup();
     t.queue.submit([commandEncoder.finish()]);
 
     t.expectSingleColor(resolveTexture || renderTexture, 'r8unorm', {

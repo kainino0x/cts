@@ -4,31 +4,31 @@
 Tests for the indirect-specific aspects of drawIndirect/drawIndexedIndirect.
 `;import { makeTestGroup } from '../../../../common/framework/test_group.js';
 import {
-kDrawIndirectParametersSize,
-kDrawIndexedIndirectParametersSize } from
+  kDrawIndirectParametersSize,
+  kDrawIndexedIndirectParametersSize } from
 '../../../capability_info.js';
-import { GPUTest } from '../../../gpu_test.js';
+import { AllFeaturesMaxLimitsGPUTest } from '../../../gpu_test.js';
+import * as ttu from '../../../texture_test_utils.js';
 
 const filled = new Uint8Array([0, 255, 0, 255]);
 const notFilled = new Uint8Array([0, 0, 0, 0]);
 
 const kRenderTargetFormat = 'rgba8unorm';
 
-class F extends GPUTest {
-  MakeIndexBuffer() {
+class F extends AllFeaturesMaxLimitsGPUTest {
+  makeIndexBuffer() {
     return this.makeBufferWithContents(
-
-    new Uint32Array([
-    0, 1, 2, // The bottom left triangle
-    1, 2, 3 // The top right triangle
-    ]),
-    GPUBufferUsage.INDEX);
-
+      new Uint32Array([
+      0, 1, 2, // The bottom left triangle
+      1, 2, 3 // The top right triangle
+      ]),
+      GPUBufferUsage.INDEX
+    );
   }
 
-  MakeVertexBuffer(isIndexed) {
+  makeVertexBuffer(isIndexed) {
 
-    const vextices = isIndexed ?
+    const vertices = isIndexed ?
     [
     -1.0, -1.0,
     -1.0, 1.0,
@@ -46,10 +46,10 @@ class F extends GPUTest {
     1.0, -1.0,
     1.0, 1.0];
 
-    return this.makeBufferWithContents(new Float32Array(vextices), GPUBufferUsage.VERTEX);
+    return this.makeBufferWithContents(new Float32Array(vertices), GPUBufferUsage.VERTEX);
   }
 
-  MakeIndirectBuffer(isIndexed, indirectOffset) {
+  makeIndirectBuffer(isIndexed, indirectOffset) {
     const o = indirectOffset / Uint32Array.BYTES_PER_ELEMENT;
 
     const parametersSize = isIndexed ?
@@ -122,14 +122,14 @@ class F extends GPUTest {
     }
 
     return this.makeBufferWithContents(new Uint32Array(indirectBuffer), GPUBufferUsage.INDIRECT);
-  }}
-
+  }
+}
 
 export const g = makeTestGroup(F);
 
 g.test('basics').
 desc(
-`Test that the indirect draw parameters are tightly packed for drawIndirect and drawIndexedIndirect.
+  `Test that the indirect draw parameters are tightly packed for drawIndirect and drawIndexedIndirect.
 An indirectBuffer is created based on indirectOffset. The actual draw args being used indicated by the
 indirectOffset is going to draw a left bottom triangle.
 While the remaining indirectBuffer is populated with random numbers or draw args
@@ -140,13 +140,13 @@ meaning the expected draw args is uploaded correctly by the indirectBuffer and i
 Params:
     - draw{Indirect, IndexedIndirect}
     - indirectOffset= {0, 4, k * sizeof(args struct), k * sizeof(args struct) + 4}
-    `).
-
+    `
+).
 params((u) =>
 u.
 combine('isIndexed', [true, false]).
 beginSubcases().
-expand('indirectOffset', p => {
+expand('indirectOffset', (p) => {
   const indirectDrawParametersSize = p.isIndexed ?
   kDrawIndexedIndirectParametersSize * Uint32Array.BYTES_PER_ELEMENT :
   kDrawIndirectParametersSize * Uint32Array.BYTES_PER_ELEMENT;
@@ -160,21 +160,22 @@ expand('indirectOffset', p => {
   99 * indirectDrawParametersSize,
   99 * indirectDrawParametersSize + Uint32Array.BYTES_PER_ELEMENT];
 
-})).
-
-fn(t => {
+})
+).
+fn((t) => {
   const { isIndexed, indirectOffset } = t.params;
 
-  const vertexBuffer = t.MakeVertexBuffer(isIndexed);
-  const indirectBuffer = t.MakeIndirectBuffer(isIndexed, indirectOffset);
+  const vertexBuffer = t.makeVertexBuffer(isIndexed);
+  const indirectBuffer = t.makeIndirectBuffer(isIndexed, indirectOffset);
 
   const pipeline = t.device.createRenderPipeline({
+    layout: 'auto',
     vertex: {
       module: t.device.createShaderModule({
-        code: `[[stage(vertex)]] fn main([[location(0)]] pos : vec2<f32>) -> [[builtin(position)]] vec4<f32> {
+        code: `@vertex fn main(@location(0) pos : vec2<f32>) -> @builtin(position) vec4<f32> {
               return vec4<f32>(pos, 0.0, 1.0);
-          }` }),
-
+          }`
+      }),
       entryPoint: 'main',
       buffers: [
       {
@@ -182,69 +183,62 @@ fn(t => {
         {
           shaderLocation: 0,
           format: 'float32x2',
-          offset: 0 }],
+          offset: 0
+        }],
 
+        arrayStride: 2 * Float32Array.BYTES_PER_ELEMENT
+      }]
 
-        arrayStride: 2 * Float32Array.BYTES_PER_ELEMENT }] },
-
-
-
+    },
     fragment: {
       module: t.device.createShaderModule({
-        code: `[[stage(fragment)]] fn main() -> [[location(0)]] vec4<f32> {
+        code: `@fragment fn main() -> @location(0) vec4<f32> {
             return vec4<f32>(0.0, 1.0, 0.0, 1.0);
-        }` }),
-
+        }`
+      }),
       entryPoint: 'main',
       targets: [
       {
-        format: kRenderTargetFormat }] } });
+        format: kRenderTargetFormat
+      }]
 
+    }
+  });
 
-
-
-
-  const renderTarget = t.device.createTexture({
+  const renderTarget = t.createTextureTracked({
     size: [4, 4],
     usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.COPY_SRC,
-    format: kRenderTargetFormat });
-
+    format: kRenderTargetFormat
+  });
 
   const commandEncoder = t.device.createCommandEncoder();
   const renderPass = commandEncoder.beginRenderPass({
     colorAttachments: [
     {
       view: renderTarget.createView(),
-      loadValue: [0, 0, 0, 0],
-      storeOp: 'store' }] });
+      clearValue: [0, 0, 0, 0],
+      loadOp: 'clear',
+      storeOp: 'store'
+    }]
 
-
-
+  });
   renderPass.setPipeline(pipeline);
   renderPass.setVertexBuffer(0, vertexBuffer, 0);
 
   if (isIndexed) {
-    renderPass.setIndexBuffer(t.MakeIndexBuffer(), 'uint32', 0);
+    renderPass.setIndexBuffer(t.makeIndexBuffer(), 'uint32', 0);
     renderPass.drawIndexedIndirect(indirectBuffer, indirectOffset);
   } else {
     renderPass.drawIndirect(indirectBuffer, indirectOffset);
   }
-  renderPass.endPass();
+  renderPass.end();
   t.queue.submit([commandEncoder.finish()]);
 
+  ttu.expectSinglePixelComparisonsAreOkInTexture(t, { texture: renderTarget }, [
   // The bottom left area is filled
-  t.expectSinglePixelIn2DTexture(
-  renderTarget,
-  kRenderTargetFormat,
-  { x: 0, y: 1 },
-  { exp: filled });
-
+  { coord: { x: 0, y: 1 }, exp: filled },
   // The top right area is not filled
-  t.expectSinglePixelIn2DTexture(
-  renderTarget,
-  kRenderTargetFormat,
-  { x: 1, y: 0 },
-  { exp: notFilled });
-
+  { coord: { x: 1, y: 0 }, exp: notFilled }]
+  );
 });
 //# sourceMappingURL=indirect_draw.spec.js.map

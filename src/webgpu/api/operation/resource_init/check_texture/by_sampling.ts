@@ -1,12 +1,13 @@
 import { assert, unreachable } from '../../../../../common/util/util.js';
-import { EncodableTextureFormat, kTextureFormatInfo } from '../../../../capability_info.js';
+import { EncodableTextureFormat } from '../../../../format_info.js';
 import { virtualMipSize } from '../../../../util/texture/base.js';
 import {
   kTexelRepresentationInfo,
   getSingleDataType,
   getComponentReadbackTraits,
 } from '../../../../util/texture/texel_data.js';
-import { CheckContents } from '../texture_zero.spec.js';
+
+import { CheckContents } from './texture_zero_init_test.js';
 
 export const checkContentsBySampling: CheckContents = (
   t,
@@ -15,8 +16,6 @@ export const checkContentsBySampling: CheckContents = (
   state,
   subresourceRange
 ) => {
-  assert(params.dimension !== '1d');
-  assert(params.format in kTextureFormatInfo);
   const format = params.format as EncodableTextureFormat;
   const rep = kTexelRepresentationInfo[format];
 
@@ -42,40 +41,50 @@ export const checkContentsBySampling: CheckContents = (
         ? componentOrder[0].toLowerCase()
         : componentOrder.map(c => c.toLowerCase()).join('') + '[i]';
 
-    const _xd = '_' + params.dimension;
+    const viewDimension =
+      t.isCompatibility && params.dimension === '2d' && texture.depthOrArrayLayers > 1
+        ? '2d-array'
+        : params.dimension;
+    const _xd = `_${viewDimension.replace('-', '_')}`;
     const _multisampled = params.sampleCount > 1 ? '_multisampled' : '';
-    const texelIndexExpresion =
-      params.dimension === '2d'
+    const texelIndexExpression =
+      viewDimension === '2d'
         ? 'vec2<i32>(GlobalInvocationID.xy)'
-        : params.dimension === '3d'
+        : viewDimension === '2d-array'
+        ? 'vec2<i32>(GlobalInvocationID.xy), constants.layer'
+        : viewDimension === '3d'
         ? 'vec3<i32>(GlobalInvocationID.xyz)'
+        : viewDimension === '1d'
+        ? 'i32(GlobalInvocationID.x)'
         : unreachable();
     const computePipeline = t.device.createComputePipeline({
+      layout: 'auto',
       compute: {
         entryPoint: 'main',
         module: t.device.createShaderModule({
           code: `
             struct Constants {
-              level : i32;
+              level : i32,
+              layer : i32,
             };
 
-            [[group(0), binding(0)]] var<uniform> constants : Constants;
-            [[group(0), binding(1)]] var myTexture : texture${_multisampled}${_xd}<${shaderType}>;
+            @group(0) @binding(0) var<uniform> constants : Constants;
+            @group(0) @binding(1) var myTexture : texture${_multisampled}${_xd}<${shaderType}>;
 
             struct Result {
-              values : [[stride(4)]] array<${shaderType}>;
+              values : array<${shaderType}>
             };
-            [[group(0), binding(3)]] var<storage, read_write> result : Result;
+            @group(0) @binding(3) var<storage, read_write> result : Result;
 
-            [[stage(compute), workgroup_size(1)]]
-            fn main([[builtin(global_invocation_id)]] GlobalInvocationID : vec3<u32>) {
+            @compute @workgroup_size(1)
+            fn main(@builtin(global_invocation_id) GlobalInvocationID : vec3<u32>) {
               let flatIndex : u32 = ${componentCount}u * (
                 ${width}u * ${height}u * GlobalInvocationID.z +
                 ${width}u * GlobalInvocationID.y +
                 GlobalInvocationID.x
               );
               let texel : vec4<${shaderType}> = textureLoad(
-                myTexture, ${texelIndexExpresion}, constants.level);
+                myTexture, ${texelIndexExpression}, constants.level);
 
               for (var i : u32 = 0u; i < ${componentCount}u; i = i + 1u) {
                 result.values[flatIndex + i] = texel.${indexExpression};
@@ -86,21 +95,28 @@ export const checkContentsBySampling: CheckContents = (
     });
 
     for (const layer of layers) {
-      const ubo = t.device.createBuffer({
+      const ubo = t.createBufferTracked({
         mappedAtCreation: true,
-        size: 4,
+        size: 8,
         usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
       });
-      new Int32Array(ubo.getMappedRange(), 0, 1)[0] = level;
+      new Int32Array(ubo.getMappedRange()).set([level, layer]);
       ubo.unmap();
 
       const byteLength =
         width * height * depth * ReadbackTypedArray.BYTES_PER_ELEMENT * rep.componentOrder.length;
-      const resultBuffer = t.device.createBuffer({
+      const resultBuffer = t.createBufferTracked({
         size: byteLength,
         usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
       });
-      t.trackForCleanup(resultBuffer);
+
+      const viewDescriptor: GPUTextureViewDescriptor = {
+        ...(!t.isCompatibility && {
+          baseArrayLayer: layer,
+          arrayLayerCount: 1,
+        }),
+        dimension: viewDimension,
+      };
 
       const bindGroup = t.device.createBindGroup({
         layout: computePipeline.getBindGroupLayout(0),
@@ -111,10 +127,7 @@ export const checkContentsBySampling: CheckContents = (
           },
           {
             binding: 1,
-            resource: texture.createView({
-              baseArrayLayer: layer,
-              arrayLayerCount: 1,
-            }),
+            resource: texture.createView(viewDescriptor),
           },
           {
             binding: 3,
@@ -125,12 +138,12 @@ export const checkContentsBySampling: CheckContents = (
         ],
       });
 
-      const commandEncoder = t.device.createCommandEncoder();
+      const commandEncoder = t.device.createCommandEncoder({ label: 'checkContentsBySampling' });
       const pass = commandEncoder.beginComputePass();
       pass.setPipeline(computePipeline);
       pass.setBindGroup(0, bindGroup);
-      pass.dispatch(width, height, depth);
-      pass.endPass();
+      pass.dispatchWorkgroups(width, height, depth);
+      pass.end();
       t.queue.submit([commandEncoder.finish()]);
       ubo.destroy();
 

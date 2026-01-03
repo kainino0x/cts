@@ -17,32 +17,49 @@ const kBufferUsageExp = {
   UNIFORM: 0x0040,
   STORAGE: 0x0080,
   INDIRECT: 0x0100,
-  QUERY_RESOLVE: 0x0200 };
-
-g.test('BufferUsage,count').fn(t => {
+  QUERY_RESOLVE: 0x0200
+};
+g.test('BufferUsage,count').fn((t) => {
   t.assertMemberCount(GPUBufferUsage, kBufferUsageExp);
 });
 g.test('BufferUsage,values').
-params(u => u.combine('key', Object.keys(kBufferUsageExp))).
-fn(t => {
+params((u) => u.combine('key', Object.keys(kBufferUsageExp))).
+fn((t) => {
   const { key } = t.params;
   t.assertMember(GPUBufferUsage, kBufferUsageExp, key);
 });
 
-const kTextureUsageExp = {
+const kTextureUsageExp =
+
+
+
+
+
+
+
+{
   COPY_SRC: 0x01,
   COPY_DST: 0x02,
   TEXTURE_BINDING: 0x04,
   STORAGE_BINDING: 0x08,
-  RENDER_ATTACHMENT: 0x10 };
-
-g.test('TextureUsage,count').fn(t => {
+  RENDER_ATTACHMENT: 0x10,
+  TRANSIENT_ATTACHMENT: 0x20
+};
+g.test('TextureUsage,count').fn((t) => {
+  // MAINTENANCE_TODO(#4509): Remove this when TRANSIENT_ATTACHMENT is added to the WebGPU spec.
+  if (!('TRANSIENT_ATTACHMENT' in GPUTextureUsage)) {
+    delete kTextureUsageExp.TRANSIENT_ATTACHMENT;
+  }
   t.assertMemberCount(GPUTextureUsage, kTextureUsageExp);
 });
 g.test('TextureUsage,values').
-params(u => u.combine('key', Object.keys(kTextureUsageExp))).
-fn(t => {
+params((u) => u.combine('key', Object.keys(kTextureUsageExp))).
+fn((t) => {
   const { key } = t.params;
+
+  // MAINTENANCE_TODO(#4509): Remove this when TRANSIENT_ATTACHMENT is added to the WebGPU spec.
+  t.skipIf(key === 'TRANSIENT_ATTACHMENT' && !('TRANSIENT_ATTACHMENT' in GPUTextureUsage));
+
   t.assertMember(GPUTextureUsage, kTextureUsageExp, key);
 });
 
@@ -51,14 +68,14 @@ const kColorWriteExp = {
   GREEN: 0x2,
   BLUE: 0x4,
   ALPHA: 0x8,
-  ALL: 0xf };
-
-g.test('ColorWrite,count').fn(t => {
+  ALL: 0xf
+};
+g.test('ColorWrite,count').fn((t) => {
   t.assertMemberCount(GPUColorWrite, kColorWriteExp);
 });
 g.test('ColorWrite,values').
-params(u => u.combine('key', Object.keys(kColorWriteExp))).
-fn(t => {
+params((u) => u.combine('key', Object.keys(kColorWriteExp))).
+fn((t) => {
   const { key } = t.params;
   t.assertMember(GPUColorWrite, kColorWriteExp, key);
 });
@@ -66,14 +83,14 @@ fn(t => {
 const kShaderStageExp = {
   VERTEX: 0x1,
   FRAGMENT: 0x2,
-  COMPUTE: 0x4 };
-
-g.test('ShaderStage,count').fn(t => {
+  COMPUTE: 0x4
+};
+g.test('ShaderStage,count').fn((t) => {
   t.assertMemberCount(GPUShaderStage, kShaderStageExp);
 });
 g.test('ShaderStage,values').
-params(u => u.combine('key', Object.keys(kShaderStageExp))).
-fn(t => {
+params((u) => u.combine('key', Object.keys(kShaderStageExp))).
+fn((t) => {
   const { key } = t.params;
   t.assertMember(GPUShaderStage, kShaderStageExp, key);
 });

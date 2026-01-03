@@ -1,10 +1,12 @@
 /**
 * AUTO-GENERATED - DO NOT EDIT. Source: https://github.com/gpuweb/cts
-**/import { SkipTestCase, UnexpectedPassError } from '../../framework/fixture.js';import { now, assert } from '../../util/util.js';
+**/import { SkipTestCase, UnexpectedPassError } from '../../framework/fixture.js';import { globalTestConfig } from '../../framework/test_config.js';import { now, assert } from '../../util/util.js';
+
 import { LogMessageWithStack } from './log_message.js';var
 
 
-LogSeverity;(function (LogSeverity) {LogSeverity[LogSeverity["Pass"] = 0] = "Pass";LogSeverity[LogSeverity["Skip"] = 1] = "Skip";LogSeverity[LogSeverity["Warn"] = 2] = "Warn";LogSeverity[LogSeverity["ExpectFailed"] = 3] = "ExpectFailed";LogSeverity[LogSeverity["ValidationFailed"] = 4] = "ValidationFailed";LogSeverity[LogSeverity["ThrewException"] = 5] = "ThrewException";})(LogSeverity || (LogSeverity = {}));
+LogSeverity = /*#__PURE__*/function (LogSeverity) {LogSeverity[LogSeverity["NotRun"] = 0] = "NotRun";LogSeverity[LogSeverity["Skip"] = 1] = "Skip";LogSeverity[LogSeverity["Pass"] = 2] = "Pass";LogSeverity[LogSeverity["Warn"] = 3] = "Warn";LogSeverity[LogSeverity["ExpectFailed"] = 4] = "ExpectFailed";LogSeverity[LogSeverity["ValidationFailed"] = 5] = "ValidationFailed";LogSeverity[LogSeverity["ThrewException"] = 6] = "ThrewException";return LogSeverity;}(LogSeverity || {});
+
 
 
 
@@ -16,19 +18,33 @@ LogSeverity;(function (LogSeverity) {LogSeverity[LogSeverity["Pass"] = 0] = "Pas
 const kMaxLogStacks = 2;
 const kMinSeverityForStack = LogSeverity.Warn;
 
+function logSeverityToString(status) {
+  switch (status) {
+    case LogSeverity.NotRun:
+      return 'notrun';
+    case LogSeverity.Pass:
+      return 'pass';
+    case LogSeverity.Skip:
+      return 'skip';
+    case LogSeverity.Warn:
+      return 'warn';
+    default:
+      return 'fail'; // Everything else is an error
+  }
+}
+
 /** Holds onto a LiveTestCaseResult owned by the Logger, and writes the results into it. */
 export class TestCaseRecorder {
 
+  nonskippedSubcaseCount = 0;
   inSubCase = false;
-  subCaseStatus = LogSeverity.Pass;
-  finalCaseStatus = LogSeverity.Pass;
+  subCaseStatus = LogSeverity.NotRun;
+  finalCaseStatus = LogSeverity.NotRun;
   hideStacksBelowSeverity = kMinSeverityForStack;
   startTime = -1;
   logs = [];
   logLinesAtCurrentSeverity = 0;
   debugging = false;
-  /** Used to dedup log messages which have identical stacks. */
-  messagesForPreviouslySeenStacks = new Map();
 
   constructor(result, debugging) {
     this.result = result;
@@ -41,31 +57,33 @@ export class TestCaseRecorder {
   }
 
   finish() {
-    assert(this.startTime >= 0, 'finish() before start()');
+    // This is a framework error. If this assert is hit, it won't be localized
+    // to a test. The whole test run will fail out.
+    assert(this.startTime >= 0, 'internal error: finish() before start()');
 
     const timeMilliseconds = now() - this.startTime;
     // Round to next microsecond to avoid storing useless .xxxx00000000000002 in results.
     this.result.timems = Math.ceil(timeMilliseconds * 1000) / 1000;
 
+    if (this.finalCaseStatus === LogSeverity.Skip && this.nonskippedSubcaseCount !== 0) {
+      this.threw(new Error('internal error: case is "skip" but has nonskipped subcases'));
+    }
+
     // Convert numeric enum back to string (but expose 'exception' as 'fail')
-    this.result.status =
-    this.finalCaseStatus === LogSeverity.Pass ?
-    'pass' :
-    this.finalCaseStatus === LogSeverity.Skip ?
-    'skip' :
-    this.finalCaseStatus === LogSeverity.Warn ?
-    'warn' :
-    'fail'; // Everything else is an error
+    this.result.status = logSeverityToString(this.finalCaseStatus);
 
     this.result.logs = this.logs;
   }
 
   beginSubCase() {
-    this.subCaseStatus = LogSeverity.Pass;
+    this.subCaseStatus = LogSeverity.NotRun;
     this.inSubCase = true;
   }
 
   endSubCase(expectedStatus) {
+    if (this.subCaseStatus !== LogSeverity.Skip) {
+      this.nonskippedSubcaseCount++;
+    }
     try {
       if (expectedStatus === 'fail') {
         if (this.subCaseStatus <= LogSeverity.Warn) {
@@ -76,9 +94,7 @@ export class TestCaseRecorder {
       }
     } finally {
       this.inSubCase = false;
-      if (this.subCaseStatus > this.finalCaseStatus) {
-        this.finalCaseStatus = this.subCaseStatus;
-      }
+      this.finalCaseStatus = Math.max(this.finalCaseStatus, this.subCaseStatus);
     }
   }
 
@@ -92,7 +108,8 @@ export class TestCaseRecorder {
   }
 
   info(ex) {
-    this.logImpl(LogSeverity.Pass, 'INFO', ex);
+    // We need this to use the lowest LogSeverity so it doesn't override the current severity for this test case.
+    this.logImpl(LogSeverity.NotRun, 'INFO', ex);
   }
 
   skipped(ex) {
@@ -111,22 +128,34 @@ export class TestCaseRecorder {
     this.logImpl(LogSeverity.ValidationFailed, 'VALIDATION FAILED', ex);
   }
 
+  passed() {
+    if (this.inSubCase) {
+      this.subCaseStatus = Math.max(this.subCaseStatus, LogSeverity.Pass);
+    } else {
+      this.finalCaseStatus = Math.max(this.finalCaseStatus, LogSeverity.Pass);
+    }
+  }
+
   threw(ex) {
     if (ex instanceof SkipTestCase) {
       this.skipped(ex);
       return;
     }
-    this.logImpl(LogSeverity.ThrewException, 'EXCEPTION', ex);
+    // logImpl will discard the original error's ex.name. Preserve it here.
+    const name = ex instanceof Error ? `EXCEPTION: ${ex.name}` : 'EXCEPTION';
+    this.logImpl(LogSeverity.ThrewException, name, ex);
   }
 
   logImpl(level, name, baseException) {
-    const logMessage = new LogMessageWithStack(name, baseException);
+    assert(baseException instanceof Error, 'test threw a non-Error object');
+    globalTestConfig.testHeartbeatCallback();
+    const logMessage = LogMessageWithStack.wrapError(name, baseException);
 
     // Final case status should be the "worst" of all log entries.
     if (this.inSubCase) {
-      if (level > this.subCaseStatus) this.subCaseStatus = level;
+      this.subCaseStatus = Math.max(this.subCaseStatus, level);
     } else {
-      if (level > this.finalCaseStatus) this.finalCaseStatus = level;
+      this.finalCaseStatus = Math.max(this.finalCaseStatus, level);
     }
 
     // setFirstLineOnly for all logs except `kMaxLogStacks` stacks at the highest severity
@@ -151,5 +180,45 @@ export class TestCaseRecorder {
     }
 
     this.logs.push(logMessage);
-  }}
+  }
+
+  /**
+   * Make a recorder that will defer all calls until `deferUntilPromise` resolves.
+   * This is used for running subcases, which run concurrently, to ensure that
+   * logs from all the previous subcases have been flushed before flushing new logs,
+   * so all logs are in order as if the subcases had not been concurrent.
+   */
+  makeDeferredSubRecorder(prefix, deferUntilPromise) {
+    return new Proxy(this, {
+      get: (target, k) => {
+        switch (k) {
+          case 'logImpl':
+            return function (level, name, baseException) {
+              globalTestConfig.testHeartbeatCallback();
+              void deferUntilPromise.then(() => {
+                target.logImpl(level, prefix + name, baseException);
+              });
+            };
+          case 'beginSubCase':
+            return function () {
+              globalTestConfig.testHeartbeatCallback();
+              void deferUntilPromise.then(() => {
+                target.beginSubCase();
+              });
+            };
+          case 'endSubCase':
+            return function (expectedStatus) {
+              globalTestConfig.testHeartbeatCallback();
+              void deferUntilPromise.then(() => {
+                target.endSubCase(expectedStatus);
+              });
+            };
+          default:
+
+            return target[k];
+        }
+      }
+    });
+  }
+}
 //# sourceMappingURL=test_case_recorder.js.map

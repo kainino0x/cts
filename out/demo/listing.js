@@ -1,4 +1,4 @@
-// AUTO-GENERATED - DO NOT EDIT. See src/common/tools/gen_listings.ts.
+// AUTO-GENERATED - DO NOT EDIT. See src/common/tools/gen_listings_and_webworkers.ts.
 
 export const listing = [
   {
@@ -53,6 +53,11 @@ export const listing = [
   {
     "file": [
       "json"
+    ]
+  },
+  {
+    "file": [
+      "subcases"
     ]
   }
 ];

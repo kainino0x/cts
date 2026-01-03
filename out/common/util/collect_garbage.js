@@ -4,13 +4,13 @@
 
 
 /**
-                                                  * Attempts to trigger JavaScript garbage collection, either using explicit methods if exposed
-                                                  * (may be available in testing environments with special browser runtime flags set), or using
-                                                  * some weird tricks to incur GC pressure. Adopted from the WebGL CTS.
-                                                  */
+ * Attempts to trigger JavaScript garbage collection, either using explicit methods if exposed
+ * (may be available in testing environments with special browser runtime flags set), or using
+ * some weird tricks to incur GC pressure. Adopted from the WebGL CTS.
+ */
 export async function attemptGarbageCollection() {
 
-  const w = self;
+  const w = globalThis;
   if (w.GCController) {
     w.GCController.collect();
     return;
@@ -27,9 +27,9 @@ export async function attemptGarbageCollection() {
     garbageCollect();
     return;
   } catch (e) {
+
     // ignore any failure
   }
-
   if (w.gc) {
     w.gc();
     return;
@@ -43,7 +43,9 @@ export async function attemptGarbageCollection() {
   let i;
   function gcRec(n) {
     if (n < 1) return;
+
     let temp = { i: 'ab' + i + i / 100000 };
+
     temp = temp + 'foo';
     temp; // dummy use of unused variable
     gcRec(n - 1);

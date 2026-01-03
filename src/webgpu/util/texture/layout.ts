@@ -1,13 +1,16 @@
 import { assert, memcpy } from '../../../common/util/util.js';
 import {
-  EncodableTextureFormat,
-  kTextureFormatInfo,
+  resolvePerAspectFormat,
   SizedTextureFormat,
-} from '../../capability_info.js';
+  EncodableTextureFormat,
+  getBlockInfoForTextureFormat,
+  getBlockInfoForEncodableTextureFormat,
+} from '../../format_info.js';
+import { GPUTest } from '../../gpu_test.js';
 import { align } from '../math.js';
 import { reifyExtent3D } from '../unions.js';
 
-import { virtualMipSize } from './base.js';
+import { physicalMipSize, virtualMipSize } from './base.js';
 
 /** The minimum `bytesPerRow` alignment, per spec. */
 export const kBytesPerRowAlignment = 256;
@@ -21,12 +24,18 @@ export interface LayoutOptions {
   mipLevel: number;
   bytesPerRow?: number;
   rowsPerImage?: number;
+  aspect?: GPUTextureAspect;
 }
 
-const kDefaultLayoutOptions = { mipLevel: 0, bytesPerRow: undefined, rowsPerImage: undefined };
+const kDefaultLayoutOptions = {
+  mipLevel: 0,
+  bytesPerRow: undefined,
+  rowsPerImage: undefined,
+  aspect: 'all' as const,
+};
 
-/** The info returned by {@link getTextureCopyLayout}. */
-export interface TextureCopyLayout {
+/** The info returned by {@link getTextureSubCopyLayout}. */
+export interface TextureSubCopyLayout {
   bytesPerBlock: number;
   byteLength: number;
   /** Number of bytes in each row, not accounting for {@link kBytesPerRowAlignment}. */
@@ -38,34 +47,78 @@ export interface TextureCopyLayout {
   bytesPerRow: number;
   /** Actual value of rowsPerImage, defaulting to `mipSize[1]` if not overridden. */
   rowsPerImage: number;
-  /** Size of the mip level being copied. */
+}
+
+/** The info returned by {@link getTextureCopyLayout}. */
+export interface TextureCopyLayout extends TextureSubCopyLayout {
   mipSize: [number, number, number];
 }
 
 /**
- * Computes layout information for a copy of size `size` to/from a GPUTexture with the provided
- * `format` and `dimension`.
+ * Computes layout information for a copy of the whole subresource at `mipLevel` of a GPUTexture
+ * of size `baseSize` with the provided `format` and `dimension`.
+ *
+ * Computes default values for `bytesPerRow` and `rowsPerImage` if not specified.
+ *
+ * MAINTENANCE_TODO: Change input/output to Required<GPUExtent3DDict> for consistency.
+ */
+export function getTextureCopyLayout(
+  format: GPUTextureFormat,
+  dimension: GPUTextureDimension,
+  baseSize: readonly [number, number, number],
+  { mipLevel, bytesPerRow, rowsPerImage, aspect }: LayoutOptions = kDefaultLayoutOptions
+): TextureCopyLayout {
+  const mipSize = physicalMipSize(
+    { width: baseSize[0], height: baseSize[1], depthOrArrayLayers: baseSize[2] },
+    format,
+    dimension,
+    mipLevel
+  );
+
+  const layout = getTextureSubCopyLayout(format, mipSize, { bytesPerRow, rowsPerImage, aspect });
+  return { ...layout, mipSize: [mipSize.width, mipSize.height, mipSize.depthOrArrayLayers] };
+}
+
+/**
+ * Computes layout information for a copy of size `copySize` to/from a GPUTexture with the provided
+ * `format`.
  *
  * Computes default values for `bytesPerRow` and `rowsPerImage` if not specified.
  */
-export function getTextureCopyLayout(
-  format: SizedTextureFormat,
-  dimension: GPUTextureDimension,
-  size: readonly [number, number, number],
-  options: LayoutOptions = kDefaultLayoutOptions
-): TextureCopyLayout {
-  const { mipLevel } = options;
-  let { bytesPerRow, rowsPerImage } = options;
+export function getTextureSubCopyLayout(
+  format: GPUTextureFormat,
+  copySize: GPUExtent3D,
+  {
+    bytesPerRow,
+    rowsPerImage,
+    aspect = 'all' as const,
+  }: {
+    readonly bytesPerRow?: number;
+    readonly rowsPerImage?: number;
+    readonly aspect?: GPUTextureAspect;
+  } = {}
+): TextureSubCopyLayout {
+  format = resolvePerAspectFormat(format, aspect);
+  const { blockWidth, blockHeight, bytesPerBlock } = getBlockInfoForTextureFormat(format);
+  assert(bytesPerBlock !== undefined);
 
-  const mipSize = virtualMipSize(dimension, size, mipLevel);
+  const copySize_ = reifyExtent3D(copySize);
+  assert(
+    copySize_.width > 0 && copySize_.height > 0 && copySize_.depthOrArrayLayers > 0,
+    'not implemented for empty copySize'
+  );
+  assert(
+    copySize_.width % blockWidth === 0 && copySize_.height % blockHeight === 0,
+    () =>
+      `copySize (${copySize_.width},${copySize_.height}) must be a multiple of the block size (${blockWidth},${blockHeight})`
+  );
+  const copySizeBlocks = {
+    width: copySize_.width / blockWidth,
+    height: copySize_.height / blockHeight,
+    depthOrArrayLayers: copySize_.depthOrArrayLayers,
+  };
 
-  const { blockWidth, blockHeight, bytesPerBlock } = kTextureFormatInfo[format];
-
-  // We align mipSize to be the physical size of the texture subresource.
-  mipSize[0] = align(mipSize[0], blockWidth);
-  mipSize[1] = align(mipSize[1], blockHeight);
-
-  const minBytesPerRow = bytesInACompleteRow(mipSize[0], format);
+  const minBytesPerRow = copySizeBlocks.width * bytesPerBlock;
   const alignedMinBytesPerRow = align(minBytesPerRow, kBytesPerRowAlignment);
   if (bytesPerRow !== undefined) {
     assert(bytesPerRow >= alignedMinBytesPerRow);
@@ -75,15 +128,15 @@ export function getTextureCopyLayout(
   }
 
   if (rowsPerImage !== undefined) {
-    assert(rowsPerImage >= mipSize[1]);
+    assert(rowsPerImage >= copySizeBlocks.height);
   } else {
-    rowsPerImage = mipSize[1];
+    rowsPerImage = copySizeBlocks.height;
   }
 
   const bytesPerSlice = bytesPerRow * rowsPerImage;
   const sliceSize =
-    bytesPerRow * (mipSize[1] / blockHeight - 1) + bytesPerBlock * (mipSize[0] / blockWidth);
-  const byteLength = bytesPerSlice * (mipSize[2] - 1) + sliceSize;
+    bytesPerRow * (copySizeBlocks.height - 1) + bytesPerBlock * copySizeBlocks.width;
+  const byteLength = bytesPerSlice * (copySizeBlocks.depthOrArrayLayers - 1) + sliceSize;
 
   return {
     bytesPerBlock,
@@ -91,7 +144,6 @@ export function getTextureCopyLayout(
     minBytesPerRow,
     bytesPerRow,
     rowsPerImage,
-    mipSize,
   };
 }
 
@@ -110,7 +162,7 @@ export function fillTextureDataWithTexelValue(
   size: [number, number, number],
   options: LayoutOptions = kDefaultLayoutOptions
 ): void {
-  const { blockWidth, blockHeight, bytesPerBlock } = kTextureFormatInfo[format];
+  const { blockWidth, blockHeight, bytesPerBlock } = getBlockInfoForEncodableTextureFormat(format);
   // Block formats are not handled correctly below.
   assert(blockWidth === 1);
   assert(blockHeight === 1);
@@ -145,8 +197,8 @@ export function fillTextureDataWithTexelValue(
  * texture where every texel has the byte value `texelValue`.
  */
 export function createTextureUploadBuffer(
+  t: GPUTest,
   texelValue: ArrayBuffer,
-  device: GPUDevice,
   format: EncodableTextureFormat,
   dimension: GPUTextureDimension,
   size: [number, number, number],
@@ -163,7 +215,7 @@ export function createTextureUploadBuffer(
     options
   );
 
-  const buffer = device.createBuffer({
+  const buffer = t.createBufferTracked({
     mappedAtCreation: true,
     size: byteLength,
     usage: GPUBufferUsage.COPY_SRC,
@@ -192,7 +244,8 @@ export const kImageCopyTypes: readonly ImageCopyType[] = [
  * Computes `bytesInACompleteRow` (as defined by the WebGPU spec) for image copies (B2T/T2B/writeTexture).
  */
 export function bytesInACompleteRow(copyWidth: number, format: SizedTextureFormat): number {
-  const info = kTextureFormatInfo[format];
+  const info = getBlockInfoForTextureFormat(format);
+  assert(!!info.bytesPerBlock);
   assert(copyWidth % info.blockWidth === 0);
   return (info.bytesPerBlock * copyWidth) / info.blockWidth;
 }
@@ -240,7 +293,7 @@ function validateRowsPerImage({
 }
 
 interface DataBytesForCopyArgs {
-  layout: GPUImageDataLayout;
+  layout: GPUTexelCopyBufferLayout;
   format: SizedTextureFormat;
   copySize: Readonly<GPUExtent3DDict> | readonly number[];
   method: ImageCopyType;
@@ -269,7 +322,8 @@ export function dataBytesForCopyOrOverestimate({
 }: DataBytesForCopyArgs): { minDataSizeOrOverestimate: number; copyValid: boolean } {
   const copyExtent = reifyExtent3D(copySize_);
 
-  const info = kTextureFormatInfo[format];
+  const info = getBlockInfoForTextureFormat(format);
+  assert(!!info.bytesPerBlock);
   assert(copyExtent.width % info.blockWidth === 0);
   assert(copyExtent.height % info.blockHeight === 0);
   const sizeInBlocks = {

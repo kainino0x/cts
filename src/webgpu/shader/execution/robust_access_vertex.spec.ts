@@ -61,7 +61,8 @@ it should be added into drawCallTestParameter list.
 
 import { makeTestGroup } from '../../../common/framework/test_group.js';
 import { assert } from '../../../common/util/util.js';
-import { GPUTest } from '../../gpu_test.js';
+import { AllFeaturesMaxLimitsGPUTest, GPUTest } from '../../gpu_test.js';
+import * as ttu from '../../texture_test_utils.js';
 
 // Encapsulates a draw call (either indexed or non-indexed)
 class DrawCall {
@@ -210,7 +211,7 @@ class DrawCall {
       size -= 1; // Shave off one byte from the buffer size.
       length -= 1; // And one whole element from the writeBuffer.
     }
-    const buffer = this.test.device.createBuffer({
+    const buffer = this.test.createBufferTracked({
       size,
       usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST, // Ensure that buffer can be used by writeBuffer
     });
@@ -268,12 +269,12 @@ const typeInfoMap: { [k: string]: VertexInfo } = {
   float32x4: {
     wgslType: 'vec4<f32>',
     sizeInBytes: 16,
-    validationFunc: `return valid(v.x) && valid(v.y) && valid(v.z) && valid(v.w) ||
-                            v.x == 0.0 && v.y == 0.0 && v.z == 0.0 && (v.w == 0.0 || v.w == 1.0);`,
+    validationFunc: `return (valid(v.x) && valid(v.y) && valid(v.z) && valid(v.w)) ||
+                            (v.x == 0.0 && v.y == 0.0 && v.z == 0.0 && (v.w == 0.0 || v.w == 1.0));`,
   },
 };
 
-class F extends GPUTest {
+class F extends AllFeaturesMaxLimitsGPUTest {
   generateBufferContents(
     numVertices: number,
     attributesPerBuffer: number,
@@ -303,9 +304,9 @@ class F extends GPUTest {
   generateVertexBufferDescriptors(
     bufferCount: number,
     attributesPerBuffer: number,
-    type: GPUVertexFormat
+    format: GPUVertexFormat
   ) {
-    const typeInfo = typeInfoMap[type];
+    const typeInfo = typeInfoMap[format];
     // Vertex buffer descriptors
     const buffers: GPUVertexBufferLayout[] = [];
     {
@@ -319,7 +320,7 @@ class F extends GPUTest {
             .map((_, i) => ({
               shaderLocation: currAttribute++,
               offset: i * typeInfo.sizeInBytes,
-              format: type as GPUVertexFormat,
+              format,
             })),
         });
       }
@@ -351,7 +352,7 @@ class F extends GPUTest {
       let currAttribute = 0;
       for (let i = 0; i < bufferCount; i++) {
         for (let j = 0; j < attributesPerBuffer; j++) {
-          layoutStr += `[[location(${currAttribute})]] a_${currAttribute} : ${typeInfo.wgslType};\n`;
+          layoutStr += `@location(${currAttribute}) a_${currAttribute} : ${typeInfo.wgslType},\n`;
           attributeNames.push(`a_${currAttribute}`);
           currAttribute++;
         }
@@ -370,10 +371,10 @@ class F extends GPUTest {
         ${typeInfo.validationFunc}
       }
 
-      [[stage(vertex)]] fn main(
-        [[builtin(vertex_index)]] VertexIndex : u32,
+      @vertex fn main(
+        @builtin(vertex_index) VertexIndex : u32,
         attributes : Attributes
-        ) -> [[builtin(position)]] vec4<f32> {
+        ) -> @builtin(position) vec4<f32> {
         var attributesInBounds = ${attributeNames
           .map(a => `validationFunc(attributes.${a})`)
           .join(' && ')};
@@ -416,6 +417,7 @@ class F extends GPUTest {
     buffers: GPUVertexBufferLayout[];
   }): GPURenderPipeline {
     const pipeline = this.device.createRenderPipeline({
+      layout: 'auto',
       vertex: {
         module: this.device.createShaderModule({
           code: this.generateVertexShaderCode({
@@ -434,7 +436,7 @@ class F extends GPUTest {
       fragment: {
         module: this.device.createShaderModule({
           code: `
-            [[stage(fragment)]] fn main() -> [[location(0)]] vec4<f32> {
+            @fragment fn main() -> @location(0) vec4<f32> {
               return vec4<f32>(1.0, 0.0, 0.0, 1.0);
             }`,
         }),
@@ -486,7 +488,7 @@ class F extends GPUTest {
       buffers,
     });
 
-    const colorAttachment = this.device.createTexture({
+    const colorAttachment = this.createTextureTracked({
       format: 'rgba8unorm',
       size: { width: 2, height: 1, depthOrArrayLayers: 1 },
       usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.RENDER_ATTACHMENT,
@@ -498,8 +500,9 @@ class F extends GPUTest {
       colorAttachments: [
         {
           view: colorAttachmentView,
+          clearValue: { r: 0.0, g: 1.0, b: 0.0, a: 1.0 },
+          loadOp: 'clear',
           storeOp: 'store',
-          loadValue: { r: 0.0, g: 1.0, b: 0.0, a: 1.0 },
         },
       ],
     });
@@ -508,16 +511,13 @@ class F extends GPUTest {
     // Run the draw variant
     drawCall.insertInto(pass, isIndexed, isIndirect);
 
-    pass.endPass();
+    pass.end();
     this.device.queue.submit([encoder.finish()]);
 
     // Validate we see green on the left pixel, showing that no failure case is detected
-    this.expectSinglePixelIn2DTexture(
-      colorAttachment,
-      'rgba8unorm',
-      { x: 0, y: 0 },
-      { exp: new Uint8Array([0x00, 0xff, 0x00, 0xff]), layout: { mipLevel: 0 } }
-    );
+    ttu.expectSinglePixelComparisonsAreOkInTexture(this, { texture: colorAttachment }, [
+      { coord: { x: 0, y: 0 }, exp: new Uint8Array([0x00, 0xff, 0x00, 0xff]) },
+    ]);
   }
 }
 
@@ -546,10 +546,11 @@ g.test('vertex_buffer_access')
         .combine('additionalBuffers', [0, 4])
         .combine('partialLastNumber', [false, true])
         .combine('offsetVertexBuffer', [false, true])
+        .beginSubcases()
         .combine('errorScale', [0, 1, 4, 10 ** 2, 10 ** 4, 10 ** 6])
         .unless(p => p.drawCallTestParameter === 'instanceCount' && p.errorScale > 10 ** 4) // To avoid timeout
   )
-  .fn(async t => {
+  .fn(t => {
     const p = t.params;
     const typeInfo = typeInfoMap[p.type];
 

@@ -1,10 +1,10 @@
-/** A range of indices expressed as { begin, count }. */
+/** A range of indices expressed as `{ begin, count }`. */
 export interface BeginCountRange {
   begin: number;
   count: number;
 }
 
-/* A range of indices, expressed as { begin, end }. */
+/* A range of indices, expressed as `{ begin, end }`. */
 export interface BeginEndRange {
   begin: number;
   end: number;
@@ -43,7 +43,7 @@ export class SubresourceRange {
   }
 
   /**
-   * Iterates over the "rectangle" of { mip level, array layer } pairs represented by the range.
+   * Iterates over the "rectangle" of `{ level, layer }` pairs represented by the range.
    */
   *each(): Generator<{ level: number; layer: number }> {
     for (let level = this.mipRange.begin; level < this.mipRange.end; ++level) {

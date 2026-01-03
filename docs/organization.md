@@ -69,8 +69,45 @@ an aspect of the API is tested fully. Examples:
 - [`webgpu:api,validation,render_pass,resolve:resolve_attachment:*`](https://github.com/gpuweb/cts/blob/ded3b7c8a4680a1a01621a8ac859facefadf32d0/src/webgpu/api/validation/render_pass/resolve.spec.ts#L35)
 - [`webgpu:api,validation,createBindGroupLayout:bindingTypeSpecific_optional_members:*`](https://github.com/gpuweb/cts/blob/ded3b7c8a4680a1a01621a8ac859facefadf32d0/src/webgpu/api/validation/createBindGroupLayout.spec.ts#L68)
 
-Use your own discretion when deciding the balance between heavily parameterizing
-a test and writing multiple separate tests.
+Combinatorial explosions make it easy to over-parameterize tests. Be intentional about the
+combinations of parameters being tested. For example, for validation tests, avoid (sub)cases
+that trigger multiple validation errors at once. In general, avoid combining over parameters
+that shouldn't have any significant interaction in an implementation.
+
+- Instead of:
+    ```ts
+    u
+      // valid and invalid values for x/y
+      .combine('x', [0, 1, 4, 5, 100])
+      .combine('y', [0, 1, 4, 5, 100])
+    ```
+- Try:
+    ```ts
+    u.combineWithParams([
+      // control case
+      { x: 4, y: 4 },
+      // invalid values of x
+      { x: 0, y: 4 },
+      { x: 5, y: 4 },
+      // invalid values of y
+      { x: 4, y: 0 },
+      { x: 4, y: 5 },
+    ])
+    ```
+- Or even:
+    ```ts
+    u.combineWithParams([
+      // control case
+      { x: 4, y: 4 },
+      // invalid values of x
+      ...u.combine('y', [4]).combine('x', [0, 5])
+      // invalid values of y
+      ...u.combine('x', [4]).combine('y', [0, 5])
+    ])
+    ```
+
+Use your own discretion when deciding to heavily parameterize a test, use a
+more targeted parameterization, or write multiple separate tests.
 
 #### Guidelines
 

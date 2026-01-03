@@ -5,10 +5,10 @@ Tests for TestQuery
 `;import { makeTestGroup } from '../common/framework/test_group.js';
 import { parseQuery } from '../common/internal/query/parseQuery.js';
 import {
-TestQueryMultiFile,
-TestQueryMultiTest,
-TestQueryMultiCase,
-TestQuerySingleCase } from
+  TestQueryMultiFile,
+  TestQueryMultiTest,
+  TestQueryMultiCase,
+  TestQuerySingleCase } from
 
 '../common/internal/query/query.js';
 
@@ -53,9 +53,9 @@ class F extends UnitTest {
         const v1 = p1.params[key];
         const v2 = p2.params[key];
         this.expect(
-        v1 === v2 ||
-        (typeof v1 === 'number' && isNaN(v1)) === (typeof v2 === 'number' && isNaN(v2)));
-
+          v1 === v2 ||
+          (typeof v1 === 'number' && isNaN(v1)) === (typeof v2 === 'number' && isNaN(v2))
+        );
         this.expect(Object.is(v1, -0) === Object.is(v2, -0));
       }
     }
@@ -63,12 +63,12 @@ class F extends UnitTest {
 
   expectQueryParse(s, q) {
     this.expectQueriesEqual(q, parseQuery(s));
-  }}
-
+  }
+}
 
 export const g = makeTestGroup(F);
 
-g.test('constructor').fn(t => {
+g.test('constructor').fn((t) => {
   t.shouldThrow('Error', () => new TestQueryMultiTest('suite', [], []));
 
   t.shouldThrow('Error', () => new TestQueryMultiCase('suite', ['a'], [], {}));
@@ -80,7 +80,7 @@ g.test('constructor').fn(t => {
   t.shouldThrow('Error', () => new TestQuerySingleCase('suite', [], [], {}));
 });
 
-g.test('toString').fn(t => {
+g.test('toString').fn((t) => {
   t.expectToString(new TestQueryMultiFile('s', []), 's:*');
   t.expectToString(new TestQueryMultiFile('s', ['a']), 's:a,*');
   t.expectToString(new TestQueryMultiFile('s', ['a', 'b']), 's:a,b,*');
@@ -89,29 +89,29 @@ g.test('toString').fn(t => {
   t.expectToString(new TestQueryMultiTest('s', ['a', 'b'], ['c', 'd']), 's:a,b:c,d,*');
   t.expectToString(new TestQueryMultiCase('s', ['a', 'b'], ['c', 'd'], {}), 's:a,b:c,d:*');
   t.expectToString(
-  new TestQueryMultiCase('s', ['a', 'b'], ['c', 'd'], { x: 1 }),
-  's:a,b:c,d:x=1;*');
-
+    new TestQueryMultiCase('s', ['a', 'b'], ['c', 'd'], { x: 1 }),
+    's:a,b:c,d:x=1;*'
+  );
   t.expectToString(
-  new TestQueryMultiCase('s', ['a', 'b'], ['c', 'd'], { x: 1, y: 2 }),
-  's:a,b:c,d:x=1;y=2;*');
-
+    new TestQueryMultiCase('s', ['a', 'b'], ['c', 'd'], { x: 1, y: 2 }),
+    's:a,b:c,d:x=1;y=2;*'
+  );
   t.expectToString(
-  new TestQuerySingleCase('s', ['a', 'b'], ['c', 'd'], { x: 1, y: 2 }),
-  's:a,b:c,d:x=1;y=2');
-
+    new TestQuerySingleCase('s', ['a', 'b'], ['c', 'd'], { x: 1, y: 2 }),
+    's:a,b:c,d:x=1;y=2'
+  );
   t.expectToString(new TestQuerySingleCase('s', ['a', 'b'], ['c', 'd'], {}), 's:a,b:c,d:');
 
   // Test handling of magic param value that convert to NaN/undefined/Infinity/etc.
   t.expectToString(new TestQuerySingleCase('s', ['a'], ['b'], { c: NaN }), 's:a:b:c="_nan_"');
   t.expectToString(
-  new TestQuerySingleCase('s', ['a'], ['b'], { c: undefined }),
-  's:a:b:c="_undef_"');
-
+    new TestQuerySingleCase('s', ['a'], ['b'], { c: undefined }),
+    's:a:b:c="_undef_"'
+  );
   t.expectToString(new TestQuerySingleCase('s', ['a'], ['b'], { c: -0 }), 's:a:b:c="_negzero_"');
 });
 
-g.test('parseQuery').fn(t => {
+g.test('parseQuery').fn((t) => {
   t.expectQueryParse('s:*', new TestQueryMultiFile('s', []));
   t.expectQueryParse('s:a,*', new TestQueryMultiFile('s', ['a']));
   t.expectQueryParse('s:a,b,*', new TestQueryMultiFile('s', ['a', 'b']));
@@ -120,25 +120,25 @@ g.test('parseQuery').fn(t => {
   t.expectQueryParse('s:a,b:c,d,*', new TestQueryMultiTest('s', ['a', 'b'], ['c', 'd']));
   t.expectQueryParse('s:a,b:c,d:*', new TestQueryMultiCase('s', ['a', 'b'], ['c', 'd'], {}));
   t.expectQueryParse(
-  's:a,b:c,d:x=1;*',
-  new TestQueryMultiCase('s', ['a', 'b'], ['c', 'd'], { x: 1 }));
-
+    's:a,b:c,d:x=1;*',
+    new TestQueryMultiCase('s', ['a', 'b'], ['c', 'd'], { x: 1 })
+  );
   t.expectQueryParse(
-  's:a,b:c,d:x=1;y=2;*',
-  new TestQueryMultiCase('s', ['a', 'b'], ['c', 'd'], { x: 1, y: 2 }));
-
+    's:a,b:c,d:x=1;y=2;*',
+    new TestQueryMultiCase('s', ['a', 'b'], ['c', 'd'], { x: 1, y: 2 })
+  );
   t.expectQueryParse(
-  's:a,b:c,d:x=1;y=2',
-  new TestQuerySingleCase('s', ['a', 'b'], ['c', 'd'], { x: 1, y: 2 }));
-
+    's:a,b:c,d:x=1;y=2',
+    new TestQuerySingleCase('s', ['a', 'b'], ['c', 'd'], { x: 1, y: 2 })
+  );
   t.expectQueryParse('s:a,b:c,d:', new TestQuerySingleCase('s', ['a', 'b'], ['c', 'd'], {}));
 
   // Test handling of magic param value that convert to NaN/undefined/Infinity/etc.
   t.expectQueryParse('s:a:b:c="_nan_"', new TestQuerySingleCase('s', ['a'], ['b'], { c: NaN }));
   t.expectQueryParse(
-  's:a:b:c="_undef_"',
-  new TestQuerySingleCase('s', ['a'], ['b'], { c: undefined }));
-
+    's:a:b:c="_undef_"',
+    new TestQuerySingleCase('s', ['a'], ['b'], { c: undefined })
+  );
   t.expectQueryParse('s:a:b:c="_negzero_"', new TestQuerySingleCase('s', ['a'], ['b'], { c: -0 }));
 });
 //# sourceMappingURL=test_query.spec.js.map

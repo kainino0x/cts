@@ -13,9 +13,9 @@ unimplemented();
 
 g.test('continuous').
 desc(
-`Tests allocation and implicit GC of many GPUBindGroupLayout objects over time.
+  `Tests allocation and implicit GC of many GPUBindGroupLayout objects over time.
 Objects are sequentially created and dropped for GC over a very large number of
-iterations.`).
-
+iterations.`
+).
 unimplemented();
 //# sourceMappingURL=bind_group_layout_allocation.spec.js.map

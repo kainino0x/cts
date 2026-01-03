@@ -1,10 +1,11 @@
 export const description = `Test the shared use of structures containing entry point IO attributes`;
 
 import { makeTestGroup } from '../../../../common/framework/test_group.js';
-import { GPUTest } from '../../../gpu_test.js';
+import { AllFeaturesMaxLimitsGPUTest } from '../../../gpu_test.js';
+import * as ttu from '../../../texture_test_utils.js';
 import { checkElementsEqual } from '../../../util/check_contents.js';
 
-export const g = makeTestGroup(GPUTest);
+export const g = makeTestGroup(AllFeaturesMaxLimitsGPUTest);
 
 g.test('shared_with_buffer')
   .desc(
@@ -16,7 +17,7 @@ g.test('shared_with_buffer')
      attributes should be ignored when used as an entry point IO parameter.
     `
   )
-  .fn(async t => {
+  .fn(t => {
     // Set the dispatch parameters such that we get some interesting (non-zero) built-in variables.
     const wgsize = new Uint32Array([8, 4, 2]);
     const numGroups = new Uint32Array([4, 2, 8]);
@@ -29,15 +30,15 @@ g.test('shared_with_buffer')
     // attributes, and also layout attributes for the storage buffer.
     const wgsl = `
       struct S {
-        /* byte offset:  0 */ [[size(32)]]  [[builtin(workgroup_id)]] group_id : vec3<u32>;
-        /* byte offset: 32 */               [[builtin(local_invocation_index)]] local_index : u32;
-        /* byte offset: 64 */ [[align(64)]] [[builtin(num_workgroups)]] numGroups : vec3<u32>;
+        /* byte offset:  0 */ @size(32)  @builtin(workgroup_id) group_id : vec3<u32>,
+        /* byte offset: 32 */            @builtin(local_invocation_index) local_index : u32,
+        /* byte offset: 64 */ @align(64) @builtin(num_workgroups) numGroups : vec3<u32>,
       };
 
-      [[group(0), binding(0)]]
+      @group(0) @binding(0)
       var<storage, read_write> outputs : S;
 
-      [[stage(compute), workgroup_size(${wgsize[0]}, ${wgsize[1]}, ${wgsize[2]})]]
+      @compute @workgroup_size(${wgsize[0]}, ${wgsize[1]}, ${wgsize[2]})
       fn main(inputs : S) {
         if (inputs.group_id.x == ${targetGroup[0]}u &&
             inputs.group_id.y == ${targetGroup[1]}u &&
@@ -49,6 +50,7 @@ g.test('shared_with_buffer')
     `;
 
     const pipeline = t.device.createComputePipeline({
+      layout: 'auto',
       compute: {
         module: t.device.createShaderModule({ code: wgsl }),
         entryPoint: 'main',
@@ -57,7 +59,7 @@ g.test('shared_with_buffer')
 
     // Allocate a buffer to hold the output structure.
     const bufferNumElements = 32;
-    const outputBuffer = t.device.createBuffer({
+    const outputBuffer = t.createBufferTracked({
       size: bufferNumElements * Uint32Array.BYTES_PER_ELEMENT,
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
     });
@@ -71,8 +73,8 @@ g.test('shared_with_buffer')
     const pass = encoder.beginComputePass();
     pass.setPipeline(pipeline);
     pass.setBindGroup(0, bindGroup);
-    pass.dispatch(numGroups[0], numGroups[1], numGroups[2]);
-    pass.endPass();
+    pass.dispatchWorkgroups(numGroups[0], numGroups[1], numGroups[2]);
+    pass.end();
     t.queue.submit([encoder.finish()]);
 
     // Check the output values.
@@ -114,12 +116,12 @@ g.test('shared_between_stages')
      shader and the input to a fragment shader.
     `
   )
-  .fn(async t => {
+  .fn(t => {
     const size = [31, 31];
     const wgsl = `
       struct Interface {
-        [[builtin(position)]] position : vec4<f32>;
-        [[location(0)]] color : f32;
+        @builtin(position) position : vec4<f32>,
+        @location(0) color : f32,
       };
 
       var<private> vertices : array<vec2<f32>, 3> = array<vec2<f32>, 3>(
@@ -128,13 +130,13 @@ g.test('shared_between_stages')
         vec2<f32>( 0.7, -0.7),
       );
 
-      [[stage(vertex)]]
-      fn vert_main([[builtin(vertex_index)]] index : u32) -> Interface {
+      @vertex
+      fn vert_main(@builtin(vertex_index) index : u32) -> Interface {
         return Interface(vec4<f32>(vertices[index], 0.0, 1.0), 1.0);
       }
 
-      [[stage(fragment)]]
-      fn frag_main(inputs : Interface) -> [[location(0)]] vec4<f32> {
+      @fragment
+      fn frag_main(inputs : Interface) -> @location(0) vec4<f32> {
         // Toggle red vs green based on the x position.
         var color = vec4<f32>(0.0, 0.0, 0.0, 1.0);
         if (inputs.position.x > f32(${size[0] / 2})) {
@@ -149,6 +151,7 @@ g.test('shared_between_stages')
     // Set up the render pipeline.
     const module = t.device.createShaderModule({ code: wgsl });
     const pipeline = t.device.createRenderPipeline({
+      layout: 'auto',
       vertex: {
         module,
         entryPoint: 'vert_main',
@@ -165,7 +168,7 @@ g.test('shared_between_stages')
     });
 
     // Draw a red triangle.
-    const renderTarget = t.device.createTexture({
+    const renderTarget = t.createTextureTracked({
       size,
       usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.COPY_SRC,
       format: 'rgba8unorm',
@@ -175,48 +178,36 @@ g.test('shared_between_stages')
       colorAttachments: [
         {
           view: renderTarget.createView(),
-          loadValue: [0, 0, 0, 0],
+          clearValue: [0, 0, 0, 0],
+          loadOp: 'clear',
           storeOp: 'store',
         },
       ],
     });
     pass.setPipeline(pipeline);
     pass.draw(3);
-    pass.endPass();
+    pass.end();
     t.queue.submit([encoder.finish()]);
 
     // Test a few points to make sure we rendered a half-red/half-green triangle.
     const redPixel = new Uint8Array([255, 0, 0, 255]);
     const greenPixel = new Uint8Array([0, 255, 0, 255]);
-    for (const p of [
-      { x: 16, y: 15 },
-      { x: 16, y: 15 },
-      { x: 22, y: 20 },
-    ]) {
-      t.expectSinglePixelIn2DTexture(renderTarget, 'rgba8unorm', p, {
-        exp: redPixel,
-      });
-    }
-    for (const p of [
-      { x: 14, y: 15 },
-      { x: 14, y: 8 },
-      { x: 8, y: 20 },
-    ]) {
-      t.expectSinglePixelIn2DTexture(renderTarget, 'rgba8unorm', p, {
-        exp: greenPixel,
-      });
-    }
     const blackPixel = new Uint8Array([0, 0, 0, 0]);
-    for (const p of [
-      { x: 2, y: 2 },
-      { x: 2, y: 28 },
-      { x: 28, y: 2 },
-      { x: 28, y: 28 },
-    ]) {
-      t.expectSinglePixelIn2DTexture(renderTarget, 'rgba8unorm', p, {
-        exp: blackPixel,
-      });
-    }
+    ttu.expectSinglePixelComparisonsAreOkInTexture(t, { texture: renderTarget }, [
+      // Red pixels
+      { coord: { x: 16, y: 15 }, exp: redPixel },
+      { coord: { x: 16, y: 8 }, exp: redPixel },
+      { coord: { x: 22, y: 20 }, exp: redPixel },
+      // Green pixels
+      { coord: { x: 14, y: 15 }, exp: greenPixel },
+      { coord: { x: 14, y: 8 }, exp: greenPixel },
+      { coord: { x: 8, y: 20 }, exp: greenPixel },
+      // Black pixels
+      { coord: { x: 2, y: 2 }, exp: blackPixel },
+      { coord: { x: 2, y: 28 }, exp: blackPixel },
+      { coord: { x: 28, y: 2 }, exp: blackPixel },
+      { coord: { x: 28, y: 28 }, exp: blackPixel },
+    ]);
   });
 
 g.test('shared_with_non_entry_point_function')
@@ -227,18 +218,18 @@ g.test('shared_with_non_entry_point_function')
      structures as parameter and return types for entry point functions and regular functions.
     `
   )
-  .fn(async t => {
+  .fn(t => {
     // The test shader defines structures that contain members decorated with built-in variable
     // attributes and user-defined IO. These structures are passed to and returned from regular
     // functions.
     const wgsl = `
       struct Inputs {
-        [[builtin(vertex_index)]] index : u32;
-        [[location(0)]] color : vec4<f32>;
+        @builtin(vertex_index) index : u32,
+        @location(0) color : vec4<f32>,
       };
       struct Outputs {
-        [[builtin(position)]] position : vec4<f32>;
-        [[location(0)]] color : vec4<f32>;
+        @builtin(position) position : vec4<f32>,
+        @location(0) color : vec4<f32>,
       };
 
       var<private> vertices : array<vec2<f32>, 3> = array<vec2<f32>, 3>(
@@ -254,13 +245,13 @@ g.test('shared_with_non_entry_point_function')
         return out;
       }
 
-      [[stage(vertex)]]
+      @vertex
       fn vert_main(inputs : Inputs) -> Outputs {
         return process(inputs);
       }
 
-      [[stage(fragment)]]
-      fn frag_main([[location(0)]] color : vec4<f32>) -> [[location(0)]] vec4<f32> {
+      @fragment
+      fn frag_main(@location(0) color : vec4<f32>) -> @location(0) vec4<f32> {
         return color;
       }
     `;
@@ -268,6 +259,7 @@ g.test('shared_with_non_entry_point_function')
     // Set up the render pipeline.
     const module = t.device.createShaderModule({ code: wgsl });
     const pipeline = t.device.createRenderPipeline({
+      layout: 'auto',
       vertex: {
         module,
         entryPoint: 'vert_main',
@@ -301,7 +293,7 @@ g.test('shared_with_non_entry_point_function')
       new Float32Array([1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0]),
       GPUBufferUsage.VERTEX
     );
-    const renderTarget = t.device.createTexture({
+    const renderTarget = t.createTextureTracked({
       size: [31, 31],
       usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.COPY_SRC,
       format: 'rgba8unorm',
@@ -311,7 +303,8 @@ g.test('shared_with_non_entry_point_function')
       colorAttachments: [
         {
           view: renderTarget.createView(),
-          loadValue: [0, 0, 0, 0],
+          clearValue: [0, 0, 0, 0],
+          loadOp: 'clear',
           storeOp: 'store',
         },
       ],
@@ -319,30 +312,22 @@ g.test('shared_with_non_entry_point_function')
     pass.setPipeline(pipeline);
     pass.setVertexBuffer(0, vertexBuffer);
     pass.draw(3);
-    pass.endPass();
+    pass.end();
     t.queue.submit([encoder.finish()]);
 
     // Test a few points to make sure we rendered a red triangle.
     const redPixel = new Uint8Array([255, 0, 0, 255]);
-    for (const p of [
-      { x: 15, y: 15 },
-      { x: 15, y: 8 },
-      { x: 8, y: 20 },
-      { x: 22, y: 20 },
-    ]) {
-      t.expectSinglePixelIn2DTexture(renderTarget, 'rgba8unorm', p, {
-        exp: redPixel,
-      });
-    }
     const blackPixel = new Uint8Array([0, 0, 0, 0]);
-    for (const p of [
-      { x: 2, y: 2 },
-      { x: 2, y: 28 },
-      { x: 28, y: 2 },
-      { x: 28, y: 28 },
-    ]) {
-      t.expectSinglePixelIn2DTexture(renderTarget, 'rgba8unorm', p, {
-        exp: blackPixel,
-      });
-    }
+    ttu.expectSinglePixelComparisonsAreOkInTexture(t, { texture: renderTarget }, [
+      // Red pixels
+      { coord: { x: 15, y: 15 }, exp: redPixel },
+      { coord: { x: 15, y: 8 }, exp: redPixel },
+      { coord: { x: 8, y: 20 }, exp: redPixel },
+      { coord: { x: 22, y: 20 }, exp: redPixel },
+      // Black pixels
+      { coord: { x: 2, y: 2 }, exp: blackPixel },
+      { coord: { x: 2, y: 28 }, exp: blackPixel },
+      { coord: { x: 28, y: 2 }, exp: blackPixel },
+      { coord: { x: 28, y: 28 }, exp: blackPixel },
+    ]);
   });

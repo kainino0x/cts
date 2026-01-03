@@ -25,16 +25,25 @@
       - mip level set to {'0', mip > '0'}
       - array layer set to {'0', layer > '1'} for 2D textures
       TODO: test depth24plus and depth24plus-stencil8 formats
-      TODO: test that depth and stencil aspects are set seperately
+      TODO: test that depth and stencil aspects are set separately
       TODO: depth slice set to {'0', slice > '0'} for 3D textures
       TODO: test with more interesting loadOp values`;import { makeTestGroup } from '../../../../common/framework/test_group.js';
+import { assert } from '../../../../common/util/util.js';
 import {
-kTextureFormatInfo,
-kEncodableTextureFormats,
-kSizedDepthStencilFormats } from
-'../../../capability_info.js';
-import { GPUTest } from '../../../gpu_test.js';
 
+  isDepthTextureFormat,
+  isSintOrUintFormat,
+  isStencilTextureFormat,
+  kPossibleColorRenderableTextureFormats,
+  kSizedDepthStencilFormats } from
+'../../../format_info.js';
+import { AllFeaturesMaxLimitsGPUTest } from '../../../gpu_test.js';
+import * as ttu from '../../../texture_test_utils.js';
+import {
+  kTexelRepresentationInfo,
+
+  TexelComponent } from
+'../../../util/texture/texel_data.js';
 
 // Test with a zero and non-zero mip.
 const kMipLevel = [0, 1];
@@ -52,7 +61,7 @@ const kStoreOps = ['discard', 'store'];
 const kHeight = 2;
 const kWidth = 2;
 
-export const g = makeTestGroup(GPUTest);
+export const g = makeTestGroup(AllFeaturesMaxLimitsGPUTest);
 
 // Tests a render pass with both a color and depth stencil attachment to ensure store operations are
 // set independently.
@@ -60,48 +69,48 @@ g.test('render_pass_store_op,color_attachment_with_depth_stencil_attachment').
 params((u) =>
 u //
 .combine('colorStoreOperation', kStoreOps).
-combine('depthStencilStoreOperation', kStoreOps)).
-
-fn(t => {
+combine('depthStencilStoreOperation', kStoreOps)
+).
+fn((t) => {
   // Create a basic color attachment.
   const kColorFormat = 'rgba8unorm';
-  const colorAttachment = t.device.createTexture({
+  const colorAttachment = t.createTextureTracked({
     format: kColorFormat,
     size: { width: kWidth, height: kHeight, depthOrArrayLayers: 1 },
-    usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.RENDER_ATTACHMENT });
-
+    usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.RENDER_ATTACHMENT
+  });
 
   const colorAttachmentView = colorAttachment.createView();
 
   // Create a basic depth/stencil attachment.
   const kDepthStencilFormat = 'depth32float';
-  const depthStencilAttachment = t.device.createTexture({
+  const depthStencilAttachment = t.createTextureTracked({
     format: kDepthStencilFormat,
     size: { width: kWidth, height: kHeight, depthOrArrayLayers: 1 },
-    usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.RENDER_ATTACHMENT });
-
+    usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.RENDER_ATTACHMENT
+  });
 
   // Color load operation will clear to {1.0, 1.0, 1.0, 1.0}.
-  // Depth & stencil load operations will clear to 1.0.
+  // Depth operation will clear to 1.0.
   // Store operations are determined by test the params.
   const encoder = t.device.createCommandEncoder();
   const pass = encoder.beginRenderPass({
     colorAttachments: [
     {
       view: colorAttachmentView,
-      loadValue: { r: 1.0, g: 1.0, b: 1.0, a: 1.0 },
-      storeOp: t.params.colorStoreOperation }],
-
+      clearValue: { r: 1.0, g: 1.0, b: 1.0, a: 1.0 },
+      loadOp: 'clear',
+      storeOp: t.params.colorStoreOperation
+    }],
 
     depthStencilAttachment: {
       view: depthStencilAttachment.createView(),
-      depthLoadValue: 1.0,
-      depthStoreOp: t.params.depthStencilStoreOperation,
-      stencilLoadValue: 1.0,
-      stencilStoreOp: t.params.depthStencilStoreOperation } });
-
-
-  pass.endPass();
+      depthClearValue: 1.0,
+      depthLoadOp: 'clear',
+      depthStoreOp: t.params.depthStencilStoreOperation
+    }
+  });
+  pass.end();
 
   t.device.queue.submit([encoder.finish()]);
 
@@ -116,8 +125,8 @@ fn(t => {
   }
   t.expectSingleColor(colorAttachment, kColorFormat, {
     size: [kHeight, kWidth, 1],
-    exp: expectedColorValue });
-
+    exp: expectedColorValue
+  });
 
   // Check that the correct store operation occurred.
   let expectedDepthValue = {};
@@ -132,8 +141,9 @@ fn(t => {
   }
   t.expectSingleColor(depthStencilAttachment, kDepthStencilFormat, {
     size: [kHeight, kWidth, 1],
-    exp: expectedDepthValue });
-
+    exp: expectedDepthValue,
+    layout: { mipLevel: 0, aspect: 'depth-only' }
+  });
 });
 
 // Tests that render pass color attachment store operations work correctly for all renderable color
@@ -141,65 +151,96 @@ fn(t => {
 g.test('render_pass_store_op,color_attachment_only').
 params((u) =>
 u.
-combine('colorFormat', kEncodableTextureFormats)
-// Filter out any non-renderable formats
-.filter(({ colorFormat }) => {
-  const info = kTextureFormatInfo[colorFormat];
-  return info.color && info.renderable;
-}).
+combine('colorFormat', kPossibleColorRenderableTextureFormats).
 combine('storeOperation', kStoreOps).
 beginSubcases().
 combine('mipLevel', kMipLevel).
-combine('arrayLayer', kArrayLayers)).
+combine('arrayLayer', kArrayLayers)
+).
+fn((t) => {
+  const { colorFormat, storeOperation, mipLevel, arrayLayer } = t.params;
+  t.skipIfTextureFormatNotSupported(colorFormat);
+  t.skipIfTextureFormatNotUsableAsRenderAttachment(colorFormat);
 
-fn(t => {
-  const colorAttachment = t.device.createTexture({
-    format: t.params.colorFormat,
-    size: { width: kWidth, height: kHeight, depthOrArrayLayers: t.params.arrayLayer + 1 },
+  const colorAttachment = t.createTextureTracked({
+    format: colorFormat,
+    size: { width: kWidth, height: kHeight, depthOrArrayLayers: arrayLayer + 1 },
     mipLevelCount: kMipLevelCount,
-    usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.RENDER_ATTACHMENT });
-
+    usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.RENDER_ATTACHMENT
+  });
 
   const colorViewDesc = {
-    baseArrayLayer: t.params.arrayLayer,
-    baseMipLevel: t.params.mipLevel,
+    baseArrayLayer: arrayLayer,
+    baseMipLevel: mipLevel,
     mipLevelCount: 1,
-    arrayLayerCount: 1 };
-
+    arrayLayerCount: 1
+  };
 
   const colorAttachmentView = colorAttachment.createView(colorViewDesc);
 
-  // Color load operation will clear to {1.0, 0.0, 0.0, 1.0}.
+  const components = new Set(
+    kTexelRepresentationInfo[colorFormat]?.componentOrder ?? []
+  );
+  assert(components.size > 0);
+
+  // Note: for unorm/float values we specifically want values
+  // that will generate failure if srgb remapping is applied so
+  // we can't choose 0 or 1 for R, G, or B
+  const missingValue = { R: 0, G: 0, B: 0, A: 1 };
+  const [baseValue, maxDiff] = isSintOrUintFormat(colorFormat) ?
+  [{ R: 12, G: 34, B: 56, A: 3 }, 0] :
+  [{ R: 0.8, G: 0.75, B: 0.5, A: 1.0 }, 2 / 255];
+  const kRGBAComponents = [
+  TexelComponent.R,
+  TexelComponent.G,
+  TexelComponent.B,
+  TexelComponent.A];
+
+
+  const clearValueAsComponents = Object.fromEntries(
+    kRGBAComponents.map((component) => [
+    component,
+    components.has(component) ? baseValue[component] : missingValue[component]]
+    )
+  );
+  const clearValue = Object.fromEntries(
+    Object.entries(clearValueAsComponents).map(([k, v]) => [k.toLowerCase(), v])
+  );
+
+  t.debug(`clearValue: ${JSON.stringify(clearValue)}`);
+
   // Color store operation is determined by the test params.
   const encoder = t.device.createCommandEncoder();
   const pass = encoder.beginRenderPass({
     colorAttachments: [
     {
       view: colorAttachmentView,
-      loadValue: { r: 1.0, g: 0.0, b: 0.0, a: 1.0 },
-      storeOp: t.params.storeOperation }] });
+      clearValue,
+      loadOp: 'clear',
+      storeOp: storeOperation
+    }]
 
-
-
-  pass.endPass();
+  });
+  pass.end();
   t.device.queue.submit([encoder.finish()]);
 
   // Check that the correct store operation occurred.
   let expectedValue = {};
-  if (t.params.storeOperation === 'discard') {
+  if (storeOperation === 'discard') {
     // If colorStoreOp was clear, the texture should now contain {0.0, 0.0, 0.0, 0.0}.
     expectedValue = { R: 0.0, G: 0.0, B: 0.0, A: 0.0 };
-  } else if (t.params.storeOperation === 'store') {
-    // If colorStoreOP was store, the texture should still contain {1.0, 0.0, 0.0, 1.0}.
-    expectedValue = { R: 1.0, G: 0.0, B: 0.0, A: 1.0 };
+  } else if (storeOperation === 'store') {
+    // If colorStoreOP was store, the texture should still contain
+    expectedValue = clearValueAsComponents;
   }
 
-  t.expectSingleColor(colorAttachment, t.params.colorFormat, {
+  ttu.expectSingleColorWithTolerance(t, colorAttachment, colorFormat, {
     size: [kHeight, kWidth, 1],
-    slice: t.params.arrayLayer,
+    slice: arrayLayer,
     exp: expectedValue,
-    layout: { mipLevel: t.params.mipLevel } });
-
+    layout: { mipLevel },
+    maxFractionalDiff: maxDiff
+  });
 });
 
 // Test with multiple color attachments to ensure each attachment's storeOp is set independently.
@@ -209,20 +250,20 @@ u.
 combine('storeOperation1', kStoreOps).
 combine('storeOperation2', kStoreOps).
 beginSubcases().
-combine('colorAttachments', kNumColorAttachments)).
-
-fn(t => {
+combine('colorAttachments', kNumColorAttachments)
+).
+fn((t) => {
   const kColorFormat = 'rgba8unorm';
   const colorAttachments = [];
 
   for (let i = 0; i < t.params.colorAttachments; i++) {
     colorAttachments.push(
-    t.device.createTexture({
-      format: kColorFormat,
-      size: { width: kWidth, height: kHeight, depthOrArrayLayers: 1 },
-      usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.RENDER_ATTACHMENT }));
-
-
+      t.createTextureTracked({
+        format: kColorFormat,
+        size: { width: kWidth, height: kHeight, depthOrArrayLayers: 1 },
+        usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.RENDER_ATTACHMENT
+      })
+    );
   }
 
   // Color load operation will clear to {1.0, 1.0, 1.0, 1.0}
@@ -232,16 +273,17 @@ fn(t => {
   for (let i = 0; i < t.params.colorAttachments; i++) {
     renderPassColorAttachments.push({
       view: colorAttachments[i].createView(),
-      loadValue: { r: 1.0, g: 1.0, b: 1.0, a: 1.0 },
-      storeOp: i % 2 === 0 ? t.params.storeOperation1 : t.params.storeOperation2 });
-
+      clearValue: { r: 1.0, g: 1.0, b: 1.0, a: 1.0 },
+      loadOp: 'clear',
+      storeOp: i % 2 === 0 ? t.params.storeOperation1 : t.params.storeOperation2
+    });
   }
 
   const encoder = t.device.createCommandEncoder();
   const pass = encoder.beginRenderPass({
-    colorAttachments: renderPassColorAttachments });
-
-  pass.endPass();
+    colorAttachments: renderPassColorAttachments
+  });
+  pass.end();
   t.device.queue.submit([encoder.finish()]);
 
   // Check that the correct store operation occurred.
@@ -256,77 +298,97 @@ fn(t => {
     }
     t.expectSingleColor(colorAttachments[i], kColorFormat, {
       size: [kHeight, kWidth, 1],
-      exp: expectedValue });
-
+      exp: expectedValue
+    });
   }
 });
 
 g.test('render_pass_store_op,depth_stencil_attachment_only').
 desc(
-`
+  `
 Tests that render pass depth stencil store operations work correctly for all renderable color
 formats, mip levels and array layers.
 
 - x= all (sized) depth stencil formats, all store ops, multiple mip levels, multiple array layers
 
 TODO: Also test unsized depth/stencil formats [1]
-  `).
-
+  `
+).
 params((u) =>
 u.
 combine('depthStencilFormat', kSizedDepthStencilFormats) // [1]
 .combine('storeOperation', kStoreOps).
 beginSubcases().
 combine('mipLevel', kMipLevel).
-combine('arrayLayer', kArrayLayers)).
-
-fn(t => {
-  const depthStencilAttachment = t.device.createTexture({
+combine('arrayLayer', kArrayLayers)
+).
+fn((t) => {
+  const depthStencilTexture = t.createTextureTracked({
     format: t.params.depthStencilFormat,
     size: { width: kWidth, height: kHeight, depthOrArrayLayers: t.params.arrayLayer + 1 },
     mipLevelCount: kMipLevelCount,
-    usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.RENDER_ATTACHMENT });
-
+    usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.RENDER_ATTACHMENT
+  });
 
   const depthStencilViewDesc = {
     baseArrayLayer: t.params.arrayLayer,
     baseMipLevel: t.params.mipLevel,
     mipLevelCount: 1,
-    arrayLayerCount: 1 };
+    arrayLayerCount: 1
+  };
 
-
-  const depthStencilAttachmentView = depthStencilAttachment.createView(depthStencilViewDesc);
+  const depthStencilAttachmentView = depthStencilTexture.createView(depthStencilViewDesc);
 
   // Depth-stencil load operation will clear to depth = 1.0, stencil = 1.0.
   // Depth-stencil store operate is determined by test params.
   const encoder = t.device.createCommandEncoder();
+  const depthStencilAttachment = {
+    view: depthStencilAttachmentView
+  };
+  if (isDepthTextureFormat(t.params.depthStencilFormat)) {
+    depthStencilAttachment.depthClearValue = 1.0;
+    depthStencilAttachment.depthLoadOp = 'clear';
+    depthStencilAttachment.depthStoreOp = t.params.storeOperation;
+  }
+  if (isStencilTextureFormat(t.params.depthStencilFormat)) {
+    depthStencilAttachment.stencilClearValue = 1;
+    depthStencilAttachment.stencilLoadOp = 'clear';
+    depthStencilAttachment.stencilStoreOp = t.params.storeOperation;
+  }
   const pass = encoder.beginRenderPass({
     colorAttachments: [],
-    depthStencilAttachment: {
-      view: depthStencilAttachmentView,
-      depthLoadValue: 1.0,
-      depthStoreOp: t.params.storeOperation,
-      stencilLoadValue: 1.0,
-      stencilStoreOp: t.params.storeOperation } });
-
-
-  pass.endPass();
+    depthStencilAttachment
+  });
+  pass.end();
   t.device.queue.submit([encoder.finish()]);
 
-  let expectedValue = {};
+  let expectedDepthValue = {};
+  let expectedStencilValue = {};
   if (t.params.storeOperation === 'discard') {
-    // If depthStencilStoreOperation was clear, the texture's depth component should be 0.0,
-    expectedValue = { Depth: 0.0 };
+    // If depthStencilStoreOperation was clear, the texture's depth/stencil component should be 0,
+    expectedDepthValue = { Depth: 0.0 };
+    expectedStencilValue = { Stencil: 0 };
   } else if (t.params.storeOperation === 'store') {
-    // If depthStencilStoreOperation was store, the texture's depth component should be 1.0,
-    expectedValue = { Depth: 1.0 };
+    // If depthStencilStoreOperation was store, the texture's depth/stencil components should be 1,
+    expectedDepthValue = { Depth: 1.0 };
+    expectedStencilValue = { Stencil: 1 };
   }
 
-  t.expectSingleColor(depthStencilAttachment, t.params.depthStencilFormat, {
-    size: [kHeight, kWidth, 1],
-    slice: t.params.arrayLayer,
-    exp: expectedValue,
-    layout: { mipLevel: t.params.mipLevel } });
-
+  if (isDepthTextureFormat(t.params.depthStencilFormat)) {
+    t.expectSingleColor(depthStencilTexture, t.params.depthStencilFormat, {
+      size: [kHeight, kWidth, 1],
+      slice: t.params.arrayLayer,
+      exp: expectedDepthValue,
+      layout: { mipLevel: t.params.mipLevel, aspect: 'depth-only' }
+    });
+  }
+  if (isStencilTextureFormat(t.params.depthStencilFormat)) {
+    t.expectSingleColor(depthStencilTexture, t.params.depthStencilFormat, {
+      size: [kHeight, kWidth, 1],
+      slice: t.params.arrayLayer,
+      exp: expectedStencilValue,
+      layout: { mipLevel: t.params.mipLevel, aspect: 'stencil-only' }
+    });
+  }
 });
 //# sourceMappingURL=storeOp.spec.js.map

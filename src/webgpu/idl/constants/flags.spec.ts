@@ -29,20 +29,37 @@ g.test('BufferUsage,values')
     t.assertMember(GPUBufferUsage, kBufferUsageExp, key);
   });
 
-const kTextureUsageExp = {
+const kTextureUsageExp: {
+  COPY_SRC: number;
+  COPY_DST: number;
+  TEXTURE_BINDING: number;
+  STORAGE_BINDING: number;
+  RENDER_ATTACHMENT: number;
+  // MAINTENANCE_TODO(#4509): Remove explicit type annotation when TRANSIENT_ATTACHMENT is added to the WebGPU spec.
+  TRANSIENT_ATTACHMENT?: number;
+} = {
   COPY_SRC: 0x01,
   COPY_DST: 0x02,
   TEXTURE_BINDING: 0x04,
   STORAGE_BINDING: 0x08,
   RENDER_ATTACHMENT: 0x10,
+  TRANSIENT_ATTACHMENT: 0x20,
 };
 g.test('TextureUsage,count').fn(t => {
+  // MAINTENANCE_TODO(#4509): Remove this when TRANSIENT_ATTACHMENT is added to the WebGPU spec.
+  if (!('TRANSIENT_ATTACHMENT' in GPUTextureUsage)) {
+    delete kTextureUsageExp.TRANSIENT_ATTACHMENT;
+  }
   t.assertMemberCount(GPUTextureUsage, kTextureUsageExp);
 });
 g.test('TextureUsage,values')
   .params(u => u.combine('key', Object.keys(kTextureUsageExp)))
   .fn(t => {
     const { key } = t.params;
+
+    // MAINTENANCE_TODO(#4509): Remove this when TRANSIENT_ATTACHMENT is added to the WebGPU spec.
+    t.skipIf(key === 'TRANSIENT_ATTACHMENT' && !('TRANSIENT_ATTACHMENT' in GPUTextureUsage));
+
     t.assertMember(GPUTextureUsage, kTextureUsageExp, key);
   });
 

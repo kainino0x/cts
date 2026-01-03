@@ -13,9 +13,9 @@ unimplemented();
 
 g.test('continuous').
 desc(
-`Tests allocation and implicit GC of many GPUShaderModule objects over time.
+  `Tests allocation and implicit GC of many GPUShaderModule objects over time.
 Objects are sequentially created and dropped for GC over a very large number of
-iterations.`).
-
+iterations.`
+).
 unimplemented();
 //# sourceMappingURL=shader_module_allocation.spec.js.map

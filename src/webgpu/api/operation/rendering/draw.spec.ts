@@ -11,50 +11,37 @@ import {
   TypedArrayBufferView,
   TypedArrayBufferViewConstructor,
 } from '../../../../common/util/util.js';
-import { GPUTest } from '../../../gpu_test.js';
+import { AllFeaturesMaxLimitsGPUTest } from '../../../gpu_test.js';
+import * as ttu from '../../../texture_test_utils.js';
+import { PerPixelComparison } from '../../../util/texture/texture_ok.js';
 
-export const g = makeTestGroup(GPUTest);
+class DrawTest extends AllFeaturesMaxLimitsGPUTest {
+  checkTriangleDraw(opts: {
+    firstIndex: number | undefined;
+    count: number;
+    firstInstance: number | undefined;
+    instanceCount: number | undefined;
+    indexed: boolean;
+    indirect: boolean;
+    vertexBufferOffset: number;
+    indexBufferOffset: number | undefined;
+    baseVertex: number | undefined;
+  }): void {
+    // Set fallbacks when parameters are undefined in order to calculate the expected values.
+    const defaulted = {
+      firstIndex: opts.firstIndex ?? 0,
+      count: opts.count,
+      firstInstance: opts.firstInstance ?? 0,
+      instanceCount: opts.instanceCount ?? 1,
+      indexed: opts.indexed,
+      indirect: opts.indirect,
+      vertexBufferOffset: opts.vertexBufferOffset,
+      indexBufferOffset: opts.indexBufferOffset ?? 0,
+      baseVertex: opts.baseVertex ?? 0,
+    };
 
-g.test('arguments')
-  .desc(
-    `Test that draw arguments are passed correctly by drawing triangles in a grid.
-Horizontally across the texture are triangles with increasing "primitive id".
-Vertically down the screen are triangles with increasing instance id.
-Increasing the |first| param should skip some of the beginning triangles on the horizontal axis.
-Increasing the |first_instance| param should skip of the beginning triangles on the vertical axis.
-The vertex buffer contains two sets of disjoint triangles, and base_vertex is used to select the second set.
-The test checks that the center of all of the expected triangles is drawn, and the others are empty.
-The fragment shader also writes out to a storage buffer. If the draw is zero-sized, check that no value is written.
-
-Params:
-  - first= {0, 3} - either the firstVertex or firstIndex
-  - count= {0, 3, 6} - either the vertexCount or indexCount
-  - first_instance= {0, 2}
-  - instance_count= {0, 1, 4}
-  - indexed= {true, false}
-  - indirect= {true, false}
-  - vertex_buffer_offset= {0, 32}
-  - index_buffer_offset= {0, 16} - only for indexed draws
-  - base_vertex= {0, 9} - only for indexed draws
-  `
-  )
-  .params(u =>
-    u
-      .combine('first', [0, 3] as const)
-      .combine('count', [0, 3, 6] as const)
-      .combine('first_instance', [0, 2] as const)
-      .combine('instance_count', [0, 1, 4] as const)
-      .combine('indexed', [false, true])
-      .combine('indirect', [false, true])
-      .combine('vertex_buffer_offset', [0, 32] as const)
-      .expand('index_buffer_offset', p => (p.indexed ? ([0, 16] as const) : [undefined]))
-      .expand('base_vertex', p => (p.indexed ? ([0, 9] as const) : [undefined]))
-  )
-  .fn(async t => {
-    if (t.params.first_instance > 0 && t.params.indirect) {
-      await t.selectDeviceOrSkipTestCase('indirect-first-instance');
-    }
-
+    const haveStorageBuffersInFragmentStage =
+      !this.isCompatibility || this.device.limits.maxStorageBuffersInFragmentStage! > 0;
     const renderTargetSize = [72, 36];
 
     // The test will split up the render target into a grid where triangles of
@@ -70,28 +57,29 @@ Params:
     // |   \
     // |______\
     // Unit triangle shaped like this. 0-1 Y-down.
-    const triangleVertices = /* prettier-ignore */ [
+    /* prettier-ignore */
+    const triangleVertices = [
       0.0, 0.0,
       0.0, 1.0,
       1.0, 1.0,
     ];
 
-    const renderTarget = t.device.createTexture({
+    const renderTarget = this.createTextureTracked({
       size: renderTargetSize,
       usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.COPY_SRC,
       format: 'rgba8unorm',
     });
 
-    const vertexModule = t.device.createShaderModule({
+    const vertexModule = this.device.createShaderModule({
       code: `
 struct Inputs {
-  [[builtin(vertex_index)]] vertex_index : u32;
-  [[builtin(instance_index)]] instance_id : u32;
-  [[location(0)]] vertexPosition : vec2<f32>;
+  @builtin(vertex_index) vertex_index : u32,
+  @builtin(instance_index) instance_id : u32,
+  @location(0) vertexPosition : vec2<f32>,
 };
 
-[[stage(vertex)]] fn vert_main(input : Inputs
-  ) -> [[builtin(position)]] vec4<f32> {
+@vertex fn vert_main(input : Inputs
+  ) -> @builtin(position) vec4<f32> {
   // 3u is the number of points in a triangle to convert from index
   // to id.
   var vertex_id : u32 = input.vertex_index / 3u;
@@ -107,22 +95,23 @@ struct Inputs {
 `,
     });
 
-    const fragmentModule = t.device.createShaderModule({
+    const fragmentModule = this.device.createShaderModule({
       code: `
 struct Output {
-  value : u32;
+  value : u32
 };
 
-[[group(0), binding(0)]] var<storage, read_write> output : Output;
+@group(0) @binding(0) var<storage, read_write> output : Output;
 
-[[stage(fragment)]] fn frag_main() -> [[location(0)]] vec4<f32> {
-  output.value = 1u;
+@fragment fn frag_main() -> @location(0) vec4<f32> {
+  ${haveStorageBuffersInFragmentStage ? 'output.value = 1u;' : ''}
   return vec4<f32>(0.0, 1.0, 0.0, 1.0);
 }
 `,
     });
 
-    const pipeline = t.device.createRenderPipeline({
+    const pipeline = this.device.createRenderPipeline({
+      layout: 'auto',
       vertex: {
         module: vertexModule,
         entryPoint: 'vert_main',
@@ -150,29 +139,34 @@ struct Output {
       },
     });
 
-    const resultBuffer = t.device.createBuffer({
-      size: Uint32Array.BYTES_PER_ELEMENT,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
-    });
+    const resultBuffer = haveStorageBuffersInFragmentStage
+      ? this.createBufferTracked({
+          size: Uint32Array.BYTES_PER_ELEMENT,
+          usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+        })
+      : null;
 
-    const resultBindGroup = t.device.createBindGroup({
-      layout: pipeline.getBindGroupLayout(0),
-      entries: [
-        {
-          binding: 0,
-          resource: {
-            buffer: resultBuffer,
-          },
-        },
-      ],
-    });
+    const resultBindGroup = haveStorageBuffersInFragmentStage
+      ? this.device.createBindGroup({
+          layout: pipeline.getBindGroupLayout(0),
+          entries: [
+            {
+              binding: 0,
+              resource: {
+                buffer: resultBuffer!,
+              },
+            },
+          ],
+        })
+      : null;
 
-    const commandEncoder = t.device.createCommandEncoder();
+    const commandEncoder = this.device.createCommandEncoder();
     const renderPass = commandEncoder.beginRenderPass({
       colorAttachments: [
         {
           view: renderTarget.createView(),
-          loadValue: [0, 0, 0, 0],
+          clearValue: [0, 0, 0, 0],
+          loadOp: 'clear',
           storeOp: 'store',
         },
       ],
@@ -181,16 +175,16 @@ struct Output {
     renderPass.setPipeline(pipeline);
     renderPass.setBindGroup(0, resultBindGroup);
 
-    if (t.params.indexed) {
+    if (defaulted.indexed) {
       // INDEXED DRAW
-      assert(t.params.base_vertex !== undefined);
-      assert(t.params.index_buffer_offset !== undefined);
+      assert(defaulted.baseVertex !== undefined);
+      assert(defaulted.indexBufferOffset !== undefined);
 
       renderPass.setIndexBuffer(
-        t.makeBufferWithContents(
+        this.makeBufferWithContents(
           /* prettier-ignore */ new Uint32Array([
             // Offset the index buffer contents by empty data.
-            ...new Array(t.params.index_buffer_offset / Uint32Array.BYTES_PER_ELEMENT),
+            ...new Array(defaulted.indexBufferOffset / Uint32Array.BYTES_PER_ELEMENT),
 
             0,  1,  2, //
             3,  4,  5, //
@@ -199,15 +193,15 @@ struct Output {
           GPUBufferUsage.INDEX
         ),
         'uint32',
-        t.params.index_buffer_offset
+        defaulted.indexBufferOffset
       );
 
       renderPass.setVertexBuffer(
         0,
-        t.makeBufferWithContents(
+        this.makeBufferWithContents(
           /* prettier-ignore */ new Float32Array([
             // Offset the vertex buffer contents by empty data.
-            ...new Array(t.params.vertex_buffer_offset / Float32Array.BYTES_PER_ELEMENT),
+            ...new Array(defaulted.vertexBufferOffset / Float32Array.BYTES_PER_ELEMENT),
 
             // selected with base_vertex=0
                                  // count=6
@@ -223,32 +217,39 @@ struct Output {
           ]),
           GPUBufferUsage.VERTEX
         ),
-        t.params.vertex_buffer_offset
+        defaulted.vertexBufferOffset
       );
 
-      const args = [
-        t.params.count,
-        t.params.instance_count,
-        t.params.first,
-        t.params.base_vertex,
-        t.params.first_instance,
-      ] as const;
-      if (t.params.indirect) {
+      if (defaulted.indirect) {
+        const args = [
+          defaulted.count,
+          defaulted.instanceCount,
+          defaulted.firstIndex,
+          defaulted.baseVertex,
+          defaulted.firstInstance,
+        ] as const;
         renderPass.drawIndexedIndirect(
-          t.makeBufferWithContents(new Uint32Array(args), GPUBufferUsage.INDIRECT),
+          this.makeBufferWithContents(new Uint32Array(args), GPUBufferUsage.INDIRECT),
           0
         );
       } else {
+        const args = [
+          opts.count,
+          opts.instanceCount,
+          opts.firstIndex,
+          opts.baseVertex,
+          opts.firstInstance,
+        ] as const;
         renderPass.drawIndexed.apply(renderPass, [...args]);
       }
     } else {
       // NON-INDEXED DRAW
       renderPass.setVertexBuffer(
         0,
-        t.makeBufferWithContents(
+        this.makeBufferWithContents(
           /* prettier-ignore */ new Float32Array([
             // Offset the vertex buffer contents by empty data.
-            ...new Array(t.params.vertex_buffer_offset / Float32Array.BYTES_PER_ELEMENT),
+            ...new Array(defaulted.vertexBufferOffset / Float32Array.BYTES_PER_ELEMENT),
 
                                  // count=6
             ...triangleVertices, //   |   count=6;first=3
@@ -257,76 +258,162 @@ struct Output {
           ]),
           GPUBufferUsage.VERTEX
         ),
-        t.params.vertex_buffer_offset
+        defaulted.vertexBufferOffset
       );
 
-      const args = [
-        t.params.count,
-        t.params.instance_count,
-        t.params.first,
-        t.params.first_instance,
-      ] as const;
-      if (t.params.indirect) {
+      if (defaulted.indirect) {
+        const args = [
+          defaulted.count,
+          defaulted.instanceCount,
+          defaulted.firstIndex,
+          defaulted.firstInstance,
+        ] as const;
         renderPass.drawIndirect(
-          t.makeBufferWithContents(new Uint32Array(args), GPUBufferUsage.INDIRECT),
+          this.makeBufferWithContents(new Uint32Array(args), GPUBufferUsage.INDIRECT),
           0
         );
       } else {
+        const args = [opts.count, opts.instanceCount, opts.firstIndex, opts.firstInstance] as const;
         renderPass.draw.apply(renderPass, [...args]);
       }
     }
 
-    renderPass.endPass();
-    t.queue.submit([commandEncoder.finish()]);
+    renderPass.end();
+    this.queue.submit([commandEncoder.finish()]);
 
     const green = new Uint8Array([0, 255, 0, 255]);
     const transparentBlack = new Uint8Array([0, 0, 0, 0]);
 
-    const didDraw = t.params.count && t.params.instance_count;
+    const didDraw = defaulted.count && defaulted.instanceCount;
 
-    t.expectGPUBufferValuesEqual(resultBuffer, new Uint32Array([didDraw ? 1 : 0]));
+    if (resultBuffer) {
+      this.expectGPUBufferValuesEqual(resultBuffer, new Uint32Array([didDraw ? 1 : 0]));
+    }
 
-    const baseVertex = t.params.base_vertex ?? 0;
+    const baseVertexCount = defaulted.baseVertex ?? 0;
+    const pixelComparisons: PerPixelComparison<Uint8Array>[] = [];
     for (let primitiveId = 0; primitiveId < numX; ++primitiveId) {
       for (let instanceId = 0; instanceId < numY; ++instanceId) {
         let expectedColor = didDraw ? green : transparentBlack;
         if (
-          primitiveId * 3 < t.params.first + baseVertex ||
-          primitiveId * 3 >= t.params.first + baseVertex + t.params.count
+          primitiveId * 3 < defaulted.firstIndex + baseVertexCount ||
+          primitiveId * 3 >= defaulted.firstIndex + baseVertexCount + defaulted.count
         ) {
           expectedColor = transparentBlack;
         }
 
         if (
-          instanceId < t.params.first_instance ||
-          instanceId >= t.params.first_instance + t.params.instance_count
+          instanceId < defaulted.firstInstance ||
+          instanceId >= defaulted.firstInstance + defaulted.instanceCount
         ) {
           expectedColor = transparentBlack;
         }
 
-        t.expectSinglePixelIn2DTexture(
-          renderTarget,
-          'rgba8unorm',
-          {
-            x: (1 / 3 + primitiveId) * tileSizeX,
-            y: (2 / 3 + instanceId) * tileSizeY,
-          },
-          {
-            exp: expectedColor,
-          }
-        );
+        pixelComparisons.push({
+          coord: { x: (1 / 3 + primitiveId) * tileSizeX, y: (2 / 3 + instanceId) * tileSizeY },
+          exp: expectedColor,
+        });
       }
     }
+    ttu.expectSinglePixelComparisonsAreOkInTexture(
+      this,
+      { texture: renderTarget },
+      pixelComparisons
+    );
+  }
+}
+
+export const g = makeTestGroup(DrawTest);
+
+g.test('arguments')
+  .desc(
+    `Test that draw arguments are passed correctly by drawing triangles in a grid.
+Horizontally across the texture are triangles with increasing "primitive id".
+Vertically down the screen are triangles with increasing instance id.
+Increasing the |first| param should skip some of the beginning triangles on the horizontal axis.
+Increasing the |first_instance| param should skip of the beginning triangles on the vertical axis.
+The vertex buffer contains two sets of disjoint triangles, and base_vertex is used to select the second set.
+The test checks that the center of all of the expected triangles is drawn, and the others are empty.
+The fragment shader also writes out to a storage buffer if it can. If the draw is zero-sized, check that no value is written.
+
+Params:
+  - first= {0, 3} - either the firstVertex or firstIndex
+  - count= {0, 3, 6} - either the vertexCount or indexCount
+  - first_instance= {0, 2}
+  - instance_count= {0, 1, 4}
+  - indexed= {true, false}
+  - indirect= {true, false}
+  - vertex_buffer_offset= {0, 32}
+  - index_buffer_offset= {0, 16} - only for indexed draws
+  - base_vertex= {0, 9} - only for indexed draws
+  `
+  )
+  .params(u =>
+    u
+      .combine('first', [0, 3] as const)
+      .combine('count', [0, 3, 6] as const)
+      .combine('first_instance', [0, 2] as const)
+      .combine('instance_count', [0, 1, 4] as const)
+      .combine('indexed', [false, true])
+      .combine('indirect', [false, true])
+      .combine('vertex_buffer_offset', [0, 32] as const)
+      .expand('index_buffer_offset', p => (p.indexed ? ([0, 16] as const) : [undefined]))
+      .expand('base_vertex', p => (p.indexed ? ([0, 9] as const) : [undefined]))
+  )
+  .fn(t => {
+    if (t.params.first_instance > 0 && t.params.indirect) {
+      t.skipIfDeviceDoesNotHaveFeature('indirect-first-instance');
+    }
+    t.checkTriangleDraw({
+      firstIndex: t.params.first,
+      count: t.params.count,
+      firstInstance: t.params.first_instance,
+      instanceCount: t.params.instance_count,
+      indexed: t.params.indexed,
+      indirect: t.params.indirect,
+      vertexBufferOffset: t.params.vertex_buffer_offset,
+      indexBufferOffset: t.params.index_buffer_offset,
+      baseVertex: t.params.base_vertex,
+    });
   });
 
 g.test('default_arguments')
   .desc(
-    `TODO: Test defaults to draw / drawIndexed. Maybe merge with the 'arguments' test.
-- arg= {instance_count, first, first_instance, base_vertex}
-- mode= {draw, drawIndexed}
+    `
+  Test that defaults arguments are passed correctly by drawing triangles in a grid when they are not
+  defined. This test is written based on the 'arguments' with 'undefined' value in the parameters.
+    - mode= {draw, drawIndexed}
+    - arg= {instance_count, first_index, first_instance, base_vertex}
   `
   )
-  .unimplemented();
+  .params(u =>
+    u
+      .combine('mode', ['draw', 'drawIndexed'])
+      .beginSubcases()
+      .combine('instance_count', [undefined, 4] as const)
+      .combine('first_index', [undefined, 3] as const)
+      .combine('first_instance', [undefined, 2] as const)
+      .expand('base_vertex', p =>
+        p.mode === 'drawIndexed' ? ([undefined, 9] as const) : [undefined]
+      )
+  )
+  .fn(t => {
+    const kVertexCount = 3;
+    const kVertexBufferOffset = 32;
+    const kIndexBufferOffset = 16;
+
+    t.checkTriangleDraw({
+      firstIndex: t.params.first_index,
+      count: kVertexCount,
+      firstInstance: t.params.first_instance,
+      instanceCount: t.params.instance_count,
+      indexed: t.params.mode === 'drawIndexed',
+      indirect: false, // indirect
+      vertexBufferOffset: kVertexBufferOffset,
+      indexBufferOffset: kIndexBufferOffset,
+      baseVertex: t.params.base_vertex,
+    });
+  });
 
 g.test('vertex_attributes,basic')
   .desc(
@@ -352,12 +439,20 @@ g.test('vertex_attributes,basic')
       .unless(p => p.step_mode === 'mixed' && p.vertex_buffer_count <= 1)
   )
   .fn(t => {
+    // MAINTENANCE_TODO: refactor this test so it doesn't need a storage buffer OR
+    // consider removing it. It's possible the tests in src/webgpu/api/operation/vertex_state/correctness.spec.ts
+    // already test this.
+    t.skipIf(
+      t.isCompatibility && !(t.device.limits.maxStorageBuffersInFragmentStage! > 0),
+      `maxStorageBuffersInFragmentStage(${t.device.limits.maxStorageBuffersInFragmentStage}) is 0`
+    );
     const vertexCount = 4;
     const instanceCount = 4;
 
-    const attributesPerVertexBuffer =
-      t.params.vertex_attribute_count / t.params.vertex_buffer_count;
-    assert(Math.round(attributesPerVertexBuffer) === attributesPerVertexBuffer);
+    // In compat mode, @builtin(vertex_index) and @builtin(instance_index) each take an attribute.
+    const maxAttributes = t.device.limits.maxVertexAttributes - (t.isCompatibility ? 2 : 0);
+    const numAttributes = Math.min(maxAttributes, t.params.vertex_attribute_count);
+    const maxAttributesPerVertexBuffer = Math.ceil(numAttributes / t.params.vertex_buffer_count);
 
     let shaderLocation = 0;
     let attributeValue = 0;
@@ -402,7 +497,12 @@ g.test('vertex_attributes,basic')
       }
 
       const attributes: GPUVertexAttribute[] = [];
-      for (let a = 0; a < attributesPerVertexBuffer; ++a) {
+      const numAttributesForBuffer = Math.min(
+        maxAttributesPerVertexBuffer,
+        maxAttributes - b * maxAttributesPerVertexBuffer
+      );
+
+      for (let a = 0; a < numAttributesForBuffer; ++a) {
         const attribute: GPUVertexAttribute = {
           format: t.params.vertex_format,
           shaderLocation,
@@ -415,7 +515,7 @@ g.test('vertex_attributes,basic')
       }
 
       for (let v = 0; v < vertexOrInstanceCount; ++v) {
-        for (let a = 0; a < attributesPerVertexBuffer; ++a) {
+        for (let a = 0; a < numAttributesForBuffer; ++a) {
           vertexBufferValues.push(attributeValue);
           attributeValue += 1.234; // Values will get rounded later if we make a Uint32Array.
         }
@@ -495,16 +595,16 @@ g.test('vertex_attributes,basic')
     let accumulateVariableDeclarationsInFragmentShader = '';
     let accumulateVariableAssignmentsInFragmentShader = '';
     // The remaining 3 vertex attributes
-    if (t.params.vertex_attribute_count === 16) {
+    if (numAttributes === 16) {
       accumulateVariableDeclarationsInVertexShader = `
-        [[location(13)]] outAttrib13 : vec4<${wgslFormat}>;
+        @location(13) @interpolate(flat, either) outAttrib13 : vec4<${wgslFormat}>,
       `;
       accumulateVariableAssignmentsInVertexShader = `
       output.outAttrib13 =
           vec4<${wgslFormat}>(input.attrib12, input.attrib13, input.attrib14, input.attrib15);
       `;
       accumulateVariableDeclarationsInFragmentShader = `
-      [[location(13)]] attrib13 : vec4<${wgslFormat}>;
+      @location(13) @interpolate(flat, either) attrib13 : vec4<${wgslFormat}>,
       `;
       accumulateVariableAssignmentsInFragmentShader = `
       outBuffer.primitives[input.primitiveId].attrib12 = input.attrib13.x;
@@ -512,30 +612,44 @@ g.test('vertex_attributes,basic')
       outBuffer.primitives[input.primitiveId].attrib14 = input.attrib13.z;
       outBuffer.primitives[input.primitiveId].attrib15 = input.attrib13.w;
       `;
+    } else if (numAttributes === 14) {
+      accumulateVariableDeclarationsInVertexShader = `
+        @location(13) @interpolate(flat, either) outAttrib13 : vec4<${wgslFormat}>,
+      `;
+      accumulateVariableAssignmentsInVertexShader = `
+      output.outAttrib13 =
+          vec4<${wgslFormat}>(input.attrib12, input.attrib13, 0, 0);
+      `;
+      accumulateVariableDeclarationsInFragmentShader = `
+      @location(13) @interpolate(flat, either) attrib13 : vec4<${wgslFormat}>,
+      `;
+      accumulateVariableAssignmentsInFragmentShader = `
+      outBuffer.primitives[input.primitiveId].attrib12 = input.attrib13.x;
+      outBuffer.primitives[input.primitiveId].attrib13 = input.attrib13.y;
+      `;
     }
 
     const pipeline = t.device.createRenderPipeline({
+      layout: 'auto',
       vertex: {
         module: t.device.createShaderModule({
           code: `
 struct Inputs {
-  [[builtin(vertex_index)]] vertexIndex : u32;
-  [[builtin(instance_index)]] instanceIndex : u32;
-${vertexInputShaderLocations
-  .map(i => `  [[location(${i})]] attrib${i} : ${wgslFormat};`)
-  .join('\n')}
+  @builtin(vertex_index) vertexIndex : u32,
+  @builtin(instance_index) instanceIndex : u32,
+${vertexInputShaderLocations.map(i => `  @location(${i}) attrib${i} : ${wgslFormat},`).join('\n')}
 };
 
 struct Outputs {
-  [[builtin(position)]] Position : vec4<f32>;
+  @builtin(position) Position : vec4<f32>,
 ${interStageScalarShaderLocations
-  .map(i => `  [[location(${i})]] outAttrib${i} : ${wgslFormat};`)
+  .map(i => `  @location(${i}) @interpolate(flat, either) outAttrib${i} : ${wgslFormat},`)
   .join('\n')}
-  [[location(${interStageScalarShaderLocations.length})]] primitiveId : u32;
+  @location(${interStageScalarShaderLocations.length}) @interpolate(flat, either) primitiveId : u32,
 ${accumulateVariableDeclarationsInVertexShader}
 };
 
-[[stage(vertex)]] fn main(input : Inputs) -> Outputs {
+@vertex fn main(input : Inputs) -> Outputs {
   var output : Outputs;
 ${interStageScalarShaderLocations.map(i => `  output.outAttrib${i} = input.attrib${i};`).join('\n')}
 ${accumulateVariableAssignmentsInVertexShader}
@@ -554,21 +668,21 @@ ${accumulateVariableAssignmentsInVertexShader}
           code: `
 struct Inputs {
 ${interStageScalarShaderLocations
-  .map(i => `  [[location(${i})]] attrib${i} : ${wgslFormat};`)
+  .map(i => `  @location(${i}) @interpolate(flat, either) attrib${i} : ${wgslFormat},`)
   .join('\n')}
-  [[location(${interStageScalarShaderLocations.length})]] primitiveId : u32;
+  @location(${interStageScalarShaderLocations.length}) @interpolate(flat, either) primitiveId : u32,
 ${accumulateVariableDeclarationsInFragmentShader}
 };
 
 struct OutPrimitive {
-${vertexInputShaderLocations.map(i => `  attrib${i} : ${wgslFormat};`).join('\n')}
+${vertexInputShaderLocations.map(i => `  attrib${i} : ${wgslFormat},`).join('\n')}
 };
 struct OutBuffer {
-  primitives : [[stride(${vertexInputShaderLocations.length * 4})]] array<OutPrimitive>;
+  primitives : array<OutPrimitive>
 };
-[[group(0), binding(0)]] var<storage, read_write> outBuffer : OutBuffer;
+@group(0) @binding(0) var<storage, read_write> outBuffer : OutBuffer;
 
-[[stage(fragment)]] fn main(input : Inputs) {
+@fragment fn main(input : Inputs) {
 ${interStageScalarShaderLocations
   .map(i => `  outBuffer.primitives[input.primitiveId].attrib${i} = input.attrib${i};`)
   .join('\n')}
@@ -589,7 +703,7 @@ ${accumulateVariableAssignmentsInFragmentShader}
       },
     });
 
-    const resultBuffer = t.device.createBuffer({
+    const resultBuffer = t.createBufferTracked({
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
       size: vertexCount * instanceCount * vertexInputShaderLocations.length * 4,
     });
@@ -612,14 +726,15 @@ ${accumulateVariableAssignmentsInFragmentShader}
         {
           // Dummy render attachment - not used (WebGPU doesn't allow using a render pass with no
           // attachments)
-          view: t.device
-            .createTexture({
+          view: t
+            .createTextureTracked({
               usage: GPUTextureUsage.RENDER_ATTACHMENT,
               size: [1],
               format: 'rgba8unorm',
             })
             .createView(),
-          loadValue: [0, 0, 0, 0],
+          clearValue: [0, 0, 0, 0],
+          loadOp: 'clear',
           storeOp: 'store',
         },
       ],
@@ -631,7 +746,7 @@ ${accumulateVariableAssignmentsInFragmentShader}
       renderPass.setVertexBuffer(i, vertexBuffers[i]);
     }
     renderPass.draw(vertexCount, instanceCount);
-    renderPass.endPass();
+    renderPass.end();
     t.device.queue.submit([commandEncoder.finish()]);
 
     t.expectGPUBufferValuesEqual(resultBuffer, expectedData);

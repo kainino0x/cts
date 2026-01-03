@@ -6,14 +6,17 @@ Note that anisotropic filtering is never guaranteed to occur, but we might be ab
 things. If there are no guarantees we can issue warnings instead of failures. Ideas:
   - No *more* than the provided maxAnisotropy samples are used, by testing how many unique
     sample values come out of the sample operation.
-  - Check anisotropy is done in the correct direciton (by having a 2D gradient and checking we get
+  - Check anisotropy is done in the correct direction (by having a 2D gradient and checking we get
     more of the color in the correct direction).
 `;
 
 import { makeTestGroup } from '../../../../common/framework/test_group.js';
 import { assert } from '../../../../common/util/util.js';
-import { GPUTest } from '../../../gpu_test.js';
+import { AllFeaturesMaxLimitsGPUTest } from '../../../gpu_test.js';
+import * as ttu from '../../../texture_test_utils.js';
 import { checkElementsEqual } from '../../../util/check_contents.js';
+import { TexelView } from '../../../util/texture/texel_view.js';
+import { PerPixelComparison } from '../../../util/texture/texture_ok.js';
 
 const kRTSize = 16;
 const kBytesPerRow = 256;
@@ -31,10 +34,10 @@ const checkerColors = [
 ];
 
 // renders texture a slanted plane placed in a specific way
-class SamplerAnisotropicFilteringSlantedPlaneTest extends GPUTest {
+class SamplerAnisotropicFilteringSlantedPlaneTest extends AllFeaturesMaxLimitsGPUTest {
   copyRenderTargetToBuffer(rt: GPUTexture): GPUBuffer {
     const byteLength = kRTSize * kBytesPerRow;
-    const buffer = this.device.createBuffer({
+    const buffer = this.createBufferTracked({
       size: byteLength,
       usage: GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST,
     });
@@ -51,20 +54,21 @@ class SamplerAnisotropicFilteringSlantedPlaneTest extends GPUTest {
   }
 
   private pipeline: GPURenderPipeline | undefined;
-  async init(): Promise<void> {
+  override async init(): Promise<void> {
     await super.init();
 
     this.pipeline = this.device.createRenderPipeline({
+      layout: 'auto',
       vertex: {
         module: this.device.createShaderModule({
           code: `
             struct Outputs {
-              [[builtin(position)]] Position : vec4<f32>;
-              [[location(0)]] fragUV : vec2<f32>;
+              @builtin(position) Position : vec4<f32>,
+              @location(0) fragUV : vec2<f32>,
             };
 
-            [[stage(vertex)]] fn main(
-              [[builtin(vertex_index)]] VertexIndex : u32) -> Outputs {
+            @vertex fn main(
+              @builtin(vertex_index) VertexIndex : u32) -> Outputs {
               var position : array<vec3<f32>, 6> = array<vec3<f32>, 6>(
                 vec3<f32>(-0.5, 0.5, -0.5),
                 vec3<f32>(0.5, 0.5, -0.5),
@@ -99,13 +103,13 @@ class SamplerAnisotropicFilteringSlantedPlaneTest extends GPUTest {
       fragment: {
         module: this.device.createShaderModule({
           code: `
-            [[group(0), binding(0)]] var sampler0 : sampler;
-            [[group(0), binding(1)]] var texture0 : texture_2d<f32>;
+            @group(0) @binding(0) var sampler0 : sampler;
+            @group(0) @binding(1) var texture0 : texture_2d<f32>;
 
-            [[stage(fragment)]] fn main(
-              [[builtin(position)]] FragCoord : vec4<f32>,
-              [[location(0)]] fragUV: vec2<f32>)
-              -> [[location(0)]] vec4<f32> {
+            @fragment fn main(
+              @builtin(position) FragCoord : vec4<f32>,
+              @location(0) fragUV: vec2<f32>)
+              -> @location(0) vec4<f32> {
                 return textureSample(texture0, sampler0, fragUV);
             }
             `,
@@ -130,7 +134,7 @@ class SamplerAnisotropicFilteringSlantedPlaneTest extends GPUTest {
       layout: this.pipeline.getBindGroupLayout(0),
     });
 
-    const colorAttachment = this.device.createTexture({
+    const colorAttachment = this.createTextureTracked({
       format: kColorAttachmentFormat,
       size: { width: kRTSize, height: kRTSize, depthOrArrayLayers: 1 },
       usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.RENDER_ATTACHMENT,
@@ -142,15 +146,16 @@ class SamplerAnisotropicFilteringSlantedPlaneTest extends GPUTest {
       colorAttachments: [
         {
           view: colorAttachmentView,
+          clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 1.0 },
+          loadOp: 'clear',
           storeOp: 'store',
-          loadValue: { r: 0.0, g: 0.0, b: 0.0, a: 1.0 },
         },
       ],
     });
     pass.setPipeline(this.pipeline);
     pass.setBindGroup(0, bindGroup);
     pass.draw(6);
-    pass.endPass();
+    pass.end();
     this.device.queue.submit([encoder.finish()]);
 
     return colorAttachment;
@@ -172,7 +177,7 @@ g.test('anisotropic_filter_checkerboard')
   .fn(async t => {
     // init texture with only a top level mipmap
     const textureSize = 32;
-    const texture = t.device.createTexture({
+    const texture = t.createTextureTracked({
       mipLevelCount: 1,
       size: { width: textureSize, height: textureSize, depthOrArrayLayers: 1 },
       format: kTextureFormat,
@@ -281,9 +286,12 @@ g.test('anisotropic_filter_mipmap_color')
       _generateWarningOnly: true,
     },
   ])
-  .fn(async t => {
-    const texture = t.createTexture2DWithMipmaps(colors);
-
+  .fn(t => {
+    const texture = ttu.createTextureFromTexelViewsMultipleMipmaps(
+      t,
+      colors.map(value => TexelView.fromTexelsAsBytes(kTextureFormat, _coords => value)),
+      { size: [4, 4, 1], usage: GPUTextureUsage.COPY_DST | GPUTextureUsage.TEXTURE_BINDING }
+    );
     const textureView = texture.createView();
 
     const sampler = t.device.createSampler({
@@ -295,15 +303,15 @@ g.test('anisotropic_filter_mipmap_color')
 
     const colorAttachment = t.drawSlantedPlane(textureView, sampler);
 
+    const pixelComparisons: PerPixelComparison<Uint8Array>[] = [];
     for (const entry of t.params._results) {
       if (entry.expected instanceof Uint8Array) {
         // equal exactly one color
-        t.expectSinglePixelIn2DTexture(colorAttachment, kColorAttachmentFormat, entry.coord, {
-          exp: entry.expected as Uint8Array,
-          generateWarningOnly: t.params._generateWarningOnly,
-        });
+        pixelComparisons.push({ coord: entry.coord, exp: entry.expected });
       } else {
         // a lerp between two colors
+        // MAINTENANCE_TODO: Unify comparison to allow for a strict in-between comparison to support
+        //                   this kind of expectation.
         t.expectSinglePixelBetweenTwoValuesIn2DTexture(
           colorAttachment,
           kColorAttachmentFormat,
@@ -315,4 +323,9 @@ g.test('anisotropic_filter_mipmap_color')
         );
       }
     }
+    ttu.expectSinglePixelComparisonsAreOkInTexture(
+      t,
+      { texture: colorAttachment },
+      pixelComparisons
+    );
   });

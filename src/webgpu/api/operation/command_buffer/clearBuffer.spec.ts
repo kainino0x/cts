@@ -3,9 +3,9 @@ API operations tests for clearBuffer.
 `;
 
 import { makeTestGroup } from '../../../../common/framework/test_group.js';
-import { GPUTest } from '../../../gpu_test.js';
+import { AllFeaturesMaxLimitsGPUTest } from '../../../gpu_test.js';
 
-export const g = makeTestGroup(GPUTest);
+export const g = makeTestGroup(AllFeaturesMaxLimitsGPUTest);
 
 g.test('clear')
   .desc(
@@ -26,7 +26,7 @@ g.test('clear')
         (p.offset ?? 0) + (p.size ?? 16) + 8,
       ])
   )
-  .fn(async t => {
+  .fn(t => {
     const { offset, size, bufferSize } = t.params;
 
     const bufferData = new Uint8Array(bufferSize);

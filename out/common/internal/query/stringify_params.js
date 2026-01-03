@@ -7,8 +7,8 @@ import { kParamKVSeparator, kParamSeparator, kWildcard } from './separators.js';
 
 export function stringifyPublicParams(p, addWildcard = false) {
   const parts = Object.keys(p).
-  filter(k => paramKeyIsPublic(k)).
-  map(k => stringifySingleParam(k, p[k]));
+  filter((k) => paramKeyIsPublic(k)).
+  map((k) => stringifySingleParam(k, p[k]));
 
   if (addWildcard) parts.push(kWildcard);
 
@@ -16,13 +16,13 @@ export function stringifyPublicParams(p, addWildcard = false) {
 }
 
 /**
-   * An _approximately_ unique string representing a CaseParams value.
-   */
+ * An _approximately_ unique string representing a CaseParams value.
+ */
 export function stringifyPublicParamsUniquely(p) {
   const keys = Object.keys(p).sort();
   return keys.
-  filter(k => paramKeyIsPublic(k)).
-  map(k => stringifySingleParamUniquely(k, p[k])).
+  filter((k) => paramKeyIsPublic(k)).
+  map((k) => stringifySingleParamUniquely(k, p[k])).
   join(kParamSeparator);
 }
 
@@ -37,9 +37,9 @@ function stringifySingleParamUniquely(k, v) {
 function stringifySingleParamValue(v) {
   const s = stringifyParamValue(v);
   assert(
-  !badParamValueChars.test(s),
-  `JSON.stringified param value must not match ${badParamValueChars} - was ${s}`);
-
+    !badParamValueChars.test(s),
+    `JSON.stringified param value must not match ${badParamValueChars} - was ${s}`
+  );
   return s;
 }
 //# sourceMappingURL=stringify_params.js.map

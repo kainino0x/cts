@@ -1,7 +1,7 @@
 import { makeTestGroup } from '../../../../common/framework/test_group.js';
 import { unreachable } from '../../../../common/util/util.js';
 import { GPUConst } from '../../../constants.js';
-import { GPUTest } from '../../../gpu_test.js';
+import { AllFeaturesMaxLimitsGPUTest } from '../../../gpu_test.js';
 import { getTextureCopyLayout } from '../../../util/texture/layout.js';
 import { PerTexelComponent } from '../../../util/texture/texel_data.js';
 
@@ -21,8 +21,8 @@ const kBufferUsagesForMappedAtCreationTests = [
   GPUConst.BufferUsage.COPY_SRC,
 ];
 
-class F extends GPUTest {
-  GetBufferUsageFromMapMode(mapMode: GPUMapModeFlags): number {
+class F extends AllFeaturesMaxLimitsGPUTest {
+  getBufferUsageFromMapMode(mapMode: GPUMapModeFlags): number {
     switch (mapMode) {
       case GPUMapMode.READ:
         return GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ;
@@ -34,42 +34,72 @@ class F extends GPUTest {
     }
   }
 
-  async CheckGPUBufferContent(
+  checkGPUBufferContent(
     buffer: GPUBuffer,
     bufferUsage: GPUBufferUsageFlags,
     expectedData: Uint8Array
-  ): Promise<void> {
+  ): void {
     const mappable = bufferUsage & GPUBufferUsage.MAP_READ;
     this.expectGPUBufferValuesEqual(buffer, expectedData, 0, { method: mappable ? 'map' : 'copy' });
   }
 
-  TestBufferZeroInitInBindGroup(
+  testBufferZeroInitInBindGroup(
     computeShaderModule: GPUShaderModule,
     buffer: GPUBuffer,
     bufferOffset: number,
     boundBufferSize: number
   ): void {
+    this.TestBufferZeroInitInBindGroupInternal(
+      computeShaderModule,
+      buffer,
+      false,
+      bufferOffset,
+      boundBufferSize
+    );
+    const bindBufferResource = bufferOffset === 0 && boundBufferSize === buffer.size;
+    if (bindBufferResource) {
+      this.TestBufferZeroInitInBindGroupInternal(
+        computeShaderModule,
+        buffer,
+        true,
+        bufferOffset,
+        boundBufferSize
+      );
+    }
+  }
+
+  TestBufferZeroInitInBindGroupInternal(
+    computeShaderModule: GPUShaderModule,
+    buffer: GPUBuffer,
+    bindBufferResource: boolean,
+    bufferOffset: number,
+    boundBufferSize: number
+  ): void {
     const computePipeline = this.device.createComputePipeline({
+      layout: 'auto',
       compute: {
         module: computeShaderModule,
         entryPoint: 'main',
       },
     });
-    const outputTexture = this.device.createTexture({
+    const outputTexture = this.createTextureTracked({
       format: 'rgba8unorm',
       size: [1, 1, 1],
       usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.STORAGE_BINDING,
     });
+    const resource = bindBufferResource
+      ? buffer
+      : {
+          buffer,
+          offset: bufferOffset,
+          size: boundBufferSize,
+        };
     const bindGroup = this.device.createBindGroup({
       layout: computePipeline.getBindGroupLayout(0),
       entries: [
         {
           binding: 0,
-          resource: {
-            buffer,
-            offset: bufferOffset,
-            size: boundBufferSize,
-          },
+          resource,
         },
         {
           binding: 1,
@@ -82,18 +112,19 @@ class F extends GPUTest {
     const computePass = encoder.beginComputePass();
     computePass.setBindGroup(0, bindGroup);
     computePass.setPipeline(computePipeline);
-    computePass.dispatch(1);
-    computePass.endPass();
+    computePass.dispatchWorkgroups(1);
+    computePass.end();
     this.queue.submit([encoder.finish()]);
 
-    this.CheckBufferAndOutputTexture(buffer, boundBufferSize + bufferOffset, outputTexture);
+    this.checkBufferAndOutputTexture(buffer, boundBufferSize + bufferOffset, outputTexture);
   }
 
-  CreateRenderPipelineForTest(
+  createRenderPipelineForTest(
     vertexShaderModule: GPUShaderModule,
     testVertexBuffer: boolean
   ): GPURenderPipeline {
     const renderPipelineDescriptor: GPURenderPipelineDescriptor = {
+      layout: 'auto',
       vertex: {
         module: vertexShaderModule,
         entryPoint: 'main',
@@ -101,8 +132,8 @@ class F extends GPUTest {
       fragment: {
         module: this.device.createShaderModule({
           code: `
-        [[stage(fragment)]]
-        fn main([[location(0)]] i_color : vec4<f32>) -> [[location(0)]] vec4<f32> {
+        @fragment
+        fn main(@location(0) i_color : vec4<f32>) -> @location(0) vec4<f32> {
             return i_color;
         }`,
         }),
@@ -125,7 +156,7 @@ class F extends GPUTest {
     return this.device.createRenderPipeline(renderPipelineDescriptor);
   }
 
-  RecordInitializeTextureColor(
+  recordInitializeTextureColor(
     encoder: GPUCommandEncoder,
     texture: GPUTexture,
     color: GPUColor
@@ -134,15 +165,16 @@ class F extends GPUTest {
       colorAttachments: [
         {
           view: texture.createView(),
-          loadValue: color,
+          clearValue: color,
+          loadOp: 'clear',
           storeOp: 'store',
         },
       ],
     });
-    renderPass.endPass();
+    renderPass.end();
   }
 
-  CheckBufferAndOutputTexture(
+  checkBufferAndOutputTexture(
     buffer: GPUBuffer,
     bufferSize: number,
     outputTexture: GPUTexture,
@@ -167,12 +199,12 @@ g.test('partial_write_buffer')
 the buffer, the remaining part of that buffer will be initialized to 0.`
   )
   .paramsSubcasesOnly(u => u.combine('offset', [0, 8, -12]))
-  .fn(async t => {
+  .fn(t => {
     const { offset } = t.params;
     const bufferSize = 32;
     const appliedOffset = offset >= 0 ? offset : bufferSize + offset;
 
-    const buffer = t.device.createBuffer({
+    const buffer = t.createBufferTracked({
       size: bufferSize,
       usage: GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST,
     });
@@ -199,8 +231,8 @@ have already been initialized to 0.`
     const { mapMode } = t.params;
 
     const bufferSize = 32;
-    const bufferUsage = t.GetBufferUsageFromMapMode(mapMode);
-    const buffer = t.device.createBuffer({
+    const bufferUsage = t.getBufferUsageFromMapMode(mapMode);
+    const buffer = t.createBufferTracked({
       size: bufferSize,
       usage: bufferUsage,
     });
@@ -213,7 +245,7 @@ have already been initialized to 0.`
     buffer.unmap();
 
     const expectedData = new Uint8Array(bufferSize);
-    await t.CheckGPUBufferContent(buffer, bufferUsage, expectedData);
+    t.checkGPUBufferContent(buffer, bufferUsage, expectedData);
   });
 
 g.test('map_partial_buffer')
@@ -228,8 +260,8 @@ already been initialized to 0.`
     const bufferSize = 32;
     const appliedOffset = offset >= 0 ? offset : bufferSize + offset;
 
-    const bufferUsage = t.GetBufferUsageFromMapMode(mapMode);
-    const buffer = t.device.createBuffer({
+    const bufferUsage = t.getBufferUsageFromMapMode(mapMode);
+    const buffer = t.createBufferTracked({
       size: bufferSize,
       usage: bufferUsage,
     });
@@ -248,7 +280,7 @@ already been initialized to 0.`
       buffer.unmap();
     }
 
-    await t.CheckGPUBufferContent(buffer, bufferUsage, expectedData);
+    t.checkGPUBufferContent(buffer, bufferUsage, expectedData);
   });
 
 g.test('mapped_at_creation_whole_buffer')
@@ -258,11 +290,11 @@ mappedAtCreation === true just after its creation, the contents of both the retu
 array buffer of getMappedRange() and the GPUBuffer itself have all been initialized to 0.`
   )
   .params(u => u.combine('bufferUsage', kBufferUsagesForMappedAtCreationTests))
-  .fn(async t => {
+  .fn(t => {
     const { bufferUsage } = t.params;
 
     const bufferSize = 32;
-    const buffer = t.device.createBuffer({
+    const buffer = t.createBufferTracked({
       mappedAtCreation: true,
       size: bufferSize,
       usage: bufferUsage,
@@ -275,7 +307,7 @@ array buffer of getMappedRange() and the GPUBuffer itself have all been initiali
     buffer.unmap();
 
     const expectedData = new Uint8Array(bufferSize);
-    await t.CheckGPUBufferContent(buffer, bufferUsage, expectedData);
+    t.checkGPUBufferContent(buffer, bufferUsage, expectedData);
   });
 
 g.test('mapped_at_creation_partial_buffer')
@@ -290,12 +322,12 @@ array buffer of getMappedRange() and the GPUBuffer itself have all been initiali
       .beginSubcases()
       .combine('offset', [0, 8, -16])
   )
-  .fn(async t => {
+  .fn(t => {
     const { bufferUsage, offset } = t.params;
     const bufferSize = 32;
     const appliedOffset = offset >= 0 ? offset : bufferSize + offset;
 
-    const buffer = t.device.createBuffer({
+    const buffer = t.createBufferTracked({
       mappedAtCreation: true,
       size: bufferSize,
       usage: bufferUsage,
@@ -314,7 +346,7 @@ array buffer of getMappedRange() and the GPUBuffer itself have all been initiali
       buffer.unmap();
     }
 
-    await t.CheckGPUBufferContent(buffer, bufferUsage, expectedData);
+    t.checkGPUBufferContent(buffer, bufferUsage, expectedData);
   });
 
 g.test('copy_buffer_to_buffer_copy_source')
@@ -322,17 +354,17 @@ g.test('copy_buffer_to_buffer_copy_source')
     `Verify when the first usage of a GPUBuffer is being used as the source buffer of
 CopyBufferToBuffer(), the contents of the GPUBuffer have already been initialized to 0.`
   )
-  .fn(async t => {
+  .fn(t => {
     const bufferSize = 32;
     const bufferUsage = GPUBufferUsage.COPY_SRC;
-    const buffer = t.device.createBuffer({
+    const buffer = t.createBufferTracked({
       size: bufferSize,
       usage: bufferUsage,
     });
 
     const expectedData = new Uint8Array(bufferSize);
     // copyBufferToBuffer() is called inside t.CheckGPUBufferContent().
-    await t.CheckGPUBufferContent(buffer, bufferUsage, expectedData);
+    t.checkGPUBufferContent(buffer, bufferUsage, expectedData);
   });
 
 g.test('copy_buffer_to_texture')
@@ -341,12 +373,12 @@ g.test('copy_buffer_to_texture')
 CopyBufferToTexture(), the contents of the GPUBuffer have already been initialized to 0.`
   )
   .paramsSubcasesOnly(u => u.combine('bufferOffset', [0, 8]))
-  .fn(async t => {
+  .fn(t => {
     const { bufferOffset } = t.params;
     const textureSize: [number, number, number] = [8, 8, 1];
     const dstTextureFormat = 'rgba8unorm';
 
-    const dstTexture = t.device.createTexture({
+    const dstTexture = t.createTextureTracked({
       size: textureSize,
       format: dstTextureFormat,
       usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.COPY_DST,
@@ -354,7 +386,7 @@ CopyBufferToTexture(), the contents of the GPUBuffer have already been initializ
     const layout = getTextureCopyLayout(dstTextureFormat, '2d', textureSize);
     const srcBufferSize = layout.byteLength + bufferOffset;
     const srcBufferUsage = GPUBufferUsage.COPY_SRC;
-    const srcBuffer = t.device.createBuffer({
+    const srcBuffer = t.createBufferTracked({
       size: srcBufferSize,
       usage: srcBufferUsage,
     });
@@ -372,7 +404,7 @@ CopyBufferToTexture(), the contents of the GPUBuffer have already been initializ
     );
     t.queue.submit([encoder.finish()]);
 
-    t.CheckBufferAndOutputTexture(srcBuffer, srcBufferSize, dstTexture, textureSize, {
+    t.checkBufferAndOutputTexture(srcBuffer, srcBufferSize, dstTexture, textureSize, {
       R: 0.0,
       G: 0.0,
       B: 0.0,
@@ -386,22 +418,22 @@ g.test('resolve_query_set_to_partial_buffer')
 remaining part of it will be initialized to 0.`
   )
   .paramsSubcasesOnly(u => u.combine('bufferOffset', [0, 256]))
-  .fn(async t => {
+  .fn(t => {
     const { bufferOffset } = t.params;
     const bufferSize = bufferOffset + 8;
     const bufferUsage = GPUBufferUsage.COPY_SRC | GPUBufferUsage.QUERY_RESOLVE;
-    const dstBuffer = t.device.createBuffer({
+    const dstBuffer = t.createBufferTracked({
       size: bufferSize,
       usage: bufferUsage,
     });
 
-    const querySet = t.device.createQuerySet({ type: 'occlusion', count: 1 });
+    const querySet = t.createQuerySetTracked({ type: 'occlusion', count: 1 });
     const encoder = t.device.createCommandEncoder();
     encoder.resolveQuerySet(querySet, 0, 1, dstBuffer, bufferOffset);
     t.queue.submit([encoder.finish()]);
 
     const expectedBufferData = new Uint8Array(bufferSize);
-    await t.CheckGPUBufferContent(dstBuffer, bufferUsage, expectedBufferData);
+    t.checkGPUBufferContent(dstBuffer, bufferUsage, expectedBufferData);
   });
 
 g.test('copy_texture_to_partial_buffer')
@@ -420,12 +452,12 @@ remaining part of it will be initialized to 0.`
         return !(t.bufferOffset === 0 && t.rowsPerImage === 16);
       })
   )
-  .fn(async t => {
+  .fn(t => {
     const { bufferOffset, arrayLayerCount, copyMipLevel, rowsPerImage } = t.params;
     const srcTextureFormat = 'r8uint';
     const textureSize = [32, 16, arrayLayerCount] as const;
 
-    const srcTexture = t.device.createTexture({
+    const srcTexture = t.createTextureTracked({
       format: srcTextureFormat,
       usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.RENDER_ATTACHMENT,
       size: textureSize,
@@ -440,7 +472,7 @@ remaining part of it will be initialized to 0.`
     });
 
     const dstBufferSize = layout.byteLength + Math.abs(bufferOffset);
-    const dstBuffer = t.device.createBuffer({
+    const dstBuffer = t.createBufferTracked({
       size: dstBufferSize,
       usage: GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST,
     });
@@ -457,12 +489,13 @@ remaining part of it will be initialized to 0.`
               arrayLayerCount: 1,
               baseMipLevel: copyMipLevel,
             }),
-            loadValue: { r: layer + 1, g: 0, b: 0, a: 0 },
+            clearValue: { r: layer + 1, g: 0, b: 0, a: 0 },
+            loadOp: 'clear',
             storeOp: 'store',
           },
         ],
       });
-      renderPass.endPass();
+      renderPass.end();
     }
 
     // Do texture-to-buffer copy
@@ -474,7 +507,7 @@ remaining part of it will be initialized to 0.`
     );
     t.queue.submit([encoder.finish()]);
 
-    // Check if the contents of the destination bufer are what we expect.
+    // Check if the contents of the destination buffer are what we expect.
     const expectedData = new Uint8Array(dstBufferSize);
     for (let layer = 0; layer < arrayLayerCount; ++layer) {
       for (let y = 0; y < layout.mipSize[1]; ++y) {
@@ -493,11 +526,11 @@ g.test('uniform_buffer')
     all the contents in that GPUBuffer have been initialized to 0.`
   )
   .paramsSubcasesOnly(u => u.combine('bufferOffset', [0, 256]))
-  .fn(async t => {
+  .fn(t => {
     const { bufferOffset } = t.params;
 
     const boundBufferSize = 16;
-    const buffer = t.device.createBuffer({
+    const buffer = t.createBufferTracked({
       size: bufferOffset + boundBufferSize,
       usage: GPUBufferUsage.COPY_SRC | GPUBufferUsage.UNIFORM,
     });
@@ -505,12 +538,12 @@ g.test('uniform_buffer')
     const computeShaderModule = t.device.createShaderModule({
       code: `
   struct UBO {
-      value : vec4<u32>;
+    value : vec4<u32>
   };
-  [[group(0), binding(0)]] var<uniform> ubo : UBO;
-  [[group(0), binding(1)]] var outImage : texture_storage_2d<rgba8unorm, write>;
+  @group(0) @binding(0) var<uniform> ubo : UBO;
+  @group(0) @binding(1) var outImage : texture_storage_2d<rgba8unorm, write>;
 
-  [[stage(compute), workgroup_size(1)]] fn main() {
+  @compute @workgroup_size(1) fn main() {
       if (all(ubo.value == vec4<u32>(0u, 0u, 0u, 0u))) {
           textureStore(outImage, vec2<i32>(0, 0), vec4<f32>(0.0, 1.0, 0.0, 1.0));
       } else {
@@ -520,7 +553,7 @@ g.test('uniform_buffer')
     });
 
     // Verify the whole range of the buffer has been initialized to 0 in a compute shader.
-    t.TestBufferZeroInitInBindGroup(computeShaderModule, buffer, bufferOffset, boundBufferSize);
+    t.testBufferZeroInitInBindGroup(computeShaderModule, buffer, bufferOffset, boundBufferSize);
   });
 
 g.test('readonly_storage_buffer')
@@ -529,10 +562,10 @@ g.test('readonly_storage_buffer')
     GPUBuffer, all the contents in that GPUBuffer have been initialized to 0.`
   )
   .paramsSubcasesOnly(u => u.combine('bufferOffset', [0, 256]))
-  .fn(async t => {
+  .fn(t => {
     const { bufferOffset } = t.params;
     const boundBufferSize = 16;
-    const buffer = t.device.createBuffer({
+    const buffer = t.createBufferTracked({
       size: bufferOffset + boundBufferSize,
       usage: GPUBufferUsage.COPY_SRC | GPUBufferUsage.STORAGE,
     });
@@ -540,12 +573,12 @@ g.test('readonly_storage_buffer')
     const computeShaderModule = t.device.createShaderModule({
       code: `
     struct SSBO {
-        value : vec4<u32>;
+      value : vec4<u32>
     };
-    [[group(0), binding(0)]] var<storage, read> ssbo : SSBO;
-    [[group(0), binding(1)]] var outImage : texture_storage_2d<rgba8unorm, write>;
+    @group(0) @binding(0) var<storage, read> ssbo : SSBO;
+    @group(0) @binding(1) var outImage : texture_storage_2d<rgba8unorm, write>;
 
-    [[stage(compute), workgroup_size(1)]] fn main() {
+    @compute @workgroup_size(1) fn main() {
         if (all(ssbo.value == vec4<u32>(0u, 0u, 0u, 0u))) {
             textureStore(outImage, vec2<i32>(0, 0), vec4<f32>(0.0, 1.0, 0.0, 1.0));
         } else {
@@ -555,7 +588,7 @@ g.test('readonly_storage_buffer')
     });
 
     // Verify the whole range of the buffer has been initialized to 0 in a compute shader.
-    t.TestBufferZeroInitInBindGroup(computeShaderModule, buffer, bufferOffset, boundBufferSize);
+    t.testBufferZeroInitInBindGroup(computeShaderModule, buffer, bufferOffset, boundBufferSize);
   });
 
 g.test('storage_buffer')
@@ -564,10 +597,10 @@ g.test('storage_buffer')
     GPUBuffer, all the contents in that GPUBuffer have been initialized to 0.`
   )
   .paramsSubcasesOnly(u => u.combine('bufferOffset', [0, 256]))
-  .fn(async t => {
+  .fn(t => {
     const { bufferOffset } = t.params;
     const boundBufferSize = 16;
-    const buffer = t.device.createBuffer({
+    const buffer = t.createBufferTracked({
       size: bufferOffset + boundBufferSize,
       usage: GPUBufferUsage.COPY_SRC | GPUBufferUsage.STORAGE,
     });
@@ -575,12 +608,12 @@ g.test('storage_buffer')
     const computeShaderModule = t.device.createShaderModule({
       code: `
     struct SSBO {
-        value : vec4<u32>;
+      value : vec4<u32>
     };
-    [[group(0), binding(0)]] var<storage, read_write> ssbo : SSBO;
-    [[group(0), binding(1)]] var outImage : texture_storage_2d<rgba8unorm, write>;
+    @group(0) @binding(0) var<storage, read_write> ssbo : SSBO;
+    @group(0) @binding(1) var outImage : texture_storage_2d<rgba8unorm, write>;
 
-    [[stage(compute), workgroup_size(1)]] fn main() {
+    @compute @workgroup_size(1) fn main() {
         if (all(ssbo.value == vec4<u32>(0u, 0u, 0u, 0u))) {
             textureStore(outImage, vec2<i32>(0, 0), vec4<f32>(0.0, 1.0, 0.0, 1.0));
         } else {
@@ -590,7 +623,7 @@ g.test('storage_buffer')
     });
 
     // Verify the whole range of the buffer has been initialized to 0 in a compute shader.
-    t.TestBufferZeroInitInBindGroup(computeShaderModule, buffer, bufferOffset, boundBufferSize);
+    t.testBufferZeroInitInBindGroup(computeShaderModule, buffer, bufferOffset, boundBufferSize);
   });
 
 g.test('vertex_buffer')
@@ -599,18 +632,18 @@ g.test('vertex_buffer')
   GPUBuffer, all the contents in that GPUBuffer have been initialized to 0.`
   )
   .paramsSubcasesOnly(u => u.combine('bufferOffset', [0, 16]))
-  .fn(async t => {
+  .fn(t => {
     const { bufferOffset } = t.params;
 
-    const renderPipeline = t.CreateRenderPipelineForTest(
+    const renderPipeline = t.createRenderPipelineForTest(
       t.device.createShaderModule({
         code: `
       struct VertexOut {
-        [[location(0)]] color : vec4<f32>;
-        [[builtin(position)]] position : vec4<f32>;
+        @location(0) color : vec4<f32>,
+        @builtin(position) position : vec4<f32>,
       };
 
-      [[stage(vertex)]] fn main([[location(0)]] pos : vec4<f32>) -> VertexOut {
+      @vertex fn main(@location(0) pos : vec4<f32>) -> VertexOut {
         var output : VertexOut;
         if (all(pos == vec4<f32>(0.0, 0.0, 0.0, 0.0))) {
           output.color = vec4<f32>(0.0, 1.0, 0.0, 1.0);
@@ -625,12 +658,12 @@ g.test('vertex_buffer')
     );
 
     const bufferSize = 16 + bufferOffset;
-    const vertexBuffer = t.device.createBuffer({
+    const vertexBuffer = t.createBufferTracked({
       size: bufferSize,
       usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_SRC,
     });
 
-    const outputTexture = t.device.createTexture({
+    const outputTexture = t.createTextureTracked({
       format: 'rgba8unorm',
       size: [1, 1, 1],
       usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.RENDER_ATTACHMENT,
@@ -641,7 +674,8 @@ g.test('vertex_buffer')
       colorAttachments: [
         {
           view: outputTexture.createView(),
-          loadValue: { r: 0.0, g: 0.0, b: 0.0, a: 0.0 },
+          clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 0.0 },
+          loadOp: 'clear',
           storeOp: 'store',
         },
       ],
@@ -649,10 +683,10 @@ g.test('vertex_buffer')
     renderPass.setVertexBuffer(0, vertexBuffer, bufferOffset);
     renderPass.setPipeline(renderPipeline);
     renderPass.draw(1);
-    renderPass.endPass();
+    renderPass.end();
     t.queue.submit([encoder.finish()]);
 
-    t.CheckBufferAndOutputTexture(vertexBuffer, bufferSize, outputTexture);
+    t.checkBufferAndOutputTexture(vertexBuffer, bufferSize, outputTexture);
   });
 
 g.test('index_buffer')
@@ -661,19 +695,19 @@ g.test('index_buffer')
 GPUBuffer, all the contents in that GPUBuffer have been initialized to 0.`
   )
   .paramsSubcasesOnly(u => u.combine('bufferOffset', [0, 16]))
-  .fn(async t => {
+  .fn(t => {
     const { bufferOffset } = t.params;
 
-    const renderPipeline = t.CreateRenderPipelineForTest(
+    const renderPipeline = t.createRenderPipelineForTest(
       t.device.createShaderModule({
         code: `
     struct VertexOut {
-      [[location(0)]] color : vec4<f32>;
-      [[builtin(position)]] position : vec4<f32>;
+      @location(0) color : vec4<f32>,
+      @builtin(position) position : vec4<f32>,
     };
 
-    [[stage(vertex)]]
-    fn main([[builtin(vertex_index)]] VertexIndex : u32) -> VertexOut {
+    @vertex
+    fn main(@builtin(vertex_index) VertexIndex : u32) -> VertexOut {
       var output : VertexOut;
       if (VertexIndex == 0u) {
         output.color = vec4<f32>(0.0, 1.0, 0.0, 1.0);
@@ -689,12 +723,12 @@ GPUBuffer, all the contents in that GPUBuffer have been initialized to 0.`
 
     // The size of GPUBuffer must be at least 4.
     const bufferSize = 4 + bufferOffset;
-    const indexBuffer = t.device.createBuffer({
+    const indexBuffer = t.createBufferTracked({
       size: bufferSize,
       usage: GPUBufferUsage.INDEX | GPUBufferUsage.COPY_SRC,
     });
 
-    const outputTexture = t.device.createTexture({
+    const outputTexture = t.createTextureTracked({
       format: 'rgba8unorm',
       size: [1, 1, 1],
       usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.RENDER_ATTACHMENT,
@@ -705,7 +739,8 @@ GPUBuffer, all the contents in that GPUBuffer have been initialized to 0.`
       colorAttachments: [
         {
           view: outputTexture.createView(),
-          loadValue: { r: 0.0, g: 0.0, b: 0.0, a: 0.0 },
+          clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 0.0 },
+          loadOp: 'clear',
           storeOp: 'store',
         },
       ],
@@ -713,10 +748,10 @@ GPUBuffer, all the contents in that GPUBuffer have been initialized to 0.`
     renderPass.setPipeline(renderPipeline);
     renderPass.setIndexBuffer(indexBuffer, 'uint16', bufferOffset, 4);
     renderPass.drawIndexed(1);
-    renderPass.endPass();
+    renderPass.end();
     t.queue.submit([encoder.finish()]);
 
-    t.CheckBufferAndOutputTexture(indexBuffer, bufferSize, outputTexture);
+    t.checkBufferAndOutputTexture(indexBuffer, bufferSize, outputTexture);
   });
 
 g.test('indirect_buffer_for_draw_indirect')
@@ -728,18 +763,18 @@ have been initialized to 0.`
   .params(u =>
     u.combine('test_indexed_draw', [true, false]).beginSubcases().combine('bufferOffset', [0, 16])
   )
-  .fn(async t => {
+  .fn(t => {
     const { test_indexed_draw, bufferOffset } = t.params;
 
-    const renderPipeline = t.CreateRenderPipelineForTest(
+    const renderPipeline = t.createRenderPipelineForTest(
       t.device.createShaderModule({
         code: `
     struct VertexOut {
-      [[location(0)]] color : vec4<f32>;
-      [[builtin(position)]] position : vec4<f32>;
+      @location(0) color : vec4<f32>,
+      @builtin(position) position : vec4<f32>,
     };
 
-    [[stage(vertex)]] fn main() -> VertexOut {
+    @vertex fn main() -> VertexOut {
       var output : VertexOut;
       output.color = vec4<f32>(1.0, 0.0, 0.0, 1.0);
       output.position = vec4<f32>(0.0, 0.0, 0.0, 1.0);
@@ -753,12 +788,12 @@ have been initialized to 0.`
     const kDrawIndexedIndirectParametersSize = 20;
     const bufferSize =
       Math.max(kDrawIndirectParametersSize, kDrawIndexedIndirectParametersSize) + bufferOffset;
-    const indirectBuffer = t.device.createBuffer({
+    const indirectBuffer = t.createBufferTracked({
       size: bufferSize,
       usage: GPUBufferUsage.COPY_SRC | GPUBufferUsage.INDIRECT,
     });
 
-    const outputTexture = t.device.createTexture({
+    const outputTexture = t.createTextureTracked({
       format: 'rgba8unorm',
       size: [1, 1, 1],
       usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.RENDER_ATTACHMENT,
@@ -766,13 +801,13 @@ have been initialized to 0.`
 
     // Initialize outputTexture to green.
     const encoder = t.device.createCommandEncoder();
-    t.RecordInitializeTextureColor(encoder, outputTexture, { r: 0.0, g: 1.0, b: 0.0, a: 1.0 });
+    t.recordInitializeTextureColor(encoder, outputTexture, { r: 0.0, g: 1.0, b: 0.0, a: 1.0 });
 
     const renderPass = encoder.beginRenderPass({
       colorAttachments: [
         {
           view: outputTexture.createView(),
-          loadValue: 'load',
+          loadOp: 'load',
           storeOp: 'store',
         },
       ],
@@ -781,7 +816,7 @@ have been initialized to 0.`
 
     let indexBuffer = undefined;
     if (test_indexed_draw) {
-      indexBuffer = t.device.createBuffer({
+      indexBuffer = t.createBufferTracked({
         size: 4,
         usage: GPUBufferUsage.INDEX,
       });
@@ -791,30 +826,32 @@ have been initialized to 0.`
       renderPass.drawIndirect(indirectBuffer, bufferOffset);
     }
 
-    renderPass.endPass();
+    renderPass.end();
     t.queue.submit([encoder.finish()]);
 
     // The indirect buffer should be lazily cleared to 0, so we actually draw nothing and the color
     // attachment will keep its original color (green) after we end the render pass.
-    t.CheckBufferAndOutputTexture(indirectBuffer, bufferSize, outputTexture);
+    t.checkBufferAndOutputTexture(indirectBuffer, bufferSize, outputTexture);
   });
 
 g.test('indirect_buffer_for_dispatch_indirect')
   .desc(
-    `Verify when we use a GPUBuffer as an indirect buffer for dispatchIndirect() just after the
-creation of that GPUBuffer, all the contents in that GPUBuffer have been initialized to 0.`
+    `Verify when we use a GPUBuffer as an indirect buffer for dispatchWorkgroupsIndirect() just
+    after the creation of that GPUBuffer, all the contents in that GPUBuffer have been initialized
+    to 0.`
   )
   .paramsSubcasesOnly(u => u.combine('bufferOffset', [0, 16]))
-  .fn(async t => {
+  .fn(t => {
     const { bufferOffset } = t.params;
 
     const computePipeline = t.device.createComputePipeline({
+      layout: 'auto',
       compute: {
         module: t.device.createShaderModule({
           code: `
-        [[group(0), binding(0)]] var outImage : texture_storage_2d<rgba8unorm, write>;
+        @group(0) @binding(0) var outImage : texture_storage_2d<rgba8unorm, write>;
 
-        [[stage(compute), workgroup_size(1)]] fn main() {
+        @compute @workgroup_size(1) fn main() {
           textureStore(outImage, vec2<i32>(0, 0), vec4<f32>(1.0, 0.0, 0.0, 1.0));
         }`,
         }),
@@ -824,12 +861,12 @@ creation of that GPUBuffer, all the contents in that GPUBuffer have been initial
 
     const kDispatchIndirectParametersSize = 12;
     const bufferSize = kDispatchIndirectParametersSize + bufferOffset;
-    const indirectBuffer = t.device.createBuffer({
+    const indirectBuffer = t.createBufferTracked({
       size: bufferSize,
       usage: GPUBufferUsage.COPY_SRC | GPUBufferUsage.INDIRECT,
     });
 
-    const outputTexture = t.device.createTexture({
+    const outputTexture = t.createTextureTracked({
       format: 'rgba8unorm',
       size: [1, 1, 1],
       usage:
@@ -840,7 +877,7 @@ creation of that GPUBuffer, all the contents in that GPUBuffer have been initial
 
     // Initialize outputTexture to green.
     const encoder = t.device.createCommandEncoder();
-    t.RecordInitializeTextureColor(encoder, outputTexture, { r: 0.0, g: 1.0, b: 0.0, a: 1.0 });
+    t.recordInitializeTextureColor(encoder, outputTexture, { r: 0.0, g: 1.0, b: 0.0, a: 1.0 });
 
     const bindGroup = t.device.createBindGroup({
       layout: computePipeline.getBindGroupLayout(0),
@@ -857,11 +894,11 @@ creation of that GPUBuffer, all the contents in that GPUBuffer have been initial
     const computePass = encoder.beginComputePass();
     computePass.setBindGroup(0, bindGroup);
     computePass.setPipeline(computePipeline);
-    computePass.dispatchIndirect(indirectBuffer, bufferOffset);
-    computePass.endPass();
+    computePass.dispatchWorkgroupsIndirect(indirectBuffer, bufferOffset);
+    computePass.end();
     t.queue.submit([encoder.finish()]);
 
     // The indirect buffer should be lazily cleared to 0, so we actually draw nothing and the color
     // attachment will keep its original color (green) after we end the compute pass.
-    t.CheckBufferAndOutputTexture(indirectBuffer, bufferSize, outputTexture);
+    t.checkBufferAndOutputTexture(indirectBuffer, bufferSize, outputTexture);
   });

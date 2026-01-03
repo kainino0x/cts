@@ -12,17 +12,17 @@ export const g = makeTestGroup(Fixture);
 
 g.test('return_type').
 desc(
-`Test the return type of getContext for WebGPU.
+  `Test the return type of getContext for WebGPU.
 
-    TODO: Test OffscreenCanvas made from transferControlToOffscreen.`).
-
+    TODO: Test OffscreenCanvas made from transferControlToOffscreen.`
+).
 params((u) =>
 u //
 .combine('offscreen', [false, true]).
 beginSubcases().
-combine('attributes', [undefined, {}])).
-
-fn(async t => {
+combine('attributes', [undefined, {}])
+).
+fn((t) => {
   let canvas;
   if (t.params.offscreen) {
     if (typeof OffscreenCanvas === 'undefined') {

@@ -4,18 +4,18 @@ Basic command buffer rendering tests.
 
 import { makeTestGroup } from '../../../../common/framework/test_group.js';
 import { now } from '../../../../common/util/util.js';
-import { GPUTest } from '../../../gpu_test.js';
+import { AllFeaturesMaxLimitsGPUTest } from '../../../gpu_test.js';
 import { checkElementsEqual } from '../../../util/check_contents.js';
 
-export const g = makeTestGroup(GPUTest);
+export const g = makeTestGroup(AllFeaturesMaxLimitsGPUTest);
 
-g.test('clear').fn(async t => {
-  const dst = t.device.createBuffer({
+g.test('clear').fn(t => {
+  const dst = t.createBufferTracked({
     size: 4,
     usage: GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST,
   });
 
-  const colorAttachment = t.device.createTexture({
+  const colorAttachment = t.createTextureTracked({
     format: 'rgba8unorm',
     size: { width: 1, height: 1, depthOrArrayLayers: 1 },
     usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.RENDER_ATTACHMENT,
@@ -27,12 +27,13 @@ g.test('clear').fn(async t => {
     colorAttachments: [
       {
         view: colorAttachmentView,
-        loadValue: { r: 0.0, g: 1.0, b: 0.0, a: 1.0 },
+        clearValue: { r: 0.0, g: 1.0, b: 0.0, a: 1.0 },
+        loadOp: 'clear',
         storeOp: 'store',
       },
     ],
   });
-  pass.endPass();
+  pass.end();
   encoder.copyTextureToBuffer(
     { texture: colorAttachment, mipLevel: 0, origin: { x: 0, y: 0, z: 0 } },
     { buffer: dst, bytesPerRow: 256 },
@@ -43,13 +44,13 @@ g.test('clear').fn(async t => {
   t.expectGPUBufferValuesEqual(dst, new Uint8Array([0x00, 0xff, 0x00, 0xff]));
 });
 
-g.test('fullscreen_quad').fn(async t => {
-  const dst = t.device.createBuffer({
+g.test('fullscreen_quad').fn(t => {
+  const dst = t.createBufferTracked({
     size: 4,
     usage: GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST,
   });
 
-  const colorAttachment = t.device.createTexture({
+  const colorAttachment = t.createTextureTracked({
     format: 'rgba8unorm',
     size: { width: 1, height: 1, depthOrArrayLayers: 1 },
     usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.RENDER_ATTACHMENT,
@@ -57,12 +58,13 @@ g.test('fullscreen_quad').fn(async t => {
   const colorAttachmentView = colorAttachment.createView();
 
   const pipeline = t.device.createRenderPipeline({
+    layout: 'auto',
     vertex: {
       module: t.device.createShaderModule({
         code: `
-        [[stage(vertex)]] fn main(
-          [[builtin(vertex_index)]] VertexIndex : u32
-          ) -> [[builtin(position)]] vec4<f32> {
+        @vertex fn main(
+          @builtin(vertex_index) VertexIndex : u32
+          ) -> @builtin(position) vec4<f32> {
             var pos : array<vec2<f32>, 3> = array<vec2<f32>, 3>(
                 vec2<f32>(-1.0, -3.0),
                 vec2<f32>(3.0, 1.0),
@@ -76,7 +78,7 @@ g.test('fullscreen_quad').fn(async t => {
     fragment: {
       module: t.device.createShaderModule({
         code: `
-          [[stage(fragment)]] fn main() -> [[location(0)]] vec4<f32> {
+          @fragment fn main() -> @location(0) vec4<f32> {
             return vec4<f32>(0.0, 1.0, 0.0, 1.0);
           }
           `,
@@ -92,14 +94,15 @@ g.test('fullscreen_quad').fn(async t => {
     colorAttachments: [
       {
         view: colorAttachmentView,
+        clearValue: { r: 1.0, g: 0.0, b: 0.0, a: 1.0 },
+        loadOp: 'clear',
         storeOp: 'store',
-        loadValue: { r: 1.0, g: 0.0, b: 0.0, a: 1.0 },
       },
     ],
   });
   pass.setPipeline(pipeline);
   pass.draw(3);
-  pass.endPass();
+  pass.end();
   encoder.copyTextureToBuffer(
     { texture: colorAttachment, mipLevel: 0, origin: { x: 0, y: 0, z: 0 } },
     { buffer: dst, bytesPerRow: 256 },
@@ -117,7 +120,7 @@ g.test('large_draw')
   Tests that draw calls behave reasonably with large vertex counts for
   non-indexed draws, large index counts for indexed draws, and large instance
   counts in both cases. Various combinations of these counts are tested with
-  both direct and indrect draw calls.
+  both direct and indirect draw calls.
 
   Draw call sizes are increased incrementally over these parameters until we the
   run out of values or completion of a draw call exceeds a fixed time limit of
@@ -143,17 +146,17 @@ g.test('large_draw')
     const { indexed, indirect } = t.params;
 
     const kBytesPerRow = 256;
-    const dst = t.device.createBuffer({
+    const dst = t.createBufferTracked({
       size: 3 * kBytesPerRow,
       usage: GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST,
     });
 
-    const paramsBuffer = t.device.createBuffer({
+    const paramsBuffer = t.createBufferTracked({
       size: 8,
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
     });
 
-    const indirectBuffer = t.device.createBuffer({
+    const indirectBuffer = t.createBufferTracked({
       size: 20,
       usage: GPUBufferUsage.INDIRECT | GPUBufferUsage.COPY_DST,
     });
@@ -170,12 +173,11 @@ g.test('large_draw')
     let indexBuffer: null | GPUBuffer = null;
     if (indexed) {
       const kMaxIndices = 16 * 1024 * 1024;
-      indexBuffer = t.device.createBuffer({
+      indexBuffer = t.createBufferTracked({
         size: kMaxIndices * Uint32Array.BYTES_PER_ELEMENT,
         usage: GPUBufferUsage.INDEX | GPUBufferUsage.COPY_DST,
         mappedAtCreation: true,
       });
-      t.trackForCleanup(indexBuffer);
       const indexData = new Uint32Array(indexBuffer.getMappedRange());
       for (let i = 0; i < kMaxIndices; ++i) {
         indexData[i] = i;
@@ -183,7 +185,7 @@ g.test('large_draw')
       indexBuffer.unmap();
     }
 
-    const colorAttachment = t.device.createTexture({
+    const colorAttachment = t.createTextureTracked({
       format: 'rgba8unorm',
       size: { width: 3, height: 3, depthOrArrayLayers: 1 },
       usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.RENDER_ATTACHMENT,
@@ -217,8 +219,8 @@ g.test('large_draw')
         module: t.device.createShaderModule({
           code: `
           struct Params {
-            numVertices: u32;
-            numInstances: u32;
+            numVertices: u32,
+            numInstances: u32,
           };
 
           fn selectValue(index: u32, maxIndex: u32) -> f32 {
@@ -226,12 +228,12 @@ g.test('large_draw')
             return select(highOrMid, -2.0 / 3.0, index == 0u);
           }
 
-          [[group(0), binding(0)]] var<uniform> params: Params;
+          @group(0) @binding(0) var<uniform> params: Params;
 
-          [[stage(vertex)]] fn main(
-              [[builtin(vertex_index)]] v: u32,
-              [[builtin(instance_index)]] i: u32)
-              -> [[builtin(position)]] vec4<f32> {
+          @vertex fn main(
+              @builtin(vertex_index) v: u32,
+              @builtin(instance_index) i: u32)
+              -> @builtin(position) vec4<f32> {
             let x = selectValue(v, params.numVertices);
             let y = -selectValue(i, params.numInstances);
             return vec4<f32>(x, y, 0.0, 1.0);
@@ -243,7 +245,7 @@ g.test('large_draw')
       fragment: {
         module: t.device.createShaderModule({
           code: `
-            [[stage(fragment)]] fn main() -> [[location(0)]] vec4<f32> {
+            @fragment fn main() -> @location(0) vec4<f32> {
               return vec4<f32>(1.0, 1.0, 0.0, 1.0);
             }
             `,
@@ -254,14 +256,15 @@ g.test('large_draw')
       primitive: { topology: 'point-list' },
     });
 
-    const runPipeline = async (numVertices: number, numInstances: number) => {
+    const runPipeline = (numVertices: number, numInstances: number) => {
       const encoder = t.device.createCommandEncoder();
       const pass = encoder.beginRenderPass({
         colorAttachments: [
           {
             view: colorAttachmentView,
+            clearValue: { r: 0.0, g: 0.0, b: 1.0, a: 1.0 },
+            loadOp: 'clear',
             storeOp: 'store',
-            loadValue: { r: 0.0, g: 0.0, b: 1.0, a: 1.0 },
           },
         ],
       });
@@ -286,7 +289,7 @@ g.test('large_draw')
           pass.draw(numVertices, numInstances);
         }
       }
-      pass.endPass();
+      pass.end();
       encoder.copyTextureToBuffer(
         { texture: colorAttachment, mipLevel: 0, origin: { x: 0, y: 0, z: 0 } },
         { buffer: dst, bytesPerRow: kBytesPerRow },

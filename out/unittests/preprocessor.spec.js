@@ -10,18 +10,18 @@ import { UnitTest } from './unit_test.js';
 class F extends UnitTest {
   test(act, exp) {
     this.expect(act === exp, 'got: ' + act.replace('\n', '⏎'));
-  }}
-
+  }
+}
 
 export const g = makeTestGroup(F);
 
-g.test('empty').fn(t => {
+g.test('empty').fn((t) => {
   t.test(pp``, '');
   t.test(pp`\n`, '\n');
   t.test(pp`\n\n`, '\n\n');
 });
 
-g.test('plain').fn(t => {
+g.test('plain').fn((t) => {
   t.test(pp`a`, 'a');
   t.test(pp`\na`, '\na');
   t.test(pp`\n\na`, '\n\na');
@@ -29,25 +29,25 @@ g.test('plain').fn(t => {
   t.test(pp`a\n\n`, 'a\n\n');
 });
 
-g.test('substitutions,1').fn(t => {
+g.test('substitutions,1').fn((t) => {
   const act = pp`a ${3} b`;
   const exp = 'a 3 b';
   t.test(act, exp);
 });
 
-g.test('substitutions,2').fn(t => {
+g.test('substitutions,2').fn((t) => {
   const act = pp`a ${'x'}`;
   const exp = 'a x';
   t.test(act, exp);
 });
 
-g.test('substitutions,3').fn(t => {
+g.test('substitutions,3').fn((t) => {
   const act = pp`a ${'x'} b`;
   const exp = 'a x b';
   t.test(act, exp);
 });
 
-g.test('substitutions,4').fn(t => {
+g.test('substitutions,4').fn((t) => {
   const act = pp`
 a
 ${pp._if(false)}
@@ -58,7 +58,7 @@ b`;
   t.test(act, exp);
 });
 
-g.test('if,true').fn(t => {
+g.test('if,true').fn((t) => {
   const act = pp`
 a
 ${pp._if(true)}c${pp._endif}
@@ -68,7 +68,7 @@ d
   t.test(act, exp);
 });
 
-g.test('if,false').fn(t => {
+g.test('if,false').fn((t) => {
   const act = pp`
 a
 ${pp._if(false)}c${pp._endif}
@@ -78,7 +78,7 @@ d
   t.test(act, exp);
 });
 
-g.test('else,1').fn(t => {
+g.test('else,1').fn((t) => {
   const act = pp`
 a
 ${pp._if(true)}
@@ -92,7 +92,7 @@ d
   t.test(act, exp);
 });
 
-g.test('else,2').fn(t => {
+g.test('else,2').fn((t) => {
   const act = pp`
 a
 ${pp._if(false)}
@@ -106,7 +106,7 @@ d
   t.test(act, exp);
 });
 
-g.test('elif,1').fn(t => {
+g.test('elif,1').fn((t) => {
   const act = pp`
 a
 ${pp._if(false)}
@@ -122,7 +122,7 @@ d
   t.test(act, exp);
 });
 
-g.test('elif,2').fn(t => {
+g.test('elif,2').fn((t) => {
   const act = pp`
 a
 ${pp._if(true)}
@@ -138,7 +138,7 @@ d
   t.test(act, exp);
 });
 
-g.test('nested,1').fn(t => {
+g.test('nested,1').fn((t) => {
   const act = pp`
 a
 ${pp._if(false)}
@@ -154,7 +154,7 @@ d
   t.test(act, exp);
 });
 
-g.test('nested,2').fn(t => {
+g.test('nested,2').fn((t) => {
   const act = pp`
 a
 ${pp._if(false)}
@@ -182,8 +182,8 @@ g.test('errors,pass').fn(() => {
   pp`${pp._if(true)}${pp.__if(true)}${pp.__endif}${pp._endif}`;
 });
 
-g.test('errors,fail').fn(t => {
-  const e = fn => t.shouldThrow('Error', fn);
+g.test('errors,fail').fn((t) => {
+  const e = (fn) => t.shouldThrow('Error', fn);
   e(() => pp`${pp._if(true)}`);
   e(() => pp`${pp._elif(true)}`);
   e(() => pp`${pp._else}`);

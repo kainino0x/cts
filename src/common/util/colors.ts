@@ -6,6 +6,9 @@
  * style.
  */
 export interface Colors {
+  // Are colors enabled?
+  enabled: boolean;
+
   // Returns the string formatted to contain the specified color or style.
   (s: string): string;
 
@@ -73,10 +76,11 @@ export interface Colors {
 export let Colors: Colors;
 
 try {
-  /* eslint-disable-next-line node/no-unpublished-require */
+  /* eslint-disable-next-line node/no-unpublished-require, n/no-restricted-require */
   Colors = require('ansi-colors') as Colors;
 } catch {
   const passthrough = ((s: string) => s) as Colors;
+  passthrough.enabled = false;
   passthrough.reset = passthrough;
   passthrough.bold = passthrough;
   passthrough.dim = passthrough;

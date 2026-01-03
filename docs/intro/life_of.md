@@ -10,8 +10,8 @@ Filing new draft issues in the CTS project tracker is very lightweight.
 Anyone with access should do this eagerly, to ensure no testing ideas are forgotten.
 (And if you don't have access, just file a regular issue.)
 
-1. Enter a draft issue with "Status" "New (not in repo)" is in the
-    [CTS project tracker](https://github.com/orgs/gpuweb/projects/3) with any available info
+1. Enter a [draft issue](https://github.com/orgs/gpuweb/projects/3), with the Status
+    set to "New (not in repo)", and any available info included in the issue description
     (notes/plans to ensure full test coverage of the change). The source of this may be:
 
     - Anything in the spec/API that is found not to be covered by the CTS yet.
@@ -27,9 +27,13 @@ Anyone with access should do this eagerly, to ensure no testing ideas are forgot
 
 1. As necessary:
 
-    - The draft issue is converted to a full, numbered issue for linking from later PRs.
-    - The "Assignees" of the issue is updated when an issue is assigned or unassigned.
-    - The "Status" of the issue changes to "Started" once started.
+    - Convert the draft issue to a full, numbered issue for linking from later PRs.
+
+        ![convert to issue button screenshot](convert_to_issue.png)
+
+    - Update the "Assignees" of the issue when an issue is assigned or unassigned
+      (you can assign yourself).
+    - Change the "Status" of the issue to "Started" once you start the task.
 
 1. Open one or more PRs, **each linking to the associated issue**.
     Each PR may is reviewed and landed, and may leave further TODOs for parts it doesn't complete.

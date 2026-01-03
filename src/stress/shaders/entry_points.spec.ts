@@ -10,12 +10,12 @@ export const g = makeTestGroup(GPUTest);
 
 const makeCode = (numEntryPoints: number) => {
   const kBaseCode = `
-      struct Buffer { data: u32; };
-      [[group(0), binding(0)]] var<storage, read_write> buffer: Buffer;
+      struct Buffer { data: u32, };
+      @group(0) @binding(0) var<storage, read_write> buffer: Buffer;
       fn main() { buffer.data = buffer.data + 1u;  }
       `;
   const makeEntryPoint = (i: number) => `
-      [[stage(compute), workgroup_size(1)]] fn computeMain${i}() { main(); }
+      @compute @workgroup_size(1) fn computeMain${i}() { main(); }
       `;
   return kBaseCode + range(numEntryPoints, makeEntryPoint).join('');
 };
@@ -27,7 +27,7 @@ g.test('many')
 TODO: There may be a normative limit to the number of entry points allowed in
 a shader, in which case this would become a validation test instead.`
   )
-  .fn(async t => {
+  .fn(t => {
     const data = new Uint32Array([0]);
     const buffer = t.makeBufferWithContents(data, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC);
 
@@ -69,8 +69,8 @@ a shader, in which case this would become a validation test instead.`
       const pass = encoder.beginComputePass();
       pass.setPipeline(pipeline);
       pass.setBindGroup(0, bindGroup);
-      pass.dispatch(1);
-      pass.endPass();
+      pass.dispatchWorkgroups(1);
+      pass.end();
     });
 
     t.device.queue.submit([encoder.finish()]);

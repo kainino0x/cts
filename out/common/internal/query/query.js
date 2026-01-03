@@ -1,6 +1,6 @@
 /**
 * AUTO-GENERATED - DO NOT EDIT. Source: https://github.com/gpuweb/cts
-**/import { optionEnabled } from '../../runtime/helper/options.js';import { assert, unreachable } from '../../util/util.js';
+**/import { optionWorkerMode } from '../../runtime/helper/options.js';import { assert, unreachable } from '../../util/util.js';
 
 
 import { compareQueries, Ordering } from './compare.js';
@@ -10,22 +10,22 @@ import { kBigSeparator, kPathSeparator, kWildcard } from './separators.js';
 import { stringifyPublicParams } from './stringify_params.js';
 
 /**
-                                                                * Represents a test query of some level.
-                                                                *
-                                                                * TestQuery types are immutable.
-                                                                */
+ * Represents a test query of some level.
+ *
+ * TestQuery types are immutable.
+ */
 
 
 
 
 
 
-
-
-
-
-
-
+/**
+ * - 1 = MultiFile.
+ * - 2 = MultiTest.
+ * - 3 = MultiCase.
+ * - 4 = SingleCase.
+ */
 
 
 
@@ -34,10 +34,10 @@ import { stringifyPublicParams } from './stringify_params.js';
 
 
 /**
-                                                                    * A multi-file test query, like `s:*` or `s:a,b,*`.
-                                                                    *
-                                                                    * Immutable (makes copies of constructor args).
-                                                                    */
+ * A multi-file test query, like `s:*` or `s:a,b,*`.
+ *
+ * Immutable (makes copies of constructor args).
+ */
 export class TestQueryMultiFile {
   level = 1;
   isMultiFile = true;
@@ -59,14 +59,14 @@ export class TestQueryMultiFile {
 
   toStringHelper() {
     return [this.suite, [...this.filePathParts, kWildcard].join(kPathSeparator)];
-  }}
-
+  }
+}
 
 /**
-      * A multi-test test query, like `s:f:*` or `s:f:a,b,*`.
-      *
-      * Immutable (makes copies of constructor args).
-      */
+ * A multi-test test query, like `s:f:*` or `s:f:a,b,*`.
+ *
+ * Immutable (makes copies of constructor args).
+ */
 export class TestQueryMultiTest extends TestQueryMultiFile {
   level = 2;
   isMultiFile = false;
@@ -89,15 +89,15 @@ export class TestQueryMultiTest extends TestQueryMultiFile {
     this.filePathParts.join(kPathSeparator),
     [...this.testPathParts, kWildcard].join(kPathSeparator)];
 
-  }}
-
+  }
+}
 
 /**
-      * A multi-case test query, like `s:f:t:*` or `s:f:t:a,b,*`.
-      *
-      * Immutable (makes copies of constructor args), except for param values
-      * (which aren't normally supposed to change; they're marked readonly in TestParams).
-      */
+ * A multi-case test query, like `s:f:t:*` or `s:f:t:a,b,*`.
+ *
+ * Immutable (makes copies of constructor args), except for param values
+ * (which aren't normally supposed to change; they're marked readonly in TestParams).
+ */
 export class TestQueryMultiCase extends TestQueryMultiTest {
   level = 3;
   isMultiTest = false;
@@ -121,14 +121,14 @@ export class TestQueryMultiCase extends TestQueryMultiTest {
     this.testPathParts.join(kPathSeparator),
     stringifyPublicParams(this.params, true)];
 
-  }}
-
+  }
+}
 
 /**
-      * A multi-case test query, like `s:f:t:` or `s:f:t:a=1,b=1`.
-      *
-      * Immutable (makes copies of constructor args).
-      */
+ * A multi-case test query, like `s:f:t:` or `s:f:t:a=1,b=1`.
+ *
+ * Immutable (makes copies of constructor args).
+ */
 export class TestQuerySingleCase extends TestQueryMultiCase {
   level = 4;
   isMultiCase = false;
@@ -144,21 +144,21 @@ export class TestQuerySingleCase extends TestQueryMultiCase {
     this.testPathParts.join(kPathSeparator),
     stringifyPublicParams(this.params)];
 
-  }}
-
+  }
+}
 
 /**
-      * Parse raw expectations input into TestQueryWithExpectation[], filtering so that only
-      * expectations that are relevant for the provided query and wptURL.
-      *
-      * `rawExpectations` should be @type {{ query: string, expectation: Expectation }[]}
-      *
-      * The `rawExpectations` are parsed and validated that they are in the correct format.
-      * If `wptURL` is passed, the query string should be of the full path format such
-      * as `path/to/cts.https.html?worker=0&q=suite:test_path:test_name:foo=1;bar=2;*`.
-      * If `wptURL` is `undefined`, the query string should be only the query
-      * `suite:test_path:test_name:foo=1;bar=2;*`.
-      */
+ * Parse raw expectations input into TestQueryWithExpectation[], filtering so that only
+ * expectations that are relevant for the provided query and wptURL.
+ *
+ * `rawExpectations` should be @type {{ query: string, expectation: Expectation }[]}
+ *
+ * The `rawExpectations` are parsed and validated that they are in the correct format.
+ * If `wptURL` is passed, the query string should be of the full path format such
+ * as `path/to/cts.https.html?worker=0&q=suite:test_path:test_name:foo=1;bar=2;*`.
+ * If `wptURL` is `undefined`, the query string should be only the query
+ * `suite:test_path:test_name:foo=1;bar=2;*`.
+ */
 export function parseExpectationsForTestQuery(
 rawExpectations,
 
@@ -186,14 +186,14 @@ wptURL)
         continue;
       }
       assert(
-      expectationURL.pathname === wptURL.pathname,
-      `Invalid expectation path ${expectationURL.pathname}
-Expectation should be of the form path/to/cts.https.html?worker=0&q=suite:test_path:test_name:foo=1;bar=2;...
-        `);
-
+        expectationURL.pathname === wptURL.pathname,
+        `Invalid expectation path ${expectationURL.pathname}
+Expectation should be of the form path/to/cts.https.html?debug=0&q=suite:test_path:test_name:foo=1;bar=2;...
+        `
+      );
 
       const params = expectationURL.searchParams;
-      if (optionEnabled('worker', params) !== optionEnabled('worker', wptURL.searchParams)) {
+      if (optionWorkerMode('worker', params) !== optionWorkerMode('worker', wptURL.searchParams)) {
         continue;
       }
 
@@ -209,11 +209,11 @@ Expectation should be of the form path/to/cts.https.html?worker=0&q=suite:test_p
     const queryForFilter =
     expectationQuery instanceof TestQueryMultiCase ?
     new TestQueryMultiCase(
-    expectationQuery.suite,
-    expectationQuery.filePathParts,
-    expectationQuery.testPathParts,
-    {}) :
-
+      expectationQuery.suite,
+      expectationQuery.filePathParts,
+      expectationQuery.testPathParts,
+      {}
+    ) :
     expectationQuery;
 
     if (compareQueries(query, queryForFilter) === Ordering.Unordered) {
@@ -226,21 +226,21 @@ Expectation should be of the form path/to/cts.https.html?worker=0&q=suite:test_p
       case 'fail':
         break;
       default:
-        unreachable(`Invalid expectation ${entry.expectation}`);}
-
+        unreachable(`Invalid expectation ${entry.expectation}`);
+    }
 
     expectations.push({
       query: expectationQuery,
-      expectation: entry.expectation });
-
+      expectation: entry.expectation
+    });
   }
   return expectations;
 }
 
 /**
-   * For display purposes only, produces a "relative" query string from parent to child.
-   * Used in the wpt runtime to reduce the verbosity of logs.
-   */
+ * For display purposes only, produces a "relative" query string from parent to child.
+ * Used in the wpt runtime to reduce the verbosity of logs.
+ */
 export function relativeQueryString(parent, child) {
   const ordering = compareQueries(parent, child);
   if (ordering === Ordering.Equal) {
@@ -250,14 +250,14 @@ export function relativeQueryString(parent, child) {
     assert(parentString.endsWith(kWildcard));
     const childString = child.toString();
     assert(
-    childString.startsWith(parentString.substring(0, parentString.length - 2)),
-    'impossible?: childString does not start with parentString[:-2]');
-
+      childString.startsWith(parentString.substring(0, parentString.length - 2)),
+      'impossible?: childString does not start with parentString[:-2]'
+    );
     return childString.substring(parentString.length - 2);
   } else {
     unreachable(
-    `relativeQueryString arguments have invalid ordering ${ordering}:\n${parent}\n${child}`);
-
+      `relativeQueryString arguments have invalid ordering ${ordering}:\n${parent}\n${child}`
+    );
   }
 }
 //# sourceMappingURL=query.js.map

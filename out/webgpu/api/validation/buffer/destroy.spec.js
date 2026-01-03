@@ -5,50 +5,51 @@ Validation tests for GPUBuffer.destroy.
 `;import { makeTestGroup } from '../../../../common/framework/test_group.js';
 import { kBufferUsages } from '../../../capability_info.js';
 import { GPUConst } from '../../../constants.js';
-import { ValidationTest } from '../validation_test.js';
+import { AllFeaturesMaxLimitsGPUTest } from '../../../gpu_test.js';
+import * as vtu from '../validation_test_utils.js';
 
-export const g = makeTestGroup(ValidationTest);
+export const g = makeTestGroup(AllFeaturesMaxLimitsGPUTest);
 
 g.test('all_usages').
 desc('Test destroying buffers of every usage type.').
 paramsSubcasesOnly((u) =>
 u //
-.combine('usage', kBufferUsages)).
-
-fn(async t => {
+.combine('usage', kBufferUsages)
+).
+fn((t) => {
   const { usage } = t.params;
-  const buf = t.device.createBuffer({
+  const buf = t.createBufferTracked({
     size: 4,
-    usage });
-
+    usage
+  });
 
   buf.destroy();
 });
 
 g.test('error_buffer').
 desc('Test that error buffers may be destroyed without generating validation errors.').
-fn(async t => {
-  const buf = t.getErrorBuffer();
+fn((t) => {
+  const buf = vtu.getErrorBuffer(t);
   buf.destroy();
 });
 
 g.test('twice').
 desc(
-`Test that destroying a buffer more than once is allowed.
+  `Test that destroying a buffer more than once is allowed.
       - Tests buffers which are mapped at creation or not
-      - Tests buffers with various usages`).
-
+      - Tests buffers with various usages`
+).
 paramsSubcasesOnly((u) =>
 u //
 .combine('mappedAtCreation', [false, true]).
 combineWithParams([
 { size: 4, usage: GPUConst.BufferUsage.COPY_SRC },
 { size: 4, usage: GPUConst.BufferUsage.MAP_WRITE | GPUConst.BufferUsage.COPY_SRC },
-{ size: 4, usage: GPUConst.BufferUsage.COPY_DST | GPUConst.BufferUsage.MAP_READ }])).
-
-
-fn(async t => {
-  const buf = t.device.createBuffer(t.params);
+{ size: 4, usage: GPUConst.BufferUsage.COPY_DST | GPUConst.BufferUsage.MAP_READ }]
+)
+).
+fn((t) => {
+  const buf = t.createBufferTracked(t.params);
 
   buf.destroy();
   buf.destroy();
@@ -56,10 +57,10 @@ fn(async t => {
 
 g.test('while_mapped').
 desc(
-`Test destroying buffers while mapped or after being unmapped.
+  `Test destroying buffers while mapped or after being unmapped.
       - Tests {mappable, unmappable mapAtCreation, mappable mapAtCreation}
-      - Tests while {mapped, mapped at creation, unmapped}`).
-
+      - Tests while {mapped, mapped at creation, unmapped}`
+).
 paramsSubcasesOnly((u) =>
 u //
 .combine('mappedAtCreation', [false, true]).
@@ -70,22 +71,22 @@ combineWithParams([
 { usage: GPUConst.BufferUsage.COPY_DST | GPUConst.BufferUsage.MAP_READ },
 {
   usage: GPUConst.BufferUsage.MAP_WRITE | GPUConst.BufferUsage.COPY_SRC,
-  mapMode: GPUConst.MapMode.WRITE },
-
+  mapMode: GPUConst.MapMode.WRITE
+},
 {
   usage: GPUConst.BufferUsage.COPY_DST | GPUConst.BufferUsage.MAP_READ,
-  mapMode: GPUConst.MapMode.READ }]).
-
-
-unless(p => p.mappedAtCreation === false && p.mapMode === undefined)).
-
-fn(async t => {
+  mapMode: GPUConst.MapMode.READ
+}]
+).
+unless((p) => p.mappedAtCreation === false && p.mapMode === undefined)
+).
+fn(async (t) => {
   const { usage, mapMode, mappedAtCreation, unmapBeforeDestroy } = t.params;
-  const buf = t.device.createBuffer({
+  const buf = t.createBufferTracked({
     size: 4,
     usage,
-    mappedAtCreation });
-
+    mappedAtCreation
+  });
 
   if (mapMode !== undefined) {
     if (mappedAtCreation) {

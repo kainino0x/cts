@@ -1,16 +1,16 @@
 /**
 * AUTO-GENERATED - DO NOT EDIT. Source: https://github.com/gpuweb/cts
 **/export const description = `Test that variables in the shader are zero initialized`;import { makeTestGroup } from '../../../common/framework/test_group.js';
-import { unreachable } from '../../../common/util/util.js';
-import { GPUTest } from '../../gpu_test.js';
+import { iterRange, unreachable } from '../../../common/util/util.js';
+import { AllFeaturesMaxLimitsGPUTest } from '../../gpu_test.js';
 import {
 
-kVectorContainerTypes,
+  kVectorContainerTypes,
 
-kMatrixContainerTypes,
+  kMatrixContainerTypes,
 
-supportedScalarTypes,
-supportsAtomics } from
+  supportedScalarTypes,
+  supportsAtomics } from
 '../types.js';
 
 
@@ -30,37 +30,35 @@ function prettyPrint(t) {
         case 'array':
           return `array<${prettyPrint(t.elementType)}, ${t.length}>`;
         case 'struct':
-          return `struct { ${t.members.map(m => prettyPrint(m)).join(', ')} }`;
+          return `struct { ${t.members.map((m) => prettyPrint(m)).join(', ')} }`;
         default:
           return `${t.containerType}<${prettyPrint({
             type: 'scalar',
             scalarType: t.scalarType,
-            isAtomic: false })
-          }>`;}
-
+            isAtomic: false
+          })}>`;
+      }
       break;
     case 'scalar':
       if (t.isAtomic) {
         return `atomic<${t.scalarType}>`;
       }
-      return t.scalarType;}
-
+      return t.scalarType;
+  }
 }
 
-export const g = makeTestGroup(GPUTest);
+export const g = makeTestGroup(AllFeaturesMaxLimitsGPUTest);
 g.test('compute,zero_init').
 desc(
-`Test that uninitialized variables in workgroup, private, and function storage classes are initialized to zero.
-
-    TODO: Run a shader before the test to attempt to fill memory with garbage`).
-
+  `Test that uninitialized variables in workgroup, private, and function storage classes are initialized to zero.`
+).
 params((u) =>
 u
 // Only workgroup, function, and private variables can be declared without data bound to them.
 // The implementation's shader translator should ensure these values are initialized.
-.combine('storageClass', ['workgroup', 'private', 'function']).
-expand('workgroupSize', ({ storageClass }) => {
-  switch (storageClass) {
+.combine('addressSpace', ['workgroup', 'private', 'function']).
+expand('workgroupSize', ({ addressSpace }) => {
+  switch (addressSpace) {
     case 'workgroup':
       return [
       [1, 1, 1],
@@ -75,11 +73,11 @@ expand('workgroupSize', ({ storageClass }) => {
 
     case 'function':
     case 'private':
-      return [[1, 1, 1]];}
-
+      return [[1, 1, 1]];
+  }
 }).
 beginSubcases()
-// Fewer subases: Only 0 and 2. If double-nested containers work, single-nested should too.
+// Fewer subcases: Only 0 and 2. If double-nested containers work, single-nested should too.
 .combine('_containerDepth', [0, 2]).
 expandWithParams(function* (p) {
   const kElementCounts = [
@@ -104,11 +102,15 @@ expandWithParams(function* (p) {
         ...p,
         access: 'read_write',
         storageMode: undefined,
-        containerType: 'scalar' }) ?
-
+        containerType: 'scalar'
+      }) ?
       [true, false] :
       [false]) {
         for (const scalarType of supportedScalarTypes({ isAtomic, ...p })) {
+          // Fewer subcases: supportedScalarTypes was expanded to include f16
+          // but that may take too much time. It would require more complex code.
+          if (scalarType === 'f16') continue;
+
           // Fewer subcases: For nested types, skip atomic u32 and non-atomic i32.
           if (p._containerDepth > 0) {
             if (scalarType === 'u32' && isAtomic) continue;
@@ -118,8 +120,8 @@ expandWithParams(function* (p) {
           yield {
             type: 'scalar',
             scalarType,
-            isAtomic };
-
+            isAtomic
+          };
           if (!isAtomic) {
             // Vector types
             for (const vectorType of kVectorContainerTypes) {
@@ -139,8 +141,8 @@ expandWithParams(function* (p) {
               yield {
                 type: 'container',
                 containerType: vectorType,
-                scalarType };
-
+                scalarType
+              };
             }
             // Matrices can only be f32.
             if (scalarType === 'f32') {
@@ -148,8 +150,8 @@ expandWithParams(function* (p) {
                 yield {
                   type: 'container',
                   containerType: matrixType,
-                  scalarType };
-
+                  scalarType
+                };
               }
             }
           }
@@ -168,8 +170,8 @@ expandWithParams(function* (p) {
                 type: 'container',
                 containerType,
                 elementType: innerType,
-                length: elementCount };
-
+                length: elementCount
+              };
             }
           }
           break;
@@ -199,8 +201,8 @@ expandWithParams(function* (p) {
               const t = {
                 type: 'container',
                 containerType,
-                members };
-
+                members
+              };
               const serializedT = prettyPrint(t);
               if (seenTypes.has(serializedT)) {
                 // We produced an identical type. shuffle the member indices,
@@ -215,26 +217,38 @@ expandWithParams(function* (p) {
               yield t;
             }
           }
-          break;}
-
+          break;
+      }
     }
   }
 
   for (const t of generateTypesMemo(p._containerDepth)) {
     yield {
       shaderTypeParam: prettyPrint(t),
-      _type: t };
-
+      _type: t
+    };
   }
-})).
-
+})
+).
 batch(15).
-fn(async t => {
+fn(async (t) => {
+  const { workgroupSize } = t.params;
+  const { maxComputeInvocationsPerWorkgroup } = t.device.limits;
+  const numWorkgroupInvocations = workgroupSize.reduce((a, b) => a * b);
+  t.skipIf(
+    numWorkgroupInvocations > maxComputeInvocationsPerWorkgroup,
+    `workgroupSize: ${workgroupSize} > maxComputeInvocationsPerWorkgroup: ${maxComputeInvocationsPerWorkgroup}`
+  );
+
   let moduleScope = `
       struct Output {
-        failed : atomic<u32>;
-      };
-      [[group(0), binding(0)]] var <storage, read_write> output : Output;
+        failed : atomic<u32>
+      }
+      @group(0) @binding(0) var<storage, read_write> output : Output;
+
+      // This uniform value that's a zero is used to prevent the shader compilers from trying to
+      // unroll the massive loops generated by these tests.
+      @group(0) @binding(1) var<uniform> zero : u32;
     `;
   let functionScope = '';
 
@@ -249,10 +263,10 @@ fn(async t => {
         switch (type.containerType) {
           case 'array':
             return `array<${ensureType(
-            `${typeName}_ArrayElement`,
-            type.elementType,
-            depth + 1)
-            }, ${type.length}>`;
+              `${typeName}_ArrayElement`,
+              type.elementType,
+              depth + 1
+            )}, ${type.length}>`;
           case 'struct':{
               if (declaredStructTypes.has(type)) {
                 return declaredStructTypes.get(type);
@@ -261,10 +275,10 @@ fn(async t => {
               const members = type.members.
               map((member, i) => {
                 return `\n    member${i} : ${ensureType(
-                `${typeName}_Member${i}`,
-                member,
-                depth + 1)
-                };`;
+                  `${typeName}_Member${i}`,
+                  member,
+                  depth + 1
+                )},`;
               }).
               join('');
               declaredStructTypes.set(type, typeName);
@@ -276,30 +290,30 @@ fn(async t => {
             }
           default:
             return `${type.containerType}<${ensureType(
-            typeName,
-            {
-              type: 'scalar',
-              scalarType: type.scalarType,
-              isAtomic: false },
-
-            depth + 1)
-            }>`;}
-
+              typeName,
+              {
+                type: 'scalar',
+                scalarType: type.scalarType,
+                isAtomic: false
+              },
+              depth + 1
+            )}>`;
+        }
         break;
       case 'scalar':
-        return type.isAtomic ? `atomic<${type.scalarType}>` : type.scalarType;}
-
+        return type.isAtomic ? `atomic<${type.scalarType}>` : type.scalarType;
+    }
   }('TestType', t.params._type);
 
-  switch (t.params.storageClass) {
+  switch (t.params.addressSpace) {
     case 'workgroup':
     case 'private':
-      moduleScope += `\nvar<${t.params.storageClass}> testVar: ${typeDecl};`;
+      moduleScope += `\nvar<${t.params.addressSpace}> testVar: ${typeDecl};`;
       break;
     case 'function':
       functionScope += `\nvar testVar: ${typeDecl};`;
-      break;}
-
+      break;
+  }
 
   const checkZeroCode = function checkZero(
   value,
@@ -312,7 +326,7 @@ fn(async t => {
           case 'array':
             return `\nfor (var i${depth} = 0u; i${depth} < ${
             type.length
-            }u; i${depth} = i${depth} + 1u) {
+            }u + zero; i${depth} = i${depth} + 1u) {
                 ${checkZero(`${value}[i${depth}]`, type.elementType, depth + 1)}
               }`;
           case 'struct':
@@ -324,37 +338,37 @@ fn(async t => {
           default:
             if (type.containerType.indexOf('vec') !== -1) {
               const length = type.containerType[3];
-              return `\nfor (var i${depth} = 0u; i${depth} < ${length}u; i${depth} = i${depth} + 1u) {
+              return `\nfor (var i${depth} = 0u; i${depth} < ${length}u + zero; i${depth} = i${depth} + 1u) {
                   ${checkZero(
-              `${value}[i${depth}]`,
-              {
-                type: 'scalar',
-                scalarType: type.scalarType,
-                isAtomic: false },
-
-              depth + 1)
-              }
+                `${value}[i${depth}]`,
+                {
+                  type: 'scalar',
+                  scalarType: type.scalarType,
+                  isAtomic: false
+                },
+                depth + 1
+              )}
                 }`;
             } else if (type.containerType.indexOf('mat') !== -1) {
               const cols = type.containerType[3];
               const rows = type.containerType[5];
-              return `\nfor (var c${depth} = 0u; c${depth} < ${cols}u; c${depth} = c${depth} + 1u) {
+              return `\nfor (var c${depth} = 0u; c${depth} < ${cols}u + zero; c${depth} = c${depth} + 1u) {
                   for (var r${depth} = 0u; r${depth} < ${rows}u; r${depth} = r${depth} + 1u) {
                     ${checkZero(
-              `${value}[c${depth}][r${depth}]`,
-              {
-                type: 'scalar',
-                scalarType: type.scalarType,
-                isAtomic: false },
-
-              depth + 1)
-              }
+                `${value}[c${depth}][r${depth}]`,
+                {
+                  type: 'scalar',
+                  scalarType: type.scalarType,
+                  isAtomic: false
+                },
+                depth + 1
+              )}
                   }
                 }`;
             } else {
               unreachable();
-            }}
-
+            }
+        }
         break;
       case 'scalar':{
           let expected;
@@ -370,8 +384,8 @@ fn(async t => {
               break;
             case 'u32':
               expected = '0u';
-              break;}
-
+              break;
+          }
           if (type.isAtomic) {
             value = `atomicLoad(&${value})`;
           }
@@ -379,33 +393,129 @@ fn(async t => {
           // Note: this could have an early return, but we omit it because it makes
           // the tests fail cause with DXGI_ERROR_DEVICE_HUNG on Windows.
           return `\nif (${value} != ${expected}) { atomicStore(&output.failed, 1u); }`;
-        }}
-
+        }
+    }
   }('testVar', t.params._type);
 
   const wgsl = `
       ${moduleScope}
-      [[stage(compute), workgroup_size(${t.params.workgroupSize})]]
+      @compute @workgroup_size(${t.params.workgroupSize})
       fn main() {
         ${functionScope}
         ${checkZeroCode}
+        _ = zero;
       }
     `;
 
-  const pipeline = t.device.createComputePipeline({
+  if (t.params.addressSpace === 'workgroup') {
+    // Populate the maximum amount of workgroup memory with known values to
+    // ensure initialization overrides in another shader.
+    const wg_memory_limits = t.device.limits.maxComputeWorkgroupStorageSize;
+    const wg_x_dim = t.device.limits.maxComputeWorkgroupSizeX;
+
+    const wgsl = `
+      @group(0) @binding(0) var<storage, read> inputs : array<u32>;
+      @group(0) @binding(1) var<storage, read_write> outputs : array<u32>;
+      var<workgroup> wg_mem : array<u32, ${wg_memory_limits} / 4>;
+
+      @compute @workgroup_size(${wg_x_dim})
+      fn fill(@builtin(local_invocation_index) lid : u32) {
+        const num_u32_per_invocation = ${wg_memory_limits} / (4 * ${wg_x_dim});
+
+        for (var i = 0u; i < num_u32_per_invocation; i++) {
+          let idx = num_u32_per_invocation * lid + i;
+          wg_mem[idx] = inputs[idx];
+        }
+        workgroupBarrier();
+        // Copy out to avoid wg_mem being elided.
+        for (var i = 0u; i < num_u32_per_invocation; i++) {
+          let idx = num_u32_per_invocation * lid + i;
+          outputs[idx] = wg_mem[idx];
+        }
+      }
+      `;
+
+    const fillLayout = t.device.createBindGroupLayout({
+      entries: [
+      {
+        binding: 0,
+        visibility: GPUShaderStage.COMPUTE,
+        buffer: { type: 'read-only-storage' }
+      },
+      {
+        binding: 1,
+        visibility: GPUShaderStage.COMPUTE,
+        buffer: { type: 'storage' }
+      }]
+
+    });
+
+    const fillPipeline = await t.device.createComputePipelineAsync({
+      layout: t.device.createPipelineLayout({ bindGroupLayouts: [fillLayout] }),
+      label: 'Workgroup Fill Pipeline',
+      compute: {
+        module: t.device.createShaderModule({
+          code: wgsl
+        }),
+        entryPoint: 'fill'
+      }
+    });
+
+    const inputBuffer = t.makeBufferWithContents(
+      new Uint32Array([...iterRange(wg_memory_limits / 4, (_i) => 0xdeadbeef)]),
+      GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
+    );
+    const outputBuffer = t.createBufferTracked({
+      size: wg_memory_limits,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
+    });
+
+    const bg = t.device.createBindGroup({
+      layout: fillPipeline.getBindGroupLayout(0),
+      entries: [
+      {
+        binding: 0,
+        resource: {
+          buffer: inputBuffer
+        }
+      },
+      {
+        binding: 1,
+        resource: {
+          buffer: outputBuffer
+        }
+      }]
+
+    });
+
+    const e = t.device.createCommandEncoder();
+    const p = e.beginComputePass();
+    p.setPipeline(fillPipeline);
+    p.setBindGroup(0, bg);
+    p.dispatchWorkgroups(1);
+    p.end();
+    t.queue.submit([e.finish()]);
+  }
+
+  const pipeline = await t.device.createComputePipelineAsync({
+    layout: 'auto',
     compute: {
       module: t.device.createShaderModule({
-        code: wgsl }),
+        code: wgsl
+      }),
+      entryPoint: 'main'
+    }
+  });
 
-      entryPoint: 'main' } });
-
-
-
-  const resultBuffer = t.device.createBuffer({
+  const resultBuffer = t.createBufferTracked({
     size: 4,
-    usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC });
+    usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
+  });
 
-  t.trackForCleanup(resultBuffer);
+  const zeroBuffer = t.createBufferTracked({
+    size: 4,
+    usage: GPUBufferUsage.UNIFORM
+  });
 
   const bindGroup = t.device.createBindGroup({
     layout: pipeline.getBindGroupLayout(0),
@@ -413,18 +523,24 @@ fn(async t => {
     {
       binding: 0,
       resource: {
-        buffer: resultBuffer } }] });
+        buffer: resultBuffer
+      }
+    },
+    {
+      binding: 1,
+      resource: {
+        buffer: zeroBuffer
+      }
+    }]
 
-
-
-
+  });
 
   const encoder = t.device.createCommandEncoder();
   const pass = encoder.beginComputePass();
   pass.setPipeline(pipeline);
   pass.setBindGroup(0, bindGroup);
-  pass.dispatch(1);
-  pass.endPass();
+  pass.dispatchWorkgroups(1);
+  pass.end();
   t.queue.submit([encoder.finish()]);
   t.expectGPUBufferValuesEqual(resultBuffer, new Uint32Array([0]));
 });

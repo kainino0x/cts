@@ -13,15 +13,15 @@ States to test:
 
 TODO: Look for more things to test.
 `;import { makeTestGroup } from '../../../../common/framework/test_group.js';
-import { GPUTest } from '../../../gpu_test.js';
+import { AllFeaturesMaxLimitsGPUTest } from '../../../gpu_test.js';
 
-export const g = makeTestGroup(GPUTest);
+export const g = makeTestGroup(AllFeaturesMaxLimitsGPUTest);
 
 g.test('serialize').
 desc(
-`Copy a GPUBuffer to another thread while it is in various states on
-{the sending thread, yet another thread}.`).
-
+  `Copy a GPUBuffer to another thread while it is in various states on
+{the sending thread, yet another thread}.`
+).
 unimplemented();
 
 g.test('destroyed').

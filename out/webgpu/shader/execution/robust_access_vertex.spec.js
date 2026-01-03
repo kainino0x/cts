@@ -61,7 +61,8 @@ and drawIndexedIndirect it should always be 0. Once there is an extension to all
 it should be added into drawCallTestParameter list.
 `;import { makeTestGroup } from '../../../common/framework/test_group.js';
 import { assert } from '../../../common/util/util.js';
-import { GPUTest } from '../../gpu_test.js';
+import { AllFeaturesMaxLimitsGPUTest } from '../../gpu_test.js';
+import * as ttu from '../../texture_test_utils.js';
 
 // Encapsulates a draw call (either indexed or non-indexed)
 class DrawCall {
@@ -96,7 +97,7 @@ class DrawCall {
     vertexCount,
     partialLastNumber,
     offsetVertexBuffer,
-    keepInstanceStepModeBufferInRange })
+    keepInstanceStepModeBufferInRange
 
 
 
@@ -104,7 +105,7 @@ class DrawCall {
 
 
 
-  {
+  }) {
     this.test = test;
 
     // Default arguments (valid call)
@@ -164,12 +165,12 @@ class DrawCall {
     this.bindVertexBuffers(pass);
     pass.setIndexBuffer(indexBuffer, 'uint32');
     pass.drawIndexed(
-    this.indexCount,
-    this.instanceCount,
-    this.firstIndex,
-    this.baseVertex,
-    this.firstInstance);
-
+      this.indexCount,
+      this.instanceCount,
+      this.firstIndex,
+      this.baseVertex,
+      this.firstInstance
+    );
   }
 
   // Insert an indirect draw call into |pass|
@@ -210,7 +211,7 @@ class DrawCall {
       size -= 1; // Shave off one byte from the buffer size.
       length -= 1; // And one whole element from the writeBuffer.
     }
-    const buffer = this.test.device.createBuffer({
+    const buffer = this.test.createBufferTracked({
       size,
       usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST // Ensure that buffer can be used by writeBuffer
     });
@@ -224,8 +225,8 @@ class DrawCall {
     this.vertexCount,
     this.instanceCount,
     this.firstVertex,
-    this.firstInstance]);
-
+    this.firstInstance]
+    );
     return this.test.makeBufferWithContents(indirectArray, GPUBufferUsage.INDIRECT);
   }
 
@@ -236,11 +237,11 @@ class DrawCall {
     this.instanceCount,
     this.firstIndex,
     this.baseVertex,
-    this.firstInstance]);
-
+    this.firstInstance]
+    );
     return this.test.makeBufferWithContents(indirectArray, GPUBufferUsage.INDIRECT);
-  }}
-
+  }
+}
 
 // Parameterize different sized types
 
@@ -253,27 +254,27 @@ const typeInfoMap = {
   float32: {
     wgslType: 'f32',
     sizeInBytes: 4,
-    validationFunc: 'return valid(v);' },
-
+    validationFunc: 'return valid(v);'
+  },
   float32x2: {
     wgslType: 'vec2<f32>',
     sizeInBytes: 8,
-    validationFunc: 'return valid(v.x) && valid(v.y);' },
-
+    validationFunc: 'return valid(v.x) && valid(v.y);'
+  },
   float32x3: {
     wgslType: 'vec3<f32>',
     sizeInBytes: 12,
-    validationFunc: 'return valid(v.x) && valid(v.y) && valid(v.z);' },
-
+    validationFunc: 'return valid(v.x) && valid(v.y) && valid(v.z);'
+  },
   float32x4: {
     wgslType: 'vec4<f32>',
     sizeInBytes: 16,
-    validationFunc: `return valid(v.x) && valid(v.y) && valid(v.z) && valid(v.w) ||
-                            v.x == 0.0 && v.y == 0.0 && v.z == 0.0 && (v.w == 0.0 || v.w == 1.0);` } };
+    validationFunc: `return (valid(v.x) && valid(v.y) && valid(v.z) && valid(v.w)) ||
+                            (v.x == 0.0 && v.y == 0.0 && v.z == 0.0 && (v.w == 0.0 || v.w == 1.0));`
+  }
+};
 
-
-
-class F extends GPUTest {
+class F extends AllFeaturesMaxLimitsGPUTest {
   generateBufferContents(
   numVertices,
   attributesPerBuffer,
@@ -283,8 +284,8 @@ class F extends GPUTest {
   {
     // Make an array big enough for the vertices, attributes, and size of each element
     const vertexArray = new Float32Array(
-    numVertices * attributesPerBuffer * (typeInfo.sizeInBytes / 4));
-
+      numVertices * attributesPerBuffer * (typeInfo.sizeInBytes / 4)
+    );
 
     for (let i = 0; i < vertexArray.length; ++i) {
       vertexArray[i] = arbitraryValues[i % arbitraryValues.length];
@@ -303,9 +304,9 @@ class F extends GPUTest {
   generateVertexBufferDescriptors(
   bufferCount,
   attributesPerBuffer,
-  type)
+  format)
   {
-    const typeInfo = typeInfoMap[type];
+    const typeInfo = typeInfoMap[format];
     // Vertex buffer descriptors
     const buffers = [];
     {
@@ -319,9 +320,9 @@ class F extends GPUTest {
           map((_, i) => ({
             shaderLocation: currAttribute++,
             offset: i * typeInfo.sizeInBytes,
-            format: type })) });
-
-
+            format
+          }))
+        });
       }
     }
     return buffers;
@@ -334,7 +335,7 @@ class F extends GPUTest {
     typeInfo,
     vertexIndexOffset,
     numVertices,
-    isIndexed })
+    isIndexed
 
 
 
@@ -343,7 +344,7 @@ class F extends GPUTest {
 
 
 
-  {
+  }) {
     // Create layout and attributes listing
     let layoutStr = 'struct Attributes {';
     const attributeNames = [];
@@ -351,7 +352,7 @@ class F extends GPUTest {
       let currAttribute = 0;
       for (let i = 0; i < bufferCount; i++) {
         for (let j = 0; j < attributesPerBuffer; j++) {
-          layoutStr += `[[location(${currAttribute})]] a_${currAttribute} : ${typeInfo.wgslType};\n`;
+          layoutStr += `@location(${currAttribute}) a_${currAttribute} : ${typeInfo.wgslType},\n`;
           attributeNames.push(`a_${currAttribute}`);
           currAttribute++;
         }
@@ -363,19 +364,19 @@ class F extends GPUTest {
       ${layoutStr}
 
       fn valid(f : f32) -> bool {
-        return ${validValues.map(v => `f == ${v}.0`).join(' || ')};
+        return ${validValues.map((v) => `f == ${v}.0`).join(' || ')};
       }
 
       fn validationFunc(v : ${typeInfo.wgslType}) -> bool {
         ${typeInfo.validationFunc}
       }
 
-      [[stage(vertex)]] fn main(
-        [[builtin(vertex_index)]] VertexIndex : u32,
+      @vertex fn main(
+        @builtin(vertex_index) VertexIndex : u32,
         attributes : Attributes
-        ) -> [[builtin(position)]] vec4<f32> {
+        ) -> @builtin(position) vec4<f32> {
         var attributesInBounds = ${attributeNames.
-    map(a => `validationFunc(attributes.${a})`).
+    map((a) => `validationFunc(attributes.${a})`).
     join(' && ')};
 
         var indexInBoundsCountFromBaseVertex =
@@ -404,7 +405,7 @@ class F extends GPUTest {
     vertexIndexOffset,
     numVertices,
     isIndexed,
-    buffers })
+    buffers
 
 
 
@@ -414,8 +415,9 @@ class F extends GPUTest {
 
 
 
-  {
+  }) {
     const pipeline = this.device.createRenderPipeline({
+      layout: 'auto',
       vertex: {
         module: this.device.createShaderModule({
           code: this.generateVertexShaderCode({
@@ -425,24 +427,24 @@ class F extends GPUTest {
             typeInfo,
             vertexIndexOffset,
             numVertices,
-            isIndexed }) }),
-
-
+            isIndexed
+          })
+        }),
         entryPoint: 'main',
-        buffers },
-
+        buffers
+      },
       fragment: {
         module: this.device.createShaderModule({
           code: `
-            [[stage(fragment)]] fn main() -> [[location(0)]] vec4<f32> {
+            @fragment fn main() -> @location(0) vec4<f32> {
               return vec4<f32>(1.0, 0.0, 0.0, 1.0);
-            }` }),
-
+            }`
+        }),
         entryPoint: 'main',
-        targets: [{ format: 'rgba8unorm' }] },
-
-      primitive: { topology: 'point-list' } });
-
+        targets: [{ format: 'rgba8unorm' }]
+      },
+      primitive: { topology: 'point-list' }
+    });
     return pipeline;
   }
 
@@ -455,7 +457,7 @@ class F extends GPUTest {
     numVertices,
     isIndexed,
     isIndirect,
-    drawCall })
+    drawCall
 
 
 
@@ -466,13 +468,13 @@ class F extends GPUTest {
 
 
 
-  {
+  }) {
     // Vertex buffer descriptors
     const buffers = this.generateVertexBufferDescriptors(
-    bufferCount,
-    attributesPerBuffer,
-    dataType);
-
+      bufferCount,
+      attributesPerBuffer,
+      dataType
+    );
 
     // Pipeline setup, texture setup
     const pipeline = this.createRenderPipeline({
@@ -483,14 +485,14 @@ class F extends GPUTest {
       vertexIndexOffset,
       numVertices,
       isIndexed,
-      buffers });
+      buffers
+    });
 
-
-    const colorAttachment = this.device.createTexture({
+    const colorAttachment = this.createTextureTracked({
       format: 'rgba8unorm',
       size: { width: 2, height: 1, depthOrArrayLayers: 1 },
-      usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.RENDER_ATTACHMENT });
-
+      usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.RENDER_ATTACHMENT
+    });
     const colorAttachmentView = colorAttachment.createView();
 
     const encoder = this.device.createCommandEncoder();
@@ -498,58 +500,57 @@ class F extends GPUTest {
       colorAttachments: [
       {
         view: colorAttachmentView,
-        storeOp: 'store',
-        loadValue: { r: 0.0, g: 1.0, b: 0.0, a: 1.0 } }] });
+        clearValue: { r: 0.0, g: 1.0, b: 0.0, a: 1.0 },
+        loadOp: 'clear',
+        storeOp: 'store'
+      }]
 
-
-
+    });
     pass.setPipeline(pipeline);
 
     // Run the draw variant
     drawCall.insertInto(pass, isIndexed, isIndirect);
 
-    pass.endPass();
+    pass.end();
     this.device.queue.submit([encoder.finish()]);
 
     // Validate we see green on the left pixel, showing that no failure case is detected
-    this.expectSinglePixelIn2DTexture(
-    colorAttachment,
-    'rgba8unorm',
-    { x: 0, y: 0 },
-    { exp: new Uint8Array([0x00, 0xff, 0x00, 0xff]), layout: { mipLevel: 0 } });
-
-  }}
-
+    ttu.expectSinglePixelComparisonsAreOkInTexture(this, { texture: colorAttachment }, [
+    { coord: { x: 0, y: 0 }, exp: new Uint8Array([0x00, 0xff, 0x00, 0xff]) }]
+    );
+  }
+}
 
 export const g = makeTestGroup(F);
 
 g.test('vertex_buffer_access').
 params(
-(u) =>
-u.
-combineWithParams([
-{ indexed: false, indirect: true },
-{ indexed: true, indirect: false },
-{ indexed: true, indirect: true }]).
-
-expand('drawCallTestParameter', function* (p) {
-  if (p.indexed) {
-    yield* ['baseVertex', 'vertexCountInIndexBuffer'];
-    if (p.indirect) {
-      yield* ['indexCount', 'instanceCount', 'firstIndex'];
+  (u) =>
+  u.
+  combineWithParams([
+  { indexed: false, indirect: true },
+  { indexed: true, indirect: false },
+  { indexed: true, indirect: true }]
+  ).
+  expand('drawCallTestParameter', function* (p) {
+    if (p.indexed) {
+      yield* ['baseVertex', 'vertexCountInIndexBuffer'];
+      if (p.indirect) {
+        yield* ['indexCount', 'instanceCount', 'firstIndex'];
+      }
+    } else if (p.indirect) {
+      yield* ['vertexCount', 'instanceCount', 'firstVertex'];
     }
-  } else if (p.indirect) {
-    yield* ['vertexCount', 'instanceCount', 'firstVertex'];
-  }
-}).
-combine('type', Object.keys(typeInfoMap)).
-combine('additionalBuffers', [0, 4]).
-combine('partialLastNumber', [false, true]).
-combine('offsetVertexBuffer', [false, true]).
-combine('errorScale', [0, 1, 4, 10 ** 2, 10 ** 4, 10 ** 6]).
-unless(p => p.drawCallTestParameter === 'instanceCount' && p.errorScale > 10 ** 4) // To avoid timeout
+  }).
+  combine('type', Object.keys(typeInfoMap)).
+  combine('additionalBuffers', [0, 4]).
+  combine('partialLastNumber', [false, true]).
+  combine('offsetVertexBuffer', [false, true]).
+  beginSubcases().
+  combine('errorScale', [0, 1, 4, 10 ** 2, 10 ** 4, 10 ** 6]).
+  unless((p) => p.drawCallTestParameter === 'instanceCount' && p.errorScale > 10 ** 4) // To avoid timeout
 ).
-fn(async t => {
+fn((t) => {
   const p = t.params;
   const typeInfo = typeInfoMap[p.type];
 
@@ -569,12 +570,12 @@ fn(async t => {
   // Generate vertex buffer contents. Only the first buffer is instance step mode, all others are vertex step mode
   const bufferCount = p.additionalBuffers + 2; // At least one instance step mode and one vertex step mode buffer
   const bufferContents = t.generateBufferContents(
-  numVertices,
-  attributesPerBuffer,
-  typeInfo,
-  arbitraryValues,
-  bufferCount);
-
+    numVertices,
+    attributesPerBuffer,
+    typeInfo,
+    arbitraryValues,
+    bufferCount
+  );
 
   // Mutable draw call
   const draw = new DrawCall({
@@ -603,7 +604,7 @@ fn(async t => {
     numVertices,
     isIndexed: p.indexed,
     isIndirect: p.indirect,
-    drawCall: draw });
-
+    drawCall: draw
+  });
 });
 //# sourceMappingURL=robust_access_vertex.spec.js.map

@@ -1,9 +1,12 @@
 /**
 * AUTO-GENERATED - DO NOT EDIT. Source: https://github.com/gpuweb/cts
-**/
-
-
-
+**/ /**
+ * The interface used for formatting strings to contain color metadata.
+ *
+ * Use the interface properties to construct a style, then use the
+ * `(s: string): string` function to format the provided string with the given
+ * style.
+ */
 
 
 
@@ -63,20 +66,21 @@
 
 
 /**
-     * The interface used for formatting strings with color metadata.
-     *
-     * Currently Colors will use the 'ansi-colors' module if it can be loaded.
-     * If it cannot be loaded, then the Colors implementation is a straight pass-through.
-     *
-     * Colors may also be a no-op if the current environment does not support colors.
-     */
+ * The interface used for formatting strings with color metadata.
+ *
+ * Currently Colors will use the 'ansi-colors' module if it can be loaded.
+ * If it cannot be loaded, then the Colors implementation is a straight pass-through.
+ *
+ * Colors may also be a no-op if the current environment does not support colors.
+ */
 export let Colors;
 
 try {
 
   Colors = require('ansi-colors');
 } catch {
-  const passthrough = s => s;
+  const passthrough = (s) => s;
+  passthrough.enabled = false;
   passthrough.reset = passthrough;
   passthrough.bold = passthrough;
   passthrough.dim = passthrough;

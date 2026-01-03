@@ -4,26 +4,26 @@
 Validation tests for setIndexBuffer on render pass and render bundle.
 `;import { makeTestGroup } from '../../../../../../common/framework/test_group.js';
 import { GPUConst } from '../../../../../constants.js';
-import { kResourceStates } from '../../../../../gpu_test.js';
-import { ValidationTest } from '../../../validation_test.js';
+import { kResourceStates, AllFeaturesMaxLimitsGPUTest } from '../../../../../gpu_test.js';
+import * as vtu from '../../../validation_test_utils.js';
 
 import { kRenderEncodeTypeParams, buildBufferOffsetAndSizeOOBTestParams } from './render.js';
 
-export const g = makeTestGroup(ValidationTest);
+export const g = makeTestGroup(AllFeaturesMaxLimitsGPUTest);
 
-g.test('index_buffer').
+g.test('index_buffer_state').
 desc(
-`
+  `
 Tests index buffer must be valid.
-  `).
-
+  `
+).
 paramsSubcasesOnly(kRenderEncodeTypeParams.combine('state', kResourceStates)).
-fn(t => {
+fn((t) => {
   const { encoderType, state } = t.params;
-  const indexBuffer = t.createBufferWithState(state, {
+  const indexBuffer = vtu.createBufferWithState(t, state, {
     size: 16,
-    usage: GPUBufferUsage.INDEX });
-
+    usage: GPUBufferUsage.INDEX
+  });
 
   const { encoder, validateFinishAndSubmitGivenState } = t.createEncoder(encoderType);
   encoder.setIndexBuffer(indexBuffer, 'uint32');
@@ -33,27 +33,42 @@ fn(t => {
 g.test('index_buffer,device_mismatch').
 desc('Tests setIndexBuffer cannot be called with an index buffer created from another device').
 paramsSubcasesOnly(kRenderEncodeTypeParams.combine('mismatched', [true, false])).
-unimplemented();
+beforeAllSubcases((t) => t.usesMismatchedDevice()).
+fn((t) => {
+  const { encoderType, mismatched } = t.params;
+  const sourceDevice = mismatched ? t.mismatchedDevice : t.device;
+
+  const indexBuffer = t.trackForCleanup(
+    sourceDevice.createBuffer({
+      size: 16,
+      usage: GPUBufferUsage.INDEX
+    })
+  );
+
+  const { encoder, validateFinish } = t.createEncoder(encoderType);
+  encoder.setIndexBuffer(indexBuffer, 'uint32');
+  validateFinish(!mismatched);
+});
 
 g.test('index_buffer_usage').
 desc(
-`
+  `
 Tests index buffer must have 'Index' usage.
-  `).
-
+  `
+).
 paramsSubcasesOnly(
-kRenderEncodeTypeParams.combine('usage', [
-GPUConst.BufferUsage.INDEX, // control case
-GPUConst.BufferUsage.COPY_DST,
-GPUConst.BufferUsage.COPY_DST | GPUConst.BufferUsage.INDEX])).
-
-
-fn(t => {
+  kRenderEncodeTypeParams.combine('usage', [
+  GPUConst.BufferUsage.INDEX, // control case
+  GPUConst.BufferUsage.COPY_DST,
+  GPUConst.BufferUsage.COPY_DST | GPUConst.BufferUsage.INDEX]
+  )
+).
+fn((t) => {
   const { encoderType, usage } = t.params;
-  const indexBuffer = t.device.createBuffer({
+  const indexBuffer = t.createBufferTracked({
     size: 16,
-    usage });
-
+    usage
+  });
 
   const { encoder, validateFinish } = t.createEncoder(encoderType);
   encoder.setIndexBuffer(indexBuffer, 'uint32');
@@ -62,23 +77,23 @@ fn(t => {
 
 g.test('offset_alignment').
 desc(
-`
+  `
 Tests offset must be a multiple of index format’s byte size.
-  `).
-
+  `
+).
 paramsSubcasesOnly(
-kRenderEncodeTypeParams.
-combine('indexFormat', ['uint16', 'uint32']).
-expand('offset', p => {
-  return p.indexFormat === 'uint16' ? [0, 1, 2] : [0, 2, 4];
-})).
-
-fn(t => {
+  kRenderEncodeTypeParams.
+  combine('indexFormat', ['uint16', 'uint32']).
+  expand('offset', (p) => {
+    return p.indexFormat === 'uint16' ? [0, 1, 2] : [0, 2, 4];
+  })
+).
+fn((t) => {
   const { encoderType, indexFormat, offset } = t.params;
-  const indexBuffer = t.device.createBuffer({
+  const indexBuffer = t.createBufferTracked({
     size: 16,
-    usage: GPUBufferUsage.INDEX });
-
+    usage: GPUBufferUsage.INDEX
+  });
 
   const { encoder, validateFinish } = t.createEncoder(encoderType);
   encoder.setIndexBuffer(indexBuffer, indexFormat, offset);
@@ -90,17 +105,17 @@ fn(t => {
 
 g.test('offset_and_size_oob').
 desc(
-`
+  `
 Tests offset and size cannot be larger than index buffer size.
-  `).
-
+  `
+).
 paramsSubcasesOnly(buildBufferOffsetAndSizeOOBTestParams(4, 256)).
-fn(t => {
+fn((t) => {
   const { encoderType, offset, size, _valid } = t.params;
-  const indexBuffer = t.device.createBuffer({
+  const indexBuffer = t.createBufferTracked({
     size: 256,
-    usage: GPUBufferUsage.INDEX });
-
+    usage: GPUBufferUsage.INDEX
+  });
 
   const { encoder, validateFinish } = t.createEncoder(encoderType);
   encoder.setIndexBuffer(indexBuffer, 'uint32', offset, size);

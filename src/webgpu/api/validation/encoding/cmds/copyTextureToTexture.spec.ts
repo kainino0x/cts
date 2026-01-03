@@ -1,175 +1,239 @@
 export const description = `
 copyTextureToTexture tests.
-
-Test Plan: (TODO(jiawei.shao@intel.com): add tests on 1D/3D textures)
-* the source and destination texture
-  - the {source, destination} texture is {invalid, valid}.
-  - mipLevel {>, =, <} the mipmap level count of the {source, destination} texture.
-  - the source texture is created {with, without} GPUTextureUsage::CopySrc.
-  - the destination texture is created {with, without} GPUTextureUsage::CopyDst.
-* sample count
-  - the sample count of the source texture {is, isn't} equal to the one of the destination texture
-  - when the sample count is greater than 1:
-    - it {is, isn't} a copy of the whole subresource of the source texture.
-    - it {is, isn't} a copy of the whole subresource of the destination texture.
-* texture format
-  - the format of the source texture {is, isn't} equal to the one of the destination texture.
-    - including: depth24plus-stencil8 to/from {depth24plus, stencil8}.
-  - for each depth and/or stencil format: a copy between two textures with same format:
-    - it {is, isn't} a copy of the whole subresource of the {source, destination} texture.
-* copy ranges
-  - if the texture dimension is 2D:
-    - (srcOrigin.x + copyExtent.width) {>, =, <} the width of the subresource size of source
-      textureCopyView.
-    - (srcOrigin.y + copyExtent.height) {>, =, <} the height of the subresource size of source
-      textureCopyView.
-    - (srcOrigin.z + copyExtent.depthOrArrayLayers) {>, =, <} the depthOrArrayLayers of the subresource size of source
-      textureCopyView.
-    - (dstOrigin.x + copyExtent.width) {>, =, <} the width of the subresource size of destination
-      textureCopyView.
-    - (dstOrigin.y + copyExtent.height) {>, =, <} the height of the subresource size of destination
-      textureCopyView.
-    - (dstOrigin.z + copyExtent.depthOrArrayLayers) {>, =, <} the depthOrArrayLayers of the subresource size of destination
-      textureCopyView.
-* when the source and destination texture are the same one:
-  - the set of source texture subresources {has, doesn't have} overlaps with the one of destination
-    texture subresources.
 `;
 
 import { makeTestGroup } from '../../../../../common/framework/test_group.js';
+import { kTextureUsages, kTextureDimensions } from '../../../../capability_info.js';
+import { GPUConst } from '../../../../constants.js';
 import {
-  kTextureFormatInfo,
-  kTextureFormats,
+  kAllTextureFormats,
   kCompressedTextureFormats,
   kDepthStencilFormats,
-  kTextureUsages,
-} from '../../../../capability_info.js';
-import { align } from '../../../../util/math.js';
-import { ValidationTest } from '../../validation_test.js';
+  textureFormatAndDimensionPossiblyCompatible,
+  getBlockInfoForTextureFormat,
+  getBaseFormatForTextureFormat,
+  canCopyFromAllAspectsOfTextureFormat,
+  canCopyToAllAspectsOfTextureFormat,
+  ColorTextureFormat,
+} from '../../../../format_info.js';
+import { kResourceStates, AllFeaturesMaxLimitsGPUTest } from '../../../../gpu_test.js';
+import { align, lcm } from '../../../../util/math.js';
+import * as vtu from '../../validation_test_utils.js';
 
-class F extends ValidationTest {
-  TestCopyTextureToTexture(
-    source: GPUImageCopyTexture,
-    destination: GPUImageCopyTexture,
+class F extends AllFeaturesMaxLimitsGPUTest {
+  testCopyTextureToTexture(
+    source: GPUTexelCopyTextureInfo,
+    destination: GPUTexelCopyTextureInfo,
     copySize: GPUExtent3D,
-    isSuccess: boolean
+    expectation: 'Success' | 'FinishError' | 'SubmitError'
   ): void {
     const commandEncoder = this.device.createCommandEncoder();
     commandEncoder.copyTextureToTexture(source, destination, copySize);
 
-    this.expectValidationError(() => {
-      commandEncoder.finish();
-    }, !isSuccess);
+    if (expectation === 'FinishError') {
+      this.expectValidationError(() => {
+        commandEncoder.finish();
+      });
+    } else {
+      const cmd = commandEncoder.finish();
+      this.expectValidationError(() => {
+        this.device.queue.submit([cmd]);
+      }, expectation === 'SubmitError');
+    }
   }
 
-  GetPhysicalSubresourceSize(
+  getPhysicalSubresourceSize(
+    dimension: GPUTextureDimension,
     textureSize: Required<GPUExtent3DDict>,
     format: GPUTextureFormat,
     mipLevel: number
   ): Required<GPUExtent3DDict> {
+    const { blockWidth, blockHeight } = getBlockInfoForTextureFormat(format);
     const virtualWidthAtLevel = Math.max(textureSize.width >> mipLevel, 1);
     const virtualHeightAtLevel = Math.max(textureSize.height >> mipLevel, 1);
-    const physicalWidthAtLevel = align(virtualWidthAtLevel, kTextureFormatInfo[format].blockWidth);
-    const physicalHeightAtLevel = align(
-      virtualHeightAtLevel,
-      kTextureFormatInfo[format].blockHeight
-    );
-    return {
-      width: physicalWidthAtLevel,
-      height: physicalHeightAtLevel,
-      depthOrArrayLayers: textureSize.depthOrArrayLayers,
-    };
+    const physicalWidthAtLevel = align(virtualWidthAtLevel, blockWidth);
+    const physicalHeightAtLevel = align(virtualHeightAtLevel, blockHeight);
+
+    switch (dimension) {
+      case '1d':
+        return { width: physicalWidthAtLevel, height: 1, depthOrArrayLayers: 1 };
+      case '2d':
+        return {
+          width: physicalWidthAtLevel,
+          height: physicalHeightAtLevel,
+          depthOrArrayLayers: textureSize.depthOrArrayLayers,
+        };
+      case '3d':
+        return {
+          width: physicalWidthAtLevel,
+          height: physicalHeightAtLevel,
+          depthOrArrayLayers: Math.max(textureSize.depthOrArrayLayers >> mipLevel, 1),
+        };
+    }
   }
 }
 
 export const g = makeTestGroup(F);
 
-g.test('copy_with_invalid_texture').fn(async t => {
-  const validTexture = t.device.createTexture({
-    size: { width: 4, height: 4, depthOrArrayLayers: 1 },
-    format: 'rgba8unorm',
-    usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.COPY_DST,
+g.test('copy_with_invalid_or_destroyed_texture')
+  .desc('Test copyTextureToTexture is an error when one of the textures is invalid or destroyed.')
+  .paramsSubcasesOnly(u =>
+    u //
+      .combine('srcState', kResourceStates)
+      .combine('dstState', kResourceStates)
+  )
+  .fn(t => {
+    const { srcState, dstState } = t.params;
+
+    const textureDesc: GPUTextureDescriptor = {
+      size: { width: 4, height: 4, depthOrArrayLayers: 1 },
+      format: 'rgba8unorm',
+      usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.COPY_DST,
+    };
+
+    const srcTexture = vtu.createTextureWithState(t, srcState, textureDesc);
+    const dstTexture = vtu.createTextureWithState(t, dstState, textureDesc);
+
+    const isSubmitSuccess = srcState === 'valid' && dstState === 'valid';
+    const isFinishSuccess = srcState !== 'invalid' && dstState !== 'invalid';
+    const expectation = isFinishSuccess
+      ? isSubmitSuccess
+        ? 'Success'
+        : 'SubmitError'
+      : 'FinishError';
+
+    t.testCopyTextureToTexture(
+      { texture: srcTexture },
+      { texture: dstTexture },
+      { width: 1, height: 1, depthOrArrayLayers: 1 },
+      expectation
+    );
   });
-
-  const errorTexture = t.getErrorTexture();
-
-  t.TestCopyTextureToTexture(
-    { texture: errorTexture },
-    { texture: validTexture },
-    { width: 1, height: 1, depthOrArrayLayers: 1 },
-    false
-  );
-  t.TestCopyTextureToTexture(
-    { texture: validTexture },
-    { texture: errorTexture },
-    { width: 1, height: 1, depthOrArrayLayers: 1 },
-    false
-  );
-});
 
 g.test('texture,device_mismatch')
   .desc(
-    'Tests copyTextureToTexture cannot be called with src texture or dst texture created from another device'
+    'Tests copyTextureToTexture cannot be called with src texture or dst texture created from another device.'
   )
   .paramsSubcasesOnly([
     { srcMismatched: false, dstMismatched: false }, // control case
     { srcMismatched: true, dstMismatched: false },
     { srcMismatched: false, dstMismatched: true },
   ] as const)
-  .unimplemented();
+  .beforeAllSubcases(t => t.usesMismatchedDevice())
+  .fn(t => {
+    const { srcMismatched, dstMismatched } = t.params;
+
+    const size = { width: 4, height: 4, depthOrArrayLayers: 1 };
+    const format = 'rgba8unorm';
+
+    const srcTextureDevice = srcMismatched ? t.mismatchedDevice : t.device;
+    const srcTexture = t.trackForCleanup(
+      srcTextureDevice.createTexture({
+        size,
+        format,
+        usage: GPUTextureUsage.COPY_SRC,
+      })
+    );
+
+    const dstTextureDevice = dstMismatched ? t.mismatchedDevice : t.device;
+    const dstTexture = t.trackForCleanup(
+      dstTextureDevice.createTexture({
+        size,
+        format,
+        usage: GPUTextureUsage.COPY_DST,
+      })
+    );
+
+    t.testCopyTextureToTexture(
+      { texture: srcTexture },
+      { texture: dstTexture },
+      { width: 1, height: 1, depthOrArrayLayers: 1 },
+      srcMismatched || dstMismatched ? 'FinishError' : 'Success'
+    );
+  });
 
 g.test('mipmap_level')
-  .paramsSubcasesOnly([
-    { srcLevelCount: 1, dstLevelCount: 1, srcCopyLevel: 0, dstCopyLevel: 0 },
-    { srcLevelCount: 1, dstLevelCount: 1, srcCopyLevel: 1, dstCopyLevel: 0 },
-    { srcLevelCount: 1, dstLevelCount: 1, srcCopyLevel: 0, dstCopyLevel: 1 },
-    { srcLevelCount: 3, dstLevelCount: 3, srcCopyLevel: 0, dstCopyLevel: 0 },
-    { srcLevelCount: 3, dstLevelCount: 3, srcCopyLevel: 2, dstCopyLevel: 0 },
-    { srcLevelCount: 3, dstLevelCount: 3, srcCopyLevel: 3, dstCopyLevel: 0 },
-    { srcLevelCount: 3, dstLevelCount: 3, srcCopyLevel: 0, dstCopyLevel: 2 },
-    { srcLevelCount: 3, dstLevelCount: 3, srcCopyLevel: 0, dstCopyLevel: 3 },
-  ] as const)
+  .desc(
+    `
+Test copyTextureToTexture must specify mipLevels that are in range.
+- for various dimensions
+- for various mip level count in the texture
+- for various copy target mip level (in range and not in range)
+`
+  )
+  .params(u =>
+    u //
+      .combine('dimension', kTextureDimensions)
+      .beginSubcases()
+      .combineWithParams([
+        { srcLevelCount: 1, dstLevelCount: 1, srcCopyLevel: 0, dstCopyLevel: 0 },
+        { srcLevelCount: 1, dstLevelCount: 1, srcCopyLevel: 1, dstCopyLevel: 0 },
+        { srcLevelCount: 1, dstLevelCount: 1, srcCopyLevel: 0, dstCopyLevel: 1 },
+        { srcLevelCount: 3, dstLevelCount: 3, srcCopyLevel: 0, dstCopyLevel: 0 },
+        { srcLevelCount: 3, dstLevelCount: 3, srcCopyLevel: 2, dstCopyLevel: 0 },
+        { srcLevelCount: 3, dstLevelCount: 3, srcCopyLevel: 3, dstCopyLevel: 0 },
+        { srcLevelCount: 3, dstLevelCount: 3, srcCopyLevel: 0, dstCopyLevel: 2 },
+        { srcLevelCount: 3, dstLevelCount: 3, srcCopyLevel: 0, dstCopyLevel: 3 },
+      ] as const)
+      .unless(p => p.dimension === '1d' && (p.srcLevelCount !== 1 || p.dstLevelCount !== 1))
+  )
 
-  .fn(async t => {
-    const { srcLevelCount, dstLevelCount, srcCopyLevel, dstCopyLevel } = t.params;
+  .fn(t => {
+    const { srcLevelCount, dstLevelCount, srcCopyLevel, dstCopyLevel, dimension } = t.params;
 
-    const srcTexture = t.device.createTexture({
-      size: { width: 32, height: 32, depthOrArrayLayers: 1 },
+    const srcTexture = t.createTextureTracked({
+      size: { width: 32, height: 1, depthOrArrayLayers: 1 },
+      dimension,
       format: 'rgba8unorm',
       usage: GPUTextureUsage.COPY_SRC,
       mipLevelCount: srcLevelCount,
     });
-    const dstTexture = t.device.createTexture({
-      size: { width: 32, height: 32, depthOrArrayLayers: 1 },
+    const dstTexture = t.createTextureTracked({
+      size: { width: 32, height: 1, depthOrArrayLayers: 1 },
+      dimension,
       format: 'rgba8unorm',
       usage: GPUTextureUsage.COPY_DST,
       mipLevelCount: dstLevelCount,
     });
 
     const isSuccess = srcCopyLevel < srcLevelCount && dstCopyLevel < dstLevelCount;
-    t.TestCopyTextureToTexture(
+    t.testCopyTextureToTexture(
       { texture: srcTexture, mipLevel: srcCopyLevel },
       { texture: dstTexture, mipLevel: dstCopyLevel },
       { width: 1, height: 1, depthOrArrayLayers: 1 },
-      isSuccess
+      isSuccess ? 'Success' : 'FinishError'
     );
   });
 
 g.test('texture_usage')
+  .desc(
+    `
+Test that copyTextureToTexture source/destination need COPY_SRC/COPY_DST usages.
+- for all possible source texture usages
+- for all possible destination texture usages
+`
+  )
   .paramsSubcasesOnly(u =>
     u //
       .combine('srcUsage', kTextureUsages)
       .combine('dstUsage', kTextureUsages)
+      .unless(({ srcUsage, dstUsage }) => {
+        // TRANSIENT_ATTACHMENT is only valid when combined with RENDER_ATTACHMENT.
+        return (
+          srcUsage === GPUConst.TextureUsage.TRANSIENT_ATTACHMENT ||
+          dstUsage === GPUConst.TextureUsage.TRANSIENT_ATTACHMENT
+        );
+      })
   )
-  .fn(async t => {
+  .fn(t => {
     const { srcUsage, dstUsage } = t.params;
 
-    const srcTexture = t.device.createTexture({
+    const srcTexture = t.createTextureTracked({
       size: { width: 4, height: 4, depthOrArrayLayers: 1 },
       format: 'rgba8unorm',
       usage: srcUsage,
     });
-    const dstTexture = t.device.createTexture({
+    const dstTexture = t.createTextureTracked({
       size: { width: 4, height: 4, depthOrArrayLayers: 1 },
       format: 'rgba8unorm',
       usage: dstUsage,
@@ -178,46 +242,68 @@ g.test('texture_usage')
     const isSuccess =
       srcUsage === GPUTextureUsage.COPY_SRC && dstUsage === GPUTextureUsage.COPY_DST;
 
-    t.TestCopyTextureToTexture(
+    t.testCopyTextureToTexture(
       { texture: srcTexture },
       { texture: dstTexture },
       { width: 1, height: 1, depthOrArrayLayers: 1 },
-      isSuccess
+      isSuccess ? 'Success' : 'FinishError'
     );
   });
 
 g.test('sample_count')
+  .desc(
+    `
+Test that textures in copyTextureToTexture must have the same sample count.
+- for various source texture sample count
+- for various destination texture sample count
+`
+  )
   .paramsSubcasesOnly(u =>
     u //
       .combine('srcSampleCount', [1, 4])
       .combine('dstSampleCount', [1, 4])
   )
-  .fn(async t => {
+  .beforeAllSubcases(t => {
+    t.skipIf(
+      t.isCompatibility && (t.params.srcSampleCount !== 1 || t.params.dstSampleCount !== 1),
+      'multisample textures are not copyable in compatibility mode'
+    );
+  })
+  .fn(t => {
     const { srcSampleCount, dstSampleCount } = t.params;
 
-    const srcTexture = t.device.createTexture({
+    const srcTexture = t.createTextureTracked({
       size: { width: 4, height: 4, depthOrArrayLayers: 1 },
       format: 'rgba8unorm',
-      usage: GPUTextureUsage.COPY_SRC,
+      usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.RENDER_ATTACHMENT,
       sampleCount: srcSampleCount,
     });
-    const dstTexture = t.device.createTexture({
+    const dstTexture = t.createTextureTracked({
       size: { width: 4, height: 4, depthOrArrayLayers: 1 },
       format: 'rgba8unorm',
-      usage: GPUTextureUsage.COPY_DST,
+      usage: GPUTextureUsage.COPY_DST | GPUTextureUsage.RENDER_ATTACHMENT,
       sampleCount: dstSampleCount,
     });
 
     const isSuccess = srcSampleCount === dstSampleCount;
-    t.TestCopyTextureToTexture(
+    t.testCopyTextureToTexture(
       { texture: srcTexture },
       { texture: dstTexture },
       { width: 4, height: 4, depthOrArrayLayers: 1 },
-      isSuccess
+      isSuccess ? 'Success' : 'FinishError'
     );
   });
 
 g.test('multisampled_copy_restrictions')
+  .desc(
+    `
+Test that copyTextureToTexture of multisampled texture must copy a whole subresource to a whole subresource.
+- for various origin for the source and destination of the copies.
+
+Note: this is only tested for 2D textures as it is the only dimension compatible with multisampling.
+TODO: Check the source and destination constraints separately.
+`
+  )
   .paramsSubcasesOnly(u =>
     u //
       .combine('srcCopyOrigin', [
@@ -235,7 +321,10 @@ g.test('multisampled_copy_restrictions')
       .expand('copyWidth', p => [32 - Math.max(p.srcCopyOrigin.x, p.dstCopyOrigin.x), 16])
       .expand('copyHeight', p => [16 - Math.max(p.srcCopyOrigin.y, p.dstCopyOrigin.y), 8])
   )
-  .fn(async t => {
+  .beforeAllSubcases(t => {
+    t.skipIf(t.isCompatibility, 'multisample textures are not copyable in compatibility mode');
+  })
+  .fn(t => {
     const { srcCopyOrigin, dstCopyOrigin, copyWidth, copyHeight } = t.params;
 
     const kWidth = 32;
@@ -243,64 +332,104 @@ g.test('multisampled_copy_restrictions')
 
     // Currently we don't support multisampled 2D array textures and the mipmap level count of the
     // multisampled textures must be 1.
-    const srcTexture = t.device.createTexture({
+    const srcTexture = t.createTextureTracked({
       size: { width: kWidth, height: kHeight, depthOrArrayLayers: 1 },
       format: 'rgba8unorm',
-      usage: GPUTextureUsage.COPY_SRC,
+      usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.RENDER_ATTACHMENT,
       sampleCount: 4,
     });
-    const dstTexture = t.device.createTexture({
+    const dstTexture = t.createTextureTracked({
       size: { width: kWidth, height: kHeight, depthOrArrayLayers: 1 },
       format: 'rgba8unorm',
-      usage: GPUTextureUsage.COPY_DST,
+      usage: GPUTextureUsage.COPY_DST | GPUTextureUsage.RENDER_ATTACHMENT,
       sampleCount: 4,
     });
 
     const isSuccess = copyWidth === kWidth && copyHeight === kHeight;
-    t.TestCopyTextureToTexture(
+    t.testCopyTextureToTexture(
       { texture: srcTexture, origin: srcCopyOrigin },
       { texture: dstTexture, origin: dstCopyOrigin },
       { width: copyWidth, height: copyHeight, depthOrArrayLayers: 1 },
-      isSuccess
+      isSuccess ? 'Success' : 'FinishError'
     );
   });
 
-g.test('texture_format_equality')
-  .paramsSubcasesOnly(u =>
-    u //
-      .combine('srcFormat', kTextureFormats)
-      .combine('dstFormat', kTextureFormats)
+g.test('texture_format_compatibility')
+  .desc(
+    `
+Test the formats of textures in copyTextureToTexture must be copy-compatible.
+- for all source texture formats
+- for all destination texture formats
+`
   )
-  .fn(async t => {
+  .params(u =>
+    u
+      .combine('srcFormat', kAllTextureFormats)
+      .filter(t => canCopyFromAllAspectsOfTextureFormat(t.srcFormat))
+      .combine('dstFormat', kAllTextureFormats)
+      .filter(t => canCopyToAllAspectsOfTextureFormat(t.dstFormat))
+      .filter(t => {
+        const srcInfo = getBlockInfoForTextureFormat(t.srcFormat);
+        const dstInfo = getBlockInfoForTextureFormat(t.dstFormat);
+        return (
+          srcInfo.blockWidth === dstInfo.blockWidth && srcInfo.blockHeight === dstInfo.blockHeight
+        );
+      })
+  )
+  .fn(t => {
     const { srcFormat, dstFormat } = t.params;
-    const srcFormatInfo = kTextureFormatInfo[srcFormat];
-    const dstFormatInfo = kTextureFormatInfo[dstFormat];
-    await t.selectDeviceOrSkipTestCase([srcFormatInfo.feature, dstFormatInfo.feature]);
 
-    const kTextureSize = { width: 16, height: 16, depthOrArrayLayers: 1 };
+    t.skipIfTextureFormatNotSupported(srcFormat, dstFormat);
+    t.skipIfCopyTextureToTextureNotSupportedForFormat(srcFormat, dstFormat);
 
-    const srcTexture = t.device.createTexture({
-      size: kTextureSize,
+    const srcFormatInfo = getBlockInfoForTextureFormat(srcFormat);
+    const dstFormatInfo = getBlockInfoForTextureFormat(dstFormat);
+
+    const textureSize = {
+      width: lcm(srcFormatInfo.blockWidth, dstFormatInfo.blockWidth),
+      height: lcm(srcFormatInfo.blockHeight, dstFormatInfo.blockHeight),
+      depthOrArrayLayers: 1,
+    };
+
+    const srcTexture = t.createTextureTracked({
+      size: textureSize,
       format: srcFormat,
       usage: GPUTextureUsage.COPY_SRC,
     });
 
-    const dstTexture = t.device.createTexture({
-      size: kTextureSize,
+    const dstTexture = t.createTextureTracked({
+      size: textureSize,
       format: dstFormat,
       usage: GPUTextureUsage.COPY_DST,
     });
 
-    const isSuccess = srcFormat === dstFormat;
-    t.TestCopyTextureToTexture(
+    // Allow copy between compatible format textures.
+    const srcBaseFormat =
+      getBaseFormatForTextureFormat(srcFormat as ColorTextureFormat) ?? srcFormat;
+    const dstBaseFormat =
+      getBaseFormatForTextureFormat(dstFormat as ColorTextureFormat) ?? dstFormat;
+    const isSuccess = srcBaseFormat === dstBaseFormat;
+
+    t.testCopyTextureToTexture(
       { texture: srcTexture },
       { texture: dstTexture },
-      kTextureSize,
-      isSuccess
+      textureSize,
+      isSuccess ? 'Success' : 'FinishError'
     );
   });
 
 g.test('depth_stencil_copy_restrictions')
+  .desc(
+    `
+Test that depth textures subresources must be entirely copied in copyTextureToTexture
+- for various depth-stencil formats
+- for various copy origin and size offsets
+- for various source and destination texture sizes
+- for various source and destination mip levels
+
+Note: this is only tested for 2D textures as it is the only dimension compatible with depth-stencil.
+`
+  )
   .params(u =>
     u
       .combine('format', kDepthStencilFormats)
@@ -325,34 +454,27 @@ g.test('depth_stencil_copy_restrictions')
       .combine('srcCopyLevel', [1, 2])
       .combine('dstCopyLevel', [0, 1])
   )
-  .fn(async t => {
-    const {
-      format,
-      copyBoxOffsets,
-      srcTextureSize,
-      dstTextureSize,
-      srcCopyLevel,
-      dstCopyLevel,
-    } = t.params;
-    await t.selectDeviceOrSkipTestCase(kTextureFormatInfo[format].feature);
-
+  .fn(t => {
+    const { format, copyBoxOffsets, srcTextureSize, dstTextureSize, srcCopyLevel, dstCopyLevel } =
+      t.params;
+    t.skipIfTextureFormatNotSupported(format);
     const kMipLevelCount = 3;
 
-    const srcTexture = t.device.createTexture({
+    const srcTexture = t.createTextureTracked({
       size: { width: srcTextureSize.width, height: srcTextureSize.height, depthOrArrayLayers: 1 },
       format,
       mipLevelCount: kMipLevelCount,
       usage: GPUTextureUsage.COPY_SRC,
     });
-    const dstTexture = t.device.createTexture({
+    const dstTexture = t.createTextureTracked({
       size: { width: dstTextureSize.width, height: dstTextureSize.height, depthOrArrayLayers: 1 },
       format,
       mipLevelCount: kMipLevelCount,
       usage: GPUTextureUsage.COPY_DST,
     });
 
-    const srcSizeAtLevel = t.GetPhysicalSubresourceSize(srcTextureSize, format, srcCopyLevel);
-    const dstSizeAtLevel = t.GetPhysicalSubresourceSize(dstTextureSize, format, dstCopyLevel);
+    const srcSizeAtLevel = t.getPhysicalSubresourceSize('2d', srcTextureSize, format, srcCopyLevel);
+    const dstSizeAtLevel = t.getPhysicalSubresourceSize('2d', dstTextureSize, format, dstCopyLevel);
 
     const copyOrigin = { x: copyBoxOffsets.x, y: copyBoxOffsets.y, z: 0 };
 
@@ -369,23 +491,33 @@ g.test('depth_stencil_copy_restrictions')
       copyHeight === srcSizeAtLevel.height &&
       copyWidth === dstSizeAtLevel.width &&
       copyHeight === dstSizeAtLevel.height;
-    t.TestCopyTextureToTexture(
+    t.testCopyTextureToTexture(
       { texture: srcTexture, origin: { x: 0, y: 0, z: 0 }, mipLevel: srcCopyLevel },
       { texture: dstTexture, origin: copyOrigin, mipLevel: dstCopyLevel },
       { width: copyWidth, height: copyHeight, depthOrArrayLayers: 1 },
-      isSuccess
+      isSuccess ? 'Success' : 'FinishError'
     );
-    t.TestCopyTextureToTexture(
+    t.testCopyTextureToTexture(
       { texture: srcTexture, origin: copyOrigin, mipLevel: srcCopyLevel },
       { texture: dstTexture, origin: { x: 0, y: 0, z: 0 }, mipLevel: dstCopyLevel },
       { width: copyWidth, height: copyHeight, depthOrArrayLayers: 1 },
-      isSuccess
+      isSuccess ? 'Success' : 'FinishError'
     );
   });
 
 g.test('copy_ranges')
-  .paramsSubcasesOnly(u =>
-    u //
+  .desc(
+    `
+Test that copyTextureToTexture copy boxes must be in range of the subresource.
+- for various dimensions
+- for various offsets to a full copy for the copy origin/size
+- for various copy mip levels
+`
+  )
+  .params(u =>
+    u
+      .combine('dimension', kTextureDimensions)
+      //.beginSubcases()
       .combine('copyBoxOffsets', [
         { x: 0, y: 0, z: 0, width: 0, height: 0, depthOrArrayLayers: -2 },
         { x: 1, y: 0, z: 0, width: 0, height: 0, depthOrArrayLayers: -2 },
@@ -401,31 +533,57 @@ g.test('copy_ranges')
         { x: 0, y: 0, z: 1, width: 0, height: 0, depthOrArrayLayers: -1 },
         { x: 0, y: 0, z: 2, width: 0, height: 0, depthOrArrayLayers: -1 },
       ])
+      .unless(
+        p =>
+          p.dimension === '1d' &&
+          (p.copyBoxOffsets.y !== 0 ||
+            p.copyBoxOffsets.z !== 0 ||
+            p.copyBoxOffsets.height !== 0 ||
+            p.copyBoxOffsets.depthOrArrayLayers !== 0)
+      )
       .combine('srcCopyLevel', [0, 1, 3])
       .combine('dstCopyLevel', [0, 1, 3])
+      .unless(p => p.dimension === '1d' && (p.srcCopyLevel !== 0 || p.dstCopyLevel !== 0))
   )
-  .fn(async t => {
-    const { copyBoxOffsets, srcCopyLevel, dstCopyLevel } = t.params;
+  .fn(t => {
+    const { dimension, copyBoxOffsets, srcCopyLevel, dstCopyLevel } = t.params;
 
-    const kTextureSize = { width: 16, height: 8, depthOrArrayLayers: 3 };
-    const kMipLevelCount = 4;
+    const textureSize = { width: 16, height: 8, depthOrArrayLayers: 3 };
+    let mipLevelCount = 4;
+    if (dimension === '1d') {
+      mipLevelCount = 1;
+      textureSize.height = 1;
+      textureSize.depthOrArrayLayers = 1;
+    }
     const kFormat = 'rgba8unorm';
 
-    const srcTexture = t.device.createTexture({
-      size: kTextureSize,
+    const srcTexture = t.createTextureTracked({
+      size: textureSize,
       format: kFormat,
-      mipLevelCount: kMipLevelCount,
+      dimension,
+      mipLevelCount,
       usage: GPUTextureUsage.COPY_SRC,
     });
-    const dstTexture = t.device.createTexture({
-      size: kTextureSize,
+    const dstTexture = t.createTextureTracked({
+      size: textureSize,
       format: kFormat,
-      mipLevelCount: kMipLevelCount,
+      dimension,
+      mipLevelCount,
       usage: GPUTextureUsage.COPY_DST,
     });
 
-    const srcSizeAtLevel = t.GetPhysicalSubresourceSize(kTextureSize, kFormat, srcCopyLevel);
-    const dstSizeAtLevel = t.GetPhysicalSubresourceSize(kTextureSize, kFormat, dstCopyLevel);
+    const srcSizeAtLevel = t.getPhysicalSubresourceSize(
+      dimension,
+      textureSize,
+      kFormat,
+      srcCopyLevel
+    );
+    const dstSizeAtLevel = t.getPhysicalSubresourceSize(
+      dimension,
+      textureSize,
+      kFormat,
+      dstCopyLevel
+    );
 
     const copyOrigin = { x: copyBoxOffsets.x, y: copyBoxOffsets.y, z: copyBoxOffsets.z };
 
@@ -438,54 +596,85 @@ g.test('copy_ranges')
       0
     );
     const copyDepth =
-      kTextureSize.depthOrArrayLayers + copyBoxOffsets.depthOrArrayLayers - copyOrigin.z;
+      textureSize.depthOrArrayLayers + copyBoxOffsets.depthOrArrayLayers - copyOrigin.z;
 
     {
-      const isSuccess =
+      let isSuccess =
         copyWidth <= srcSizeAtLevel.width &&
         copyHeight <= srcSizeAtLevel.height &&
         copyOrigin.x + copyWidth <= dstSizeAtLevel.width &&
-        copyOrigin.y + copyHeight <= dstSizeAtLevel.height &&
-        copyOrigin.z + copyDepth <= kTextureSize.depthOrArrayLayers;
+        copyOrigin.y + copyHeight <= dstSizeAtLevel.height;
 
-      t.TestCopyTextureToTexture(
+      if (dimension === '3d') {
+        isSuccess =
+          isSuccess &&
+          copyDepth <= srcSizeAtLevel.depthOrArrayLayers &&
+          copyOrigin.z + copyDepth <= dstSizeAtLevel.depthOrArrayLayers;
+      } else {
+        isSuccess =
+          isSuccess &&
+          copyDepth <= textureSize.depthOrArrayLayers &&
+          copyOrigin.z + copyDepth <= textureSize.depthOrArrayLayers;
+      }
+
+      t.testCopyTextureToTexture(
         { texture: srcTexture, origin: { x: 0, y: 0, z: 0 }, mipLevel: srcCopyLevel },
         { texture: dstTexture, origin: copyOrigin, mipLevel: dstCopyLevel },
         { width: copyWidth, height: copyHeight, depthOrArrayLayers: copyDepth },
-        isSuccess
+        isSuccess ? 'Success' : 'FinishError'
       );
     }
 
     {
-      const isSuccess =
+      let isSuccess =
         copyOrigin.x + copyWidth <= srcSizeAtLevel.width &&
         copyOrigin.y + copyHeight <= srcSizeAtLevel.height &&
         copyWidth <= dstSizeAtLevel.width &&
-        copyHeight <= dstSizeAtLevel.height &&
-        copyOrigin.z + copyDepth <= kTextureSize.depthOrArrayLayers;
+        copyHeight <= dstSizeAtLevel.height;
 
-      t.TestCopyTextureToTexture(
+      if (dimension === '3d') {
+        isSuccess =
+          isSuccess &&
+          copyDepth <= dstSizeAtLevel.depthOrArrayLayers &&
+          copyOrigin.z + copyDepth <= srcSizeAtLevel.depthOrArrayLayers;
+      } else {
+        isSuccess =
+          isSuccess &&
+          copyDepth <= textureSize.depthOrArrayLayers &&
+          copyOrigin.z + copyDepth <= textureSize.depthOrArrayLayers;
+      }
+
+      t.testCopyTextureToTexture(
         { texture: srcTexture, origin: copyOrigin, mipLevel: srcCopyLevel },
         { texture: dstTexture, origin: { x: 0, y: 0, z: 0 }, mipLevel: dstCopyLevel },
         { width: copyWidth, height: copyHeight, depthOrArrayLayers: copyDepth },
-        isSuccess
+        isSuccess ? 'Success' : 'FinishError'
       );
     }
   });
 
 g.test('copy_within_same_texture')
+  .desc(
+    `
+Test that it is an error to use copyTextureToTexture from one subresource to itself.
+- for various starting source/destination array layers.
+- for various copy sizes in number of array layers
+
+TODO: Extend to check the copy is allowed between different mip levels.
+TODO: Extend to 1D and 3D textures.`
+  )
   .paramsSubcasesOnly(u =>
     u //
       .combine('srcCopyOriginZ', [0, 2, 4])
       .combine('dstCopyOriginZ', [0, 2, 4])
       .combine('copyExtentDepth', [1, 2, 3])
   )
-  .fn(async t => {
+  .fn(t => {
     const { srcCopyOriginZ, dstCopyOriginZ, copyExtentDepth } = t.params;
 
     const kArrayLayerCount = 7;
 
-    const testTexture = t.device.createTexture({
+    const testTexture = t.createTextureTracked({
       size: { width: 16, height: 16, depthOrArrayLayers: kArrayLayerCount },
       format: 'rgba8unorm',
       usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.COPY_DST,
@@ -494,18 +683,18 @@ g.test('copy_within_same_texture')
     const isSuccess =
       Math.min(srcCopyOriginZ, dstCopyOriginZ) + copyExtentDepth <=
       Math.max(srcCopyOriginZ, dstCopyOriginZ);
-    t.TestCopyTextureToTexture(
+    t.testCopyTextureToTexture(
       { texture: testTexture, origin: { x: 0, y: 0, z: srcCopyOriginZ } },
       { texture: testTexture, origin: { x: 0, y: 0, z: dstCopyOriginZ } },
       { width: 16, height: 16, depthOrArrayLayers: copyExtentDepth },
-      isSuccess
+      isSuccess ? 'Success' : 'FinishError'
     );
   });
 
 g.test('copy_aspects')
   .desc(
     `
-Test the validations on the member 'aspect' of GPUImageCopyTexture in CopyTextureToTexture().
+Test the validations on the member 'aspect' of GPUTexelCopyTextureInfo in CopyTextureToTexture().
 - for all the color and depth-stencil formats: the texture copy aspects must be both 'all'.
 - for all the depth-only formats: the texture copy aspects must be either 'all' or 'depth-only'.
 - for all the stencil-only formats: the texture copy aspects must be either 'all' or 'stencil-only'.
@@ -518,18 +707,18 @@ Test the validations on the member 'aspect' of GPUImageCopyTexture in CopyTextur
       .combine('sourceAspect', ['all', 'depth-only', 'stencil-only'] as const)
       .combine('destinationAspect', ['all', 'depth-only', 'stencil-only'] as const)
   )
-  .fn(async t => {
+  .fn(t => {
     const { format, sourceAspect, destinationAspect } = t.params;
-    await t.selectDeviceOrSkipTestCase(kTextureFormatInfo[format].feature);
+    t.skipIfTextureFormatNotSupported(format);
 
     const kTextureSize = { width: 16, height: 8, depthOrArrayLayers: 1 };
 
-    const srcTexture = t.device.createTexture({
+    const srcTexture = t.createTextureTracked({
       size: kTextureSize,
       format,
       usage: GPUTextureUsage.COPY_SRC,
     });
-    const dstTexture = t.device.createTexture({
+    const dstTexture = t.createTextureTracked({
       size: kTextureSize,
       format,
       usage: GPUTextureUsage.COPY_DST,
@@ -542,7 +731,6 @@ Test the validations on the member 'aspect' of GPUImageCopyTexture in CopyTextur
       // kUnsizedDepthStencilFormats
       depth24plus: ['all', 'depth-only'],
       'depth24plus-stencil8': ['all'],
-      'depth24unorm-stencil8': ['all'],
       'depth32float-stencil8': ['all'],
 
       // kSizedDepthStencilFormats
@@ -554,18 +742,32 @@ Test the validations on the member 'aspect' of GPUImageCopyTexture in CopyTextur
     const isSourceAspectValid = kValidAspectsForFormat[format].includes(sourceAspect);
     const isDestinationAspectValid = kValidAspectsForFormat[format].includes(destinationAspect);
 
-    t.TestCopyTextureToTexture(
+    t.testCopyTextureToTexture(
       { texture: srcTexture, origin: { x: 0, y: 0, z: 0 }, aspect: sourceAspect },
       { texture: dstTexture, origin: { x: 0, y: 0, z: 0 }, aspect: destinationAspect },
       kTextureSize,
-      isSourceAspectValid && isDestinationAspectValid
+      isSourceAspectValid && isDestinationAspectValid ? 'Success' : 'FinishError'
     );
   });
 
 g.test('copy_ranges_with_compressed_texture_formats')
+  .desc(
+    `
+Test that copyTextureToTexture copy boxes must be in range of the subresource and aligned to the block size
+- for various dimensions
+- for various offsets to a full copy for the copy origin/size
+- for various copy mip levels
+
+TODO: Express the offsets in "block size" so as to be able to test non-4x4 compressed formats
+`
+  )
   .params(u =>
     u
       .combine('format', kCompressedTextureFormats)
+      .combine('dimension', kTextureDimensions)
+      .filter(({ dimension, format }) =>
+        textureFormatAndDimensionPossiblyCompatible(dimension, format)
+      )
       .beginSubcases()
       .combine('copyBoxOffsets', [
         { x: 0, y: 0, z: 0, width: 0, height: 0, depthOrArrayLayers: -2 },
@@ -583,10 +785,14 @@ g.test('copy_ranges_with_compressed_texture_formats')
       .combine('srcCopyLevel', [0, 1, 2])
       .combine('dstCopyLevel', [0, 1, 2])
   )
-  .fn(async t => {
-    const { format, copyBoxOffsets, srcCopyLevel, dstCopyLevel } = t.params;
-    await t.selectDeviceOrSkipTestCase(kTextureFormatInfo[format].feature);
-    const { blockWidth, blockHeight } = kTextureFormatInfo[format];
+  .fn(t => {
+    const { format, dimension, copyBoxOffsets, srcCopyLevel, dstCopyLevel } = t.params;
+
+    t.skipIfTextureFormatNotSupported(format);
+    t.skipIfTextureFormatAndDimensionNotCompatible(format, dimension);
+    t.skipIfCopyTextureToTextureNotSupportedForFormat(format);
+
+    const { blockWidth, blockHeight } = getBlockInfoForTextureFormat(format);
 
     const kTextureSize = {
       width: 15 * blockWidth,
@@ -595,21 +801,33 @@ g.test('copy_ranges_with_compressed_texture_formats')
     };
     const kMipLevelCount = 4;
 
-    const srcTexture = t.device.createTexture({
+    const srcTexture = t.createTextureTracked({
       size: kTextureSize,
       format,
+      dimension,
       mipLevelCount: kMipLevelCount,
       usage: GPUTextureUsage.COPY_SRC,
     });
-    const dstTexture = t.device.createTexture({
+    const dstTexture = t.createTextureTracked({
       size: kTextureSize,
       format,
+      dimension,
       mipLevelCount: kMipLevelCount,
       usage: GPUTextureUsage.COPY_DST,
     });
 
-    const srcSizeAtLevel = t.GetPhysicalSubresourceSize(kTextureSize, format, srcCopyLevel);
-    const dstSizeAtLevel = t.GetPhysicalSubresourceSize(kTextureSize, format, dstCopyLevel);
+    const srcSizeAtLevel = t.getPhysicalSubresourceSize(
+      dimension,
+      kTextureSize,
+      format,
+      srcCopyLevel
+    );
+    const dstSizeAtLevel = t.getPhysicalSubresourceSize(
+      dimension,
+      kTextureSize,
+      format,
+      dstCopyLevel
+    );
 
     const copyOrigin = { x: copyBoxOffsets.x, y: copyBoxOffsets.y, z: copyBoxOffsets.z };
 
@@ -621,17 +839,18 @@ g.test('copy_ranges_with_compressed_texture_formats')
       Math.min(srcSizeAtLevel.height, dstSizeAtLevel.height) + copyBoxOffsets.height - copyOrigin.y,
       0
     );
-    const copyDepth =
-      kTextureSize.depthOrArrayLayers + copyBoxOffsets.depthOrArrayLayers - copyOrigin.z;
-
-    const texelBlockWidth = kTextureFormatInfo[format].blockWidth;
-    const texelBlockHeight = kTextureFormatInfo[format].blockHeight;
+    const copyDepth = Math.max(
+      Math.min(srcSizeAtLevel.depthOrArrayLayers, dstSizeAtLevel.depthOrArrayLayers) +
+        copyBoxOffsets.depthOrArrayLayers -
+        copyOrigin.z,
+      0
+    );
 
     const isSuccessForCompressedFormats =
-      copyOrigin.x % texelBlockWidth === 0 &&
-      copyOrigin.y % texelBlockHeight === 0 &&
-      copyWidth % texelBlockWidth === 0 &&
-      copyHeight % texelBlockHeight === 0;
+      copyOrigin.x % blockWidth === 0 &&
+      copyOrigin.y % blockHeight === 0 &&
+      copyWidth % blockWidth === 0 &&
+      copyHeight % blockHeight === 0;
 
     {
       const isSuccess =
@@ -642,11 +861,11 @@ g.test('copy_ranges_with_compressed_texture_formats')
         copyOrigin.y + copyHeight <= dstSizeAtLevel.height &&
         copyOrigin.z + copyDepth <= kTextureSize.depthOrArrayLayers;
 
-      t.TestCopyTextureToTexture(
+      t.testCopyTextureToTexture(
         { texture: srcTexture, origin: { x: 0, y: 0, z: 0 }, mipLevel: srcCopyLevel },
         { texture: dstTexture, origin: copyOrigin, mipLevel: dstCopyLevel },
         { width: copyWidth, height: copyHeight, depthOrArrayLayers: copyDepth },
-        isSuccess
+        isSuccess ? 'Success' : 'FinishError'
       );
     }
 
@@ -659,11 +878,11 @@ g.test('copy_ranges_with_compressed_texture_formats')
         copyHeight <= dstSizeAtLevel.height &&
         copyOrigin.z + copyDepth <= kTextureSize.depthOrArrayLayers;
 
-      t.TestCopyTextureToTexture(
+      t.testCopyTextureToTexture(
         { texture: srcTexture, origin: copyOrigin, mipLevel: srcCopyLevel },
         { texture: dstTexture, origin: { x: 0, y: 0, z: 0 }, mipLevel: dstCopyLevel },
         { width: copyWidth, height: copyHeight, depthOrArrayLayers: copyDepth },
-        isSuccess
+        isSuccess ? 'Success' : 'FinishError'
       );
     }
   });

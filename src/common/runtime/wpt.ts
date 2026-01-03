@@ -1,5 +1,6 @@
 // Implements the wpt-embedded test runner (see also: wpt/cts.https.html).
 
+import { globalTestConfig } from '../framework/test_config.js';
 import { DefaultTestFileLoader } from '../internal/file_loader.js';
 import { prettyPrintLog } from '../internal/logging/log_message.js';
 import { Logger } from '../internal/logging/logger.js';
@@ -7,8 +8,8 @@ import { parseQuery } from '../internal/query/parseQuery.js';
 import { parseExpectationsForTestQuery, relativeQueryString } from '../internal/query/query.js';
 import { assert } from '../util/util.js';
 
-import { optionEnabled } from './helper/options.js';
-import { TestWorker } from './helper/test_worker.js';
+import { optionEnabled, optionWorkerMode } from './helper/options.js';
+import { TestDedicatedWorker, TestServiceWorker, TestSharedWorker } from './helper/test_worker.js';
 
 // testharness.js API (https://web-platform-tests.org/writing-tests/testharness-api.html)
 declare interface WptTestObject {
@@ -29,9 +30,13 @@ setup({
   explicit_done: true,
 });
 
-(async () => {
-  const workerEnabled = optionEnabled('worker');
-  const worker = workerEnabled ? new TestWorker(false) : undefined;
+void (async () => {
+  const workerString = optionWorkerMode('worker');
+  const dedicatedWorker = workerString === 'dedicated' ? new TestDedicatedWorker() : undefined;
+  const sharedWorker = workerString === 'shared' ? new TestSharedWorker() : undefined;
+  const serviceWorker = workerString === 'service' ? new TestServiceWorker() : undefined;
+
+  globalTestConfig.unrollConstEvalLoops = optionEnabled('unroll_const_eval_loops');
 
   const failOnWarnings =
     typeof shouldWebGPUCTSFailOnWarnings !== 'undefined' && (await shouldWebGPUCTSFailOnWarnings);
@@ -60,8 +65,12 @@ setup({
 
     const wpt_fn = async () => {
       const [rec, res] = log.record(name);
-      if (worker) {
-        await worker.run(rec, name, expectations);
+      if (dedicatedWorker) {
+        await dedicatedWorker.run(rec, name, expectations);
+      } else if (sharedWorker) {
+        await sharedWorker.run(rec, name, expectations);
+      } else if (serviceWorker) {
+        await serviceWorker.run(rec, name, expectations);
       } else {
         await testcase.run(rec, expectations);
       }

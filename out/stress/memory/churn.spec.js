@@ -10,9 +10,9 @@ export const g = makeTestGroup(GPUTest);
 
 g.test('churn').
 desc(
-`Allocates and populates a huge number of buffers and textures over time,
+  `Allocates and populates a huge number of buffers and textures over time,
 retaining some while dropping or explicitly destroying others. When finished,
-verifies the expected contents of any remaining buffers and textures.`).
-
+verifies the expected contents of any remaining buffers and textures.`
+).
 unimplemented();
 //# sourceMappingURL=churn.spec.js.map

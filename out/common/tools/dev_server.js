@@ -1,6 +1,6 @@
 /**
 * AUTO-GENERATED - DO NOT EDIT. Source: https://github.com/gpuweb/cts
-**/import * as os from 'os';import * as path from 'path';
+**/import * as fs from 'fs';import * as os from 'os';import * as path from 'path';
 
 import * as babel from '@babel/core';
 import * as chokidar from 'chokidar';
@@ -14,17 +14,30 @@ import { makeListing } from './crawl.js';
 // Make sure that makeListing doesn't cache imported spec files. See crawl().
 process.env.STANDALONE_DEV_SERVER = '1';
 
+function usage(rc) {
+  console.error(`\
+Usage:
+  tools/dev_server
+  tools/dev_server 0.0.0.0
+  npm start
+  npm start 0.0.0.0
+
+By default, serves on localhost only. If the argument 0.0.0.0 is passed, serves on all interfaces.
+`);
+  process.exit(rc);
+}
+
 const srcDir = path.resolve(__dirname, '../../');
 
 // Import the project's babel.config.js. We'll use the same config for the runtime compiler.
 const babelConfig = {
   ...require(path.resolve(srcDir, '../babel.config.js'))({
     cache: () => {
-      /* not used */
-    } }),
 
-  sourceMaps: 'inline' };
-
+      /* not used */}
+  }),
+  sourceMaps: 'inline'
+};
 
 // Caches for the generated listing file and compiled TS sources to speed up reloads.
 // Keyed by suite name
@@ -34,12 +47,12 @@ const compileCache = new Map();
 
 console.log('Watching changes in', srcDir);
 const watcher = chokidar.watch(srcDir, {
-  persistent: true });
-
+  persistent: true
+});
 
 /**
-                        * Handler to dirty the compile cache for changed .ts files.
-                        */
+ * Handler to dirty the compile cache for changed .ts files.
+ */
 function dirtyCompileCache(absPath, stats) {
   const relPath = path.relative(srcDir, absPath);
   if ((stats === undefined || stats.isFile()) && relPath.endsWith('.ts')) {
@@ -52,12 +65,12 @@ function dirtyCompileCache(absPath, stats) {
 }
 
 /**
-   * Handler to dirty the listing cache for:
-   *  - Directory changes
-   *  - .spec.ts changes
-   *  - README.txt changes
-   * Also dirties the compile cache for changed files.
-   */
+ * Handler to dirty the listing cache for:
+ *  - Directory changes
+ *  - .spec.ts changes
+ *  - README.txt changes
+ * Also dirties the compile cache for changed files.
+ */
 function dirtyListingAndCompileCache(absPath, stats) {
   const relPath = path.relative(srcDir, absPath);
 
@@ -92,13 +105,7 @@ watcher.on('change', dirtyCompileCache);
 const app = express();
 
 // Send Chrome Origin Trial tokens
-app.use((req, res, next) => {
-  res.header('Origin-Trial', [
-  // Token for http://localhost:8080
-  'AhE99tXCz7rNPbO9trRshOXiTObuhJOKUFfJi6mfwaVOlPJgsKyWSFUx7ZPzAWuNs4lEluGMIHpTD45OxcrrCQoAAABJeyJvcmlnaW4iOiJodHRwOi8vbG9jYWxob3N0OjgwODAiLCJmZWF0dXJlIjoiV2ViR1BVIiwiZXhwaXJ5IjoxNjQzMTU1MTk5fQ==',
-  // Token for http://localhost:8081
-  'AomphwDQ4T13IQ60e0AoVyx8nETxPfRb8KxRUHab+ZuRBqynAAu6WIV8x6uRQKZkuqTe4fG3adBOUXTK2dC7lg8AAABJeyJvcmlnaW4iOiJodHRwOi8vbG9jYWxob3N0OjgwODEiLCJmZWF0dXJlIjoiV2ViR1BVIiwiZXhwaXJ5IjoxNjQzMTU1MTk5fQ==']);
-
+app.use((_req, res, next) => {
   next();
 });
 
@@ -112,7 +119,7 @@ app.use('/out-wpt', express.static(path.resolve(srcDir, '../out-wpt')));
 app.use('/docs/tsdoc', express.static(path.resolve(srcDir, '../docs/tsdoc')));
 
 // Serve a suite's listing.js file by crawling the filesystem for all tests.
-app.get('/out/:suite/listing.js', async (req, res, next) => {
+app.get('/out/:suite([a-zA-Z0-9_-]+)/listing.js', async (req, res, next) => {
   const suite = req.params['suite'];
 
   if (listingCache.has(suite)) {
@@ -133,16 +140,34 @@ app.get('/out/:suite/listing.js', async (req, res, next) => {
   }
 });
 
+// Serve .as_worker.js files by generating the necessary wrapper.
+app.get('/out/:suite([a-zA-Z0-9_-]+)/webworker/:filepath(*).as_worker.js', (req, res, next) => {
+  const { suite, filepath } = req.params;
+  const result = `\
+import { g } from '/out/${suite}/${filepath}.spec.js';
+import { wrapTestGroupForWorker } from '/out/common/runtime/helper/wrap_for_worker.js';
+
+wrapTestGroupForWorker(g);
+`;
+  res.setHeader('Content-Type', 'application/javascript');
+  res.send(result);
+});
+
 // Serve all other .js files by fetching the source .ts file and compiling it.
 app.get('/out/**/*.js', async (req, res, next) => {
-  const tsUrl = path.relative('/out', req.url).replace(/\.js$/, '.ts');
+  const jsUrl = path.relative('/out', req.url);
+  const tsUrl = jsUrl.replace(/\.js$/, '.ts');
   if (compileCache.has(tsUrl)) {
     res.setHeader('Content-Type', 'application/javascript');
     res.send(compileCache.get(tsUrl));
     return;
   }
 
-  const absPath = path.join(srcDir, tsUrl);
+  let absPath = path.join(srcDir, tsUrl);
+  if (!fs.existsSync(absPath)) {
+    // The .ts file doesn't exist. Try .js file in case this is a .js/.d.ts pair.
+    absPath = path.join(srcDir, jsUrl);
+  }
 
   try {
     const result = await babel.transformFileAsync(absPath, babelConfig);
@@ -159,29 +184,41 @@ app.get('/out/**/*.js', async (req, res, next) => {
   }
 });
 
-const host = '0.0.0.0';
-const port = 8080;
-// Find an available port, starting at 8080.
-portfinder.getPort({ host, port }, (err, port) => {
-  if (err) {
-    throw err;
+// Serve everything else (not .js) as static, and directories as directory listings.
+app.use('/out', serveIndex(path.resolve(srcDir, '../src')));
+app.use('/out', express.static(path.resolve(srcDir, '../src')));
+
+void (async () => {
+  let host = '127.0.0.1';
+  if (process.argv.length >= 3) {
+    if (process.argv.length !== 3) usage(1);
+    if (process.argv[2] === '0.0.0.0') {
+      host = '0.0.0.0';
+    } else {
+      usage(1);
+    }
   }
+
+  console.log(`Finding an available port on ${host}...`);
+  const kPortFinderStart = 8080;
+  const port = await portfinder.getPortPromise({ host, port: kPortFinderStart });
+
   watcher.on('ready', () => {
     // Listen on the available port.
     app.listen(port, host, () => {
       console.log('Standalone test runner running at:');
-      for (const iface of Object.values(os.networkInterfaces())) {
-        for (const details of iface || []) {
-          if (details.family === 'IPv4') {
-            console.log(`  http://${details.address}:${port}/standalone/`);
+      if (host === '0.0.0.0') {
+        for (const iface of Object.values(os.networkInterfaces())) {
+          for (const details of iface || []) {
+            if (details.family === 'IPv4') {
+              console.log(`  http://${details.address}:${port}/standalone/`);
+            }
           }
         }
+      } else {
+        console.log(`  http://${host}:${port}/standalone/`);
       }
     });
   });
-});
-
-// Serve everything else (not .js) as static, and directories as directory listings.
-app.use('/out', serveIndex(path.resolve(srcDir, '../src')));
-app.use('/out', express.static(path.resolve(srcDir, '../src')));
+})();
 //# sourceMappingURL=dev_server.js.map

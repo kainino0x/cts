@@ -1,20 +1,26 @@
-/* eslint no-process-exit: "off" */
-/* eslint @typescript-eslint/no-namespace: "off" */
+/* eslint-disable no-process-exit, n/no-process-exit */
+/* eslint-disable @typescript-eslint/no-namespace */
 
 function node() {
-  const { existsSync } = require('fs');
+  /* eslint-disable-next-line n/no-restricted-require */
+  const { readFile, existsSync } = require('fs');
 
   return {
     type: 'node',
+    readFile,
     existsSync,
     args: process.argv.slice(2),
-    cwd: process.cwd,
-    exit: process.exit,
+    cwd: () => process.cwd(),
+    exit: (code?: number | undefined) => process.exit(code),
   };
 }
 
 declare global {
   namespace Deno {
+    function readFile(
+      path: string,
+      callback?: (error: unknown, data: string) => void
+    ): Promise<Uint8Array>;
     function readFileSync(path: string): Uint8Array;
     const args: string[];
     const cwd: () => string;
@@ -35,6 +41,7 @@ function deno() {
   return {
     type: 'deno',
     existsSync,
+    readFile: Deno.readFile,
     args: Deno.args,
     cwd: Deno.cwd,
     exit: Deno.exit,

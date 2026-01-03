@@ -1,10 +1,10 @@
 /**
 * AUTO-GENERATED - DO NOT EDIT. Source: https://github.com/gpuweb/cts
-**/
+**/ /** A range of indices expressed as `{ begin, count }`. */
 
 
 
-
+/* A range of indices, expressed as `{ begin, end }`. */
 
 
 
@@ -21,9 +21,9 @@ function* rangeAsIterator(r) {
 }
 
 /**
-   * Represents a range of subresources of a single-plane texture:
-   * a min/max mip level and min/max array layer.
-   */
+ * Represents a range of subresources of a single-plane texture:
+ * a min/max mip level and min/max array layer.
+ */
 export class SubresourceRange {
 
 
@@ -34,17 +34,17 @@ export class SubresourceRange {
   {
     this.mipRange = {
       begin: subresources.mipRange.begin,
-      end: endOfRange(subresources.mipRange) };
-
+      end: endOfRange(subresources.mipRange)
+    };
     this.layerRange = {
       begin: subresources.layerRange.begin,
-      end: endOfRange(subresources.layerRange) };
-
+      end: endOfRange(subresources.layerRange)
+    };
   }
 
   /**
-     * Iterates over the "rectangle" of { mip level, array layer } pairs represented by the range.
-     */
+   * Iterates over the "rectangle" of `{ level, layer }` pairs represented by the range.
+   */
   *each() {
     for (let level = this.mipRange.begin; level < this.mipRange.end; ++level) {
       for (let layer = this.layerRange.begin; layer < this.layerRange.end; ++layer) {
@@ -54,15 +54,16 @@ export class SubresourceRange {
   }
 
   /**
-     * Iterates over the mip levels represented by the range, each level including an iterator
-     * over the array layers at that level.
-     */
+   * Iterates over the mip levels represented by the range, each level including an iterator
+   * over the array layers at that level.
+   */
   *mipLevels() {
     for (let level = this.mipRange.begin; level < this.mipRange.end; ++level) {
       yield {
         level,
-        layers: rangeAsIterator(this.layerRange) };
-
+        layers: rangeAsIterator(this.layerRange)
+      };
     }
-  }}
+  }
+}
 //# sourceMappingURL=subresource.js.map

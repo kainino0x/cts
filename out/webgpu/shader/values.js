@@ -4,9 +4,9 @@
 import { uint32ToFloat32 } from '../util/conversion.js';
 
 /** Returns an array of subnormal f32 numbers.
-                                                          * Subnnormals are non-zero finite numbers with the minimum representable
-                                                          * exponent.
-                                                          */
+ * Subnormals are non-zero finite numbers with the minimum representable
+ * exponent.
+ */
 export function subnormalF32Examples() {
   // The results, as uint32 values.
   const result_as_bits = [];
@@ -26,15 +26,15 @@ export function subnormalF32Examples() {
     }
   }
   assert(
-  result_as_bits.length === 2 * (1 + 23),
-  'subnormal number sample count is ' + result_as_bits.length.toString());
-
-  return result_as_bits.map(u => uint32ToFloat32(u));
+    result_as_bits.length === 2 * (1 + 23),
+    'subnormal number sample count is ' + result_as_bits.length.toString()
+  );
+  return result_as_bits.map((u) => uint32ToFloat32(u));
 }
 
 /** Returns an array of normal f32 numbers.
-   * Normal numbers are not: zero, Nan, infinity, subnormal.
-   */
+ * Normal numbers are not: zero, Nan, infinity, subnormal.
+ */
 export function normalF32Examples() {
   const result = [1.0, -2.0];
 
@@ -58,15 +58,15 @@ export function normalF32Examples() {
     }
   }
   assert(
-  result.length === 2 + 2 * 254 * 25,
-  'normal number sample count is ' + result.length.toString());
-
+    result.length === 2 + 2 * 254 * 25,
+    'normal number sample count is ' + result.length.toString()
+  );
   return result;
 }
 
 /** Returns an array of 32-bit NaNs, as Uint32 bit patterns.
-   * NaNs have: maximum exponent, but the mantissa is not zero.
-   */
+ * NaNs have: maximum exponent, but the mantissa is not zero.
+ */
 export function nanF32BitsExamples() {
   const result = [];
   const exponent_bit = 0x7f80_0000;

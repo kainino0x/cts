@@ -1,73 +1,95 @@
 /**
- * AUTO-GENERATED - DO NOT EDIT. Source: https://github.com/gpuweb/cts
- **/ import {
-  kTextureFormatInfo,
-  depthStencilFormatCopyableAspects,
-} from '../../../capability_info.js';
+* AUTO-GENERATED - DO NOT EDIT. Source: https://github.com/gpuweb/cts
+**/import { depthStencilFormatCopyableAspects,
+
+  isCompressedTextureFormat,
+  getBlockInfoForTextureFormat,
+  isDepthOrStencilTextureFormat,
+  canCopyFromAllAspectsOfTextureFormat,
+  canCopyToAllAspectsOfTextureFormat } from
+'../../../format_info.js';
+import { AllFeaturesMaxLimitsGPUTest } from '../../../gpu_test.js';
 import { align } from '../../../util/math.js';
 
-import { ValidationTest } from '../validation_test.js';
 
-export class ImageCopyTest extends ValidationTest {
-  testRun(textureCopyView, textureDataLayout, size, { method, dataSize, success, submit = false }) {
+export class ImageCopyTest extends AllFeaturesMaxLimitsGPUTest {
+  testRun(
+  textureCopyView,
+  textureDataLayout,
+  size,
+  {
+    method,
+    dataSize,
+    success,
+    submit = false
+
+
+
+
+
+
+
+  })
+  {
     switch (method) {
-      case 'WriteTexture': {
-        const data = new Uint8Array(dataSize);
+      case 'WriteTexture':{
+          const data = new Uint8Array(dataSize);
 
-        this.expectValidationError(() => {
-          this.device.queue.writeTexture(textureCopyView, data, textureDataLayout, size);
-        }, !success);
-
-        break;
-      }
-      case 'CopyB2T': {
-        const buffer = this.device.createBuffer({
-          size: dataSize,
-          usage: GPUBufferUsage.COPY_SRC,
-        });
-
-        this.trackForCleanup(buffer);
-
-        const encoder = this.device.createCommandEncoder();
-        encoder.copyBufferToTexture({ buffer, ...textureDataLayout }, textureCopyView, size);
-
-        if (submit) {
-          const cmd = encoder.finish();
           this.expectValidationError(() => {
-            this.device.queue.submit([cmd]);
+            this.device.queue.writeTexture(textureCopyView, data, textureDataLayout, size);
           }, !success);
-        } else {
-          this.expectValidationError(() => {
-            encoder.finish();
-          }, !success);
+
+          break;
         }
+      case 'CopyB2T':{
+          const buffer = this.createBufferTracked({
+            size: dataSize,
+            usage: GPUBufferUsage.COPY_SRC
+          });
 
-        break;
-      }
-      case 'CopyT2B': {
-        const buffer = this.device.createBuffer({
-          size: dataSize,
-          usage: GPUBufferUsage.COPY_DST,
-        });
+          const encoder = this.device.createCommandEncoder();
+          encoder.copyBufferToTexture({ buffer, ...textureDataLayout }, textureCopyView, size);
 
-        this.trackForCleanup(buffer);
+          if (submit) {
+            const cmd = encoder.finish();
+            this.expectValidationError(() => {
+              this.device.queue.submit([cmd]);
+            }, !success);
+          } else {
+            this.expectValidationError(() => {
+              encoder.finish();
+            }, !success);
+          }
 
-        const encoder = this.device.createCommandEncoder();
-        encoder.copyTextureToBuffer(textureCopyView, { buffer, ...textureDataLayout }, size);
-
-        if (submit) {
-          const cmd = encoder.finish();
-          this.expectValidationError(() => {
-            this.device.queue.submit([cmd]);
-          }, !success);
-        } else {
-          this.expectValidationError(() => {
-            encoder.finish();
-          }, !success);
+          break;
         }
+      case 'CopyT2B':{
+          if (this.isCompatibility && isCompressedTextureFormat(textureCopyView.texture.format)) {
+            this.skip(
+              'copyTextureToBuffer is not supported for compressed texture formats in compatibility mode.'
+            );
+          }
+          const buffer = this.createBufferTracked({
+            size: dataSize,
+            usage: GPUBufferUsage.COPY_DST
+          });
 
-        break;
-      }
+          const encoder = this.device.createCommandEncoder();
+          encoder.copyTextureToBuffer(textureCopyView, { buffer, ...textureDataLayout }, size);
+
+          if (submit) {
+            const cmd = encoder.finish();
+            this.expectValidationError(() => {
+              this.device.queue.submit([cmd]);
+            }, !success);
+          } else {
+            this.expectValidationError(() => {
+              encoder.finish();
+            }, !success);
+          }
+
+          break;
+        }
     }
   }
 
@@ -77,62 +99,91 @@ export class ImageCopyTest extends ValidationTest {
    * should be possible.
    */
   createAlignedTexture(
-    format,
-    size = {
-      width: 1,
-      height: 1,
-      depthOrArrayLayers: 1,
-    },
-
-    origin = { x: 0, y: 0, z: 0 },
-    dimension = '2d'
-  ) {
-    const info = kTextureFormatInfo[format];
+  format,
+  size = {
+    width: 1,
+    height: 1,
+    depthOrArrayLayers: 1
+  },
+  origin = { x: 0, y: 0, z: 0 },
+  dimension = '2d')
+  {
+    const info = getBlockInfoForTextureFormat(format);
     const alignedSize = {
       width: align(Math.max(1, size.width + origin.x), info.blockWidth),
       height: align(Math.max(1, size.height + origin.y), info.blockHeight),
-      depthOrArrayLayers: Math.max(1, size.depthOrArrayLayers + origin.z),
+      depthOrArrayLayers: Math.max(1, size.depthOrArrayLayers + origin.z)
     };
-
-    return this.device.createTexture({
+    return this.createTextureTracked({
       size: alignedSize,
       dimension,
       format,
-      usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.COPY_DST,
+      usage: GPUTextureUsage.COPY_SRC | GPUTextureUsage.COPY_DST
     });
   }
 
   testBuffer(
-    buffer,
-    texture,
-    textureDataLayout,
-    size,
-    { method, dataSize, success, submit = true }
-  ) {
+  buffer,
+  texture,
+  textureDataLayout,
+  size,
+  {
+    method,
+    dataSize,
+    success,
+    submit = true
+
+
+
+
+
+
+
+  })
+  {
     switch (method) {
-      case 'WriteTexture': {
-        const data = new Uint8Array(dataSize);
+      case 'WriteTexture':{
+          const data = new Uint8Array(dataSize);
 
-        this.expectValidationError(() => {
-          this.device.queue.writeTexture({ texture }, data, textureDataLayout, size);
-        }, !success);
+          this.expectValidationError(() => {
+            this.device.queue.writeTexture({ texture }, data, textureDataLayout, size);
+          }, !success);
 
-        break;
-      }
-      case 'CopyB2T': {
-        const { encoder, validateFinishAndSubmit } = this.createEncoder('non-pass');
-        encoder.copyBufferToTexture({ buffer, ...textureDataLayout }, { texture }, size);
-        validateFinishAndSubmit(success, submit);
+          break;
+        }
+      case 'CopyB2T':{
+          const { encoder, validateFinish, validateFinishAndSubmit } = this.createEncoder('non-pass');
+          encoder.copyBufferToTexture({ buffer, ...textureDataLayout }, { texture }, size);
 
-        break;
-      }
-      case 'CopyT2B': {
-        const { encoder, validateFinishAndSubmit } = this.createEncoder('non-pass');
-        encoder.copyTextureToBuffer({ texture }, { buffer, ...textureDataLayout }, size);
-        validateFinishAndSubmit(success, submit);
+          if (submit) {
+            // validation error is expected to come from the submit and encoding should succeed
+            validateFinishAndSubmit(true, success);
+          } else {
+            // validation error is expected to come from the encoding
+            validateFinish(success);
+          }
 
-        break;
-      }
+          break;
+        }
+      case 'CopyT2B':{
+          if (this.isCompatibility && isCompressedTextureFormat(texture.format)) {
+            this.skip(
+              'copyTextureToBuffer is not supported for compressed texture formats in compatibility mode.'
+            );
+          }
+          const { encoder, validateFinish, validateFinishAndSubmit } = this.createEncoder('non-pass');
+          encoder.copyTextureToBuffer({ texture }, { buffer, ...textureDataLayout }, size);
+
+          if (submit) {
+            // validation error is expected to come from the submit and encoding should succeed
+            validateFinishAndSubmit(true, success);
+          } else {
+            // validation error is expected to come from the encoding
+            validateFinish(success);
+          }
+
+          break;
+        }
     }
   }
 }
@@ -147,31 +198,45 @@ function valuesToTestDivisibilityBy(number) {
   return values;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
 // This is a helper function used for expanding test parameters for offset alignment, by spec
 export function texelBlockAlignmentTestExpanderForOffset({ format }) {
-  const info = kTextureFormatInfo[format];
-  if (info.depth || info.stencil) {
+  if (isDepthOrStencilTextureFormat(format)) {
     return valuesToTestDivisibilityBy(4);
   }
 
-  return valuesToTestDivisibilityBy(kTextureFormatInfo[format].bytesPerBlock);
+  return valuesToTestDivisibilityBy(getBlockInfoForTextureFormat(format).bytesPerBlock);
 }
 
 // This is a helper function used for expanding test parameters for texel block alignment tests on rowsPerImage
 export function texelBlockAlignmentTestExpanderForRowsPerImage({ format }) {
-  return valuesToTestDivisibilityBy(kTextureFormatInfo[format].blockHeight);
+  return valuesToTestDivisibilityBy(getBlockInfoForTextureFormat(format).blockHeight);
 }
 
 // This is a helper function used for expanding test parameters for texel block alignment tests on origin and size
-export function texelBlockAlignmentTestExpanderForValueToCoordinate({ format, coordinateToTest }) {
+export function texelBlockAlignmentTestExpanderForValueToCoordinate({
+  format,
+  coordinateToTest
+}) {
   switch (coordinateToTest) {
     case 'x':
     case 'width':
-      return valuesToTestDivisibilityBy(kTextureFormatInfo[format].blockWidth);
+      return valuesToTestDivisibilityBy(getBlockInfoForTextureFormat(format).blockWidth);
 
     case 'y':
     case 'height':
-      return valuesToTestDivisibilityBy(kTextureFormatInfo[format].blockHeight);
+      return valuesToTestDivisibilityBy(getBlockInfoForTextureFormat(format).blockHeight);
 
     case 'z':
     case 'depthOrArrayLayers':
@@ -181,25 +246,30 @@ export function texelBlockAlignmentTestExpanderForValueToCoordinate({ format, co
 
 // This is a helper function used for filtering test parameters
 export function formatCopyableWithMethod({ format, method }) {
-  const info = kTextureFormatInfo[format];
-  if (info.depth || info.stencil) {
-    const supportedAspects = depthStencilFormatCopyableAspects(method, format);
-
+  if (isDepthOrStencilTextureFormat(format)) {
+    const supportedAspects = depthStencilFormatCopyableAspects(
+      method,
+      format
+    );
     return supportedAspects.length > 0;
   }
   if (method === 'CopyT2B') {
-    return info.copySrc;
+    return canCopyFromAllAspectsOfTextureFormat(format);
   } else {
-    return info.copyDst;
+    return canCopyToAllAspectsOfTextureFormat(format);
   }
 }
 
 // This is a helper function used for filtering test parameters
-export function getACopyableAspectWithMethod({ format, method }) {
-  const info = kTextureFormatInfo[format];
-  if (info.depth || info.stencil) {
-    const supportedAspects = depthStencilFormatCopyableAspects(method, format);
-
+export function getACopyableAspectWithMethod({
+  format,
+  method
+}) {
+  if (isDepthOrStencilTextureFormat(format)) {
+    const supportedAspects = depthStencilFormatCopyableAspects(
+      method,
+      format
+    );
     return supportedAspects[0];
   }
   return 'all';
