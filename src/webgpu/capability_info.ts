@@ -994,6 +994,7 @@ export const kKnownWGSLLanguageFeatures = [
   'immediate_address_space',
   'fragment_depth',
   'buffer_view',
+  // This list should be kept in sync with .eslintrc.cjs.
 ] as const;
 
 export type WGSLLanguageFeature = (typeof kKnownWGSLLanguageFeatures)[number];

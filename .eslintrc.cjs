@@ -1,4 +1,25 @@
-{
+/** List of WGSL language features for use in a lint check below. */
+const kKnownWGSLLanguageFeatures = [
+  'readonly_and_readwrite_storage_textures',
+  'packed_4x8_integer_dot_product',
+  'unrestricted_pointer_parameters',
+  'pointer_composite_access',
+  'uniform_buffer_standard_layout',
+  'texture_and_sampler_let',
+  'subgroup_id',
+  'subgroup_uniformity',
+  'swizzle_assignment',
+  'linear_indexing',
+  'texture_formats_tier1',
+  'immediate_address_space',
+  'fragment_depth',
+  'buffer_view',
+  // IMPORTANT: Always add features to capability_info.ts before adding them here.
+  // This ensures that they're tested properly.
+];
+const kWGSLLanguageFeatureRegex = String.raw`requires\s+(?!(unknown|${kKnownWGSLLanguageFeatures.join('|')})\b)\w+\s*;`;
+
+module.exports = {
   "root": true,
   "env": {
     "browser": true,
@@ -63,7 +84,11 @@
             "message": "Use hasFeature() instead of features.has().",
             // features.has takes any string. We want only valid feature names.
             "selector": "CallExpression[callee.property.name='has'][callee.object.name='features'],CallExpression[callee.property.name='has'][callee.object.property.name='features']"
-          }
+          },
+          {
+            "message": "Found WGSL `requires` directive with unknown token. Update `kKnownWGSLLanguageFeatures` in capability_info.ts, then in .eslintrc.cjs.",
+            "selector": `TemplateElement[value.cooked=/${kWGSLLanguageFeatureRegex}/], Literal[value=/${kWGSLLanguageFeatureRegex}/]`
+          },
         ],
 
         // Plugin: gpuweb-cts
@@ -188,4 +213,4 @@
       }
     }
   ]
-}
+};
